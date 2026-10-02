@@ -98,7 +98,7 @@ test('reads the sample change, navigates between artifacts and switches to sourc
   await page.getByRole('button', { name: 'Source', exact: true }).click();
   await expect(page.locator('.source-view')).toContainText('# Invitation design');
   await page.getByRole('button', { name: 'Read', exact: true }).click();
-  await page.getByRole('link', { name: 'tasks.md', exact: false }).click();
+  await page.getByLabel('Related artifacts').getByRole('link', { name: 'Tasks' }).click();
   await expect(page.getByRole('checkbox')).toHaveCount(9);
   await page.screenshot({ path: 'test-results/reader.png', fullPage: true });
   for (const checkbox of await page.getByRole('checkbox').all())
@@ -109,6 +109,42 @@ test('reads the sample change, navigates between artifacts and switches to sourc
     .click();
   await expect(page.getByRole('heading', { name: 'Add project roles' })).toBeVisible();
   expect(errors).toEqual([]);
+});
+test('shows a specification as requirements and scenarios, and links to its headings', async ({
+  page,
+}) => {
+  await page.goto('/#/artifact?path=specs%2Fprojects%2Faccess%2Fspec.md');
+  const requirement = page.locator('.prose .requirement').first();
+  await expect(
+    requirement.getByRole('heading', { name: 'Requirement Viewers have read access' }),
+  ).toBeVisible();
+  await expect(requirement.locator('.normative')).toHaveText('SHALL');
+  await expect(requirement.locator('.scenario .step-keyword')).toHaveText(['WHEN', 'THEN']);
+  // A short window, so that the last requirement starts below the fold.
+  await page.setViewportSize({ width: 1440, height: 500 });
+  const last = page.getByRole('heading', { name: 'Requirement Owners manage membership' });
+  await expect(last).not.toBeInViewport();
+  await page
+    .getByLabel('On this page')
+    .getByRole('link', { name: 'Owners manage membership' })
+    .click();
+  await expect(last).toBeInViewport();
+  await expect(page).toHaveURL(/#requirement-owners-manage-membership$/);
+  await page.reload();
+  await expect(last).toBeInViewport();
+});
+test('hides completed tasks on request and remembers the choice', async ({ page }) => {
+  await page.goto('/#/artifact?path=changes%2Fadd-project-invitations%2Ftasks.md');
+  const hide = page.getByRole('switch', { name: 'Hide completed' });
+  await expect(page.getByRole('checkbox')).toHaveCount(9);
+  await hide.click();
+  await expect(page.getByRole('checkbox')).toHaveCount(4);
+  await expect(page.getByText('2.2 Display pending invitations')).toBeVisible();
+  await page.reload();
+  await expect(hide).toBeChecked();
+  await expect(page.getByRole('checkbox')).toHaveCount(4);
+  await hide.click();
+  await expect(page.getByRole('checkbox')).toHaveCount(9);
 });
 test('reads a local repository, resolves nested links, searches content and refreshes tasks', async ({
   page,
@@ -130,7 +166,7 @@ test('reads a local repository, resolves nested links, searches content and refr
   expect(
     await page.evaluate(() => (window as unknown as { injected?: boolean }).injected),
   ).toBeUndefined();
-  await page.getByRole('link', { name: /tasks.md/ }).click();
+  await page.getByLabel('Related artifacts').getByRole('link', { name: 'Tasks' }).click();
   await writeFile(
     path.join(repository, 'openspec/changes/nested-change/tasks.md'),
     '# Tasks\n\n- [x] First\n- [x] Second',
@@ -195,7 +231,10 @@ test('an exported site works under a subpath on a plain static host', async ({ p
     ).toBeVisible();
     await page.locator('.prose').getByRole('link', { name: 'design', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'Invitation design' })).toBeVisible();
-    await page.getByRole('navigation').getByRole('link', { name: 'Archive' }).click();
+    await page
+      .getByRole('navigation', { name: 'Workspace navigation' })
+      .getByRole('link', { name: 'Archive' })
+      .click();
     await expect(page.getByRole('heading', { name: 'Add project roles' })).toBeVisible();
 
     await page.goto('http://127.0.0.1:4313/team/roadmap/');
@@ -221,7 +260,10 @@ test('fits a phone screen and keeps navigation usable', async ({ page }) => {
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
     true,
   );
-  await page.getByRole('navigation').getByRole('link', { name: 'Specifications' }).click();
+  await page
+    .getByRole('navigation', { name: 'Workspace navigation' })
+    .getByRole('link', { name: 'Specifications' })
+    .click();
   await page.getByRole('link', { name: /projects\/access/ }).click();
   await expect(page.getByRole('heading', { name: 'Project access', exact: true })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(

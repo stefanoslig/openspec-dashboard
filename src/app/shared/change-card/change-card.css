@@ -6,75 +6,80 @@
   flex-direction: column;
   height: 100%;
   border: 1px solid var(--border);
-  border-radius: 9px;
-  padding: 23px 25px 0;
-  background: white;
+  border-radius: 12px;
+  padding: 20px 22px 0;
+  background: var(--paper);
   transition:
     border-color 0.15s,
     box-shadow 0.15s;
 }
 .change-card:hover {
-  border-color: #b9c6a8;
-  box-shadow: 0 3px 12px #29421c08;
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow);
 }
 .card-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 18px;
+  gap: 12px;
+  margin-bottom: 14px;
 }
-.change-icon {
-  font-size: 26px;
-  color: #758d61;
-  background: #f0f4e9;
-  border: 1px solid #e6eddd;
-  border-radius: 6px;
-  width: 33px;
-  height: 33px;
-  display: grid;
-  place-items: center;
+.card-date {
+  color: var(--muted);
+  font-size: 13px;
 }
 h3 {
-  font-weight: 550;
-  font-size: 17px;
-  letter-spacing: -0.3px;
-  line-height: 1.5;
-  margin-bottom: 8px;
+  font-size: 18px;
+  letter-spacing: -0.012em;
+  line-height: 1.35;
+  margin-bottom: 6px;
 }
 p {
-  color: #899180;
-  font-size: 12px;
+  color: var(--text-2);
+  font-size: 14.5px;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  margin-bottom: 24px;
+  margin-bottom: 22px;
 }
 .card-progress {
   margin-top: auto;
-  margin-bottom: 23px;
+  margin-bottom: 18px;
 }
 .card-progress > div {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
-  font-size: 10px;
-  color: #969d8d;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: var(--muted);
 }
 .card-progress strong {
-  font-weight: 500;
-  color: #727e65;
+  font-weight: 600;
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
 }
 .card-bottom {
   display: flex;
   justify-content: space-between;
-  border-top: 1px solid #edf0e7;
-  padding: 16px 0;
-  color: #98a18c;
-  font-size: 10px;
-}
-.card-arrow {
-  margin-left: 18px;
-  color: #718861;
+  align-items: center;
+  border-top: 1px solid var(--border);
+  padding: 13px 0;
+  color: var(--muted);
   font-size: 13px;
+}
+.card-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--green);
+  font-weight: 550;
+}
+.card-open app-icon {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.15s;
+}
+.change-card:hover .card-open app-icon {
+  transform: translateX(2px);
 }

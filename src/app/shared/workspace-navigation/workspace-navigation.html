@@ -3,7 +3,6 @@
     ><span class="brand-symbol">o<span>:</span></span
     ><span>OpenSpec <b>Desk</b></span></a
   >
-  <div class="workspace-label">WORKSPACE</div>
   <div class="project">
     <span class="project-avatar">{{ store.workspace()?.name?.slice(0, 1) || 'O' }}</span
     ><span class="project-name"
@@ -26,18 +25,13 @@
         [attr.aria-current]="isActive(item.view) ? 'page' : null"
         (click)="store.query.set('')"
       >
-        <span class="nav-icon" aria-hidden="true">{{ item.icon }}</span
-        >{{ item.label }}
-        @if (item.view === 'changes') {
-          <span class="nav-count">{{ store.active().length }}</span>
+        <app-icon [name]="item.icon" />{{ item.label }}
+        @if (count(item.view); as total) {
+          <span class="nav-count">{{ total }}</span>
         }
       </a>
     }
   </nav>
-  <div class="sidebar-note">
-    <span class="small-dot"></span> A little clarity for your specs.
-    <p>Your ideas, decisions, and progress.<br />Together in one place.</p>
-  </div>
   <div class="sidebar-bottom">
     <span class="small-dot"></span>
     {{ store.workspace()?.source ? 'Published · read only' : 'Read only' }}

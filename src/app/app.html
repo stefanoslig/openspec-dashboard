@@ -3,13 +3,27 @@
 <div class="workspace-shell">
   <header class="topbar">
     <label class="search"
-      ><span aria-hidden="true">⌕</span
-      ><input
+      ><app-icon name="search" /><input
+        #searchBox
+        type="search"
         aria-label="Search all artifacts"
         placeholder="Search changes, specs, and decisions…"
         [value]="store.query()"
         (input)="search($event)"
-    /></label>
+      />
+      @if (store.query()) {
+        <button
+          class="clear-search"
+          type="button"
+          aria-label="Clear search"
+          (click)="clearSearch()"
+        >
+          <app-icon name="close" />
+        </button>
+      } @else {
+        <kbd aria-hidden="true">/</kbd>
+      }
+    </label>
     <div class="topbar-actions">
       <span class="read-only">Read only</span
       ><button
@@ -19,12 +33,12 @@
         [disabled]="store.resource.isLoading() || !store.workspace()"
         (click)="store.resource.reload()"
       >
-        ↻
+        <app-icon name="refresh" [class.spinning]="store.resource.isLoading()" />
       </button>
     </div>
   </header>
   <main #main id="main" tabindex="-1">
-    @if (store.resource.isLoading()) {
+    @if (store.resource.isLoading() && !store.workspace()) {
       <div class="notice" role="status">Reading your workspace…</div>
     }
     @if (store.error()) {

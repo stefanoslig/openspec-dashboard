@@ -1,12 +1,14 @@
 <a class="change-card" routerLink="/artifact" [queryParams]="{ path: firstDocument() }">
   <div class="card-top">
-    <span class="change-icon" aria-hidden="true">◇</span
-    ><span
+    <span
       class="badge"
       [class.in-progress]="change().status === 'In progress'"
       [class.complete]="change().status === 'Complete'"
       >{{ change().status }}</span
     >
+    @if (change().modified; as modified) {
+      <span class="card-date">Updated {{ modified | date: 'MMM d' }}</span>
+    }
   </div>
   <h3>{{ change().title }}</h3>
   <p>{{ change().summary }}</p>
@@ -24,7 +26,7 @@
     ></progress>
   </div>
   <div class="card-bottom">
-    <span>▤ &nbsp;{{ count() }} artifacts</span
-    ><span>{{ change().modified | date: 'MMM d' }} <span class="card-arrow">↗</span></span>
+    <span>{{ count() }} {{ count() === 1 ? 'document' : 'documents' }}</span
+    ><span class="card-open">Open <app-icon name="arrow-right" /></span>
   </div>
 </a>

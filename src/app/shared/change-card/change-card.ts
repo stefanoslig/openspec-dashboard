@@ -2,10 +2,11 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import type { Change } from '../../../../cli/workspace.model';
+import { Icon } from '../icon/icon';
 
 @Component({
   selector: 'app-change-card',
-  imports: [RouterLink, DatePipe],
+  imports: [RouterLink, DatePipe, Icon],
   templateUrl: './change-card.html',
   styleUrl: './change-card.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

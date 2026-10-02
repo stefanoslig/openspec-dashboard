@@ -5,9 +5,15 @@
         {{ workspace.name }} <span>/</span> {{ store.query().trim() ? 'Search' : view() }}
       </div>
       <h1>{{ store.query().trim() ? 'Find the thought you’re looking for.' : title() }}</h1>
-      <p>Ideas, decisions, and the details that bring them together.</p>
+      <p>
+        {{
+          store.query().trim()
+            ? (results().length | i18nPlural: matches) + ' match “' + store.query().trim() + '”.'
+            : description()
+        }}
+      </p>
     </div>
-    <span class="schema-tag">{{ workspace.schema }}</span>
+    <span class="schema-tag" title="OpenSpec schema">{{ workspace.schema }}</span>
   </div>
   @if (store.query().trim()) {
     <section aria-label="Search results">
@@ -18,16 +24,29 @@
         <button class="text-button" (click)="store.query.set('')">Clear search</button>
       </div>
       <div class="document-list">
-        @for (doc of results(); track doc.path) {
-          <a class="document-row" routerLink="/artifact" [queryParams]="{ path: doc.path }"
-            ><span class="file-icon">▤</span>
+        @for (result of results(); track result.doc.path) {
+          <a class="document-row" routerLink="/artifact" [queryParams]="{ path: result.doc.path }"
+            ><span class="file-icon"
+              ><app-icon [name]="result.doc.format === 'yaml' ? 'code' : 'spec'"
+            /></span>
             <div>
-              <strong>{{ doc.title }}</strong
-              ><small>{{ doc.path }}</small>
-              <p>{{ doc.summary || 'View source document' }}</p>
+              <strong>{{ result.doc.title }}</strong
+              ><small>{{ result.doc.path }}</small>
+              <p>
+                @for (part of result.excerpt; track $index) {
+                  <!-- Elements on both sides: loose text here would gain spaces inside words. -->
+                  @if (part.hit) {
+                    <mark>{{ part.text }}</mark>
+                  } @else {
+                    <span>{{ part.text }}</span>
+                  }
+                } @empty {
+                  {{ result.doc.summary || 'View source document' }}
+                }
+              </p>
             </div>
-            <span aria-hidden="true">↗</span></a
-          >
+            <app-icon class="row-arrow" name="arrow-right"
+          /></a>
         } @empty {
           <div class="empty-state">
             <h3>No matching artifacts</h3>
@@ -39,49 +58,38 @@
   } @else {
     @if (view() === 'overview') {
       <div class="metrics">
+        <a class="metric" routerLink="/" [queryParams]="{ view: 'changes' }">
+          <span class="metric-label"><app-icon name="change" />Active changes</span>
+          <strong>{{ store.active().length }}</strong>
+          <small>in your workspace</small>
+        </a>
         <div class="metric">
-          <span>Active changes <span>◇</span></span
-          ><strong>{{ store.active().length }}<small>in your workspace</small></strong>
-        </div>
-        <div class="metric">
-          <span>Specifications <span>▤</span></span
-          ><strong>{{ workspace.specs.length }}<small>published capabilities</small></strong>
-        </div>
-        <div class="metric">
-          <span>Tasks completed <span>✓</span></span
-          ><strong
-            >{{ store.completedCount()
-            }}<small>of {{ store.taskCount() }} tracked tasks</small></strong
+          <span class="metric-label"><app-icon name="tasks" />Tasks completed</span>
+          <strong
+            >{{ store.completedCount() }} <span>/ {{ store.taskCount() }}</span></strong
           >
-        </div>
-        <div class="metric">
-          <span>Archived changes <span>▱</span></span
-          ><strong>{{ store.archived().length }}<small>part of your history</small></strong>
-        </div>
-      </div>
-      <section class="workspace-pulse">
-        <div>
-          <span class="pulse-mark">↗</span>
-          <div>
-            <h2>A little progress, a bigger picture.</h2>
-            <p>
-              {{
-                store.taskCount()
-                  ? 'Task completion across your active changes.'
-                  : 'Your progress appears here when a change has tasks.'
-              }}
-            </p>
-          </div>
-        </div>
-        <div class="overall-progress">
-          <strong>{{ progress() }}<small>%</small></strong
-          ><progress
+          <progress
             [value]="store.completedCount()"
             [max]="store.taskCount() || 1"
             aria-label="Active task completion"
           ></progress>
+          <small>{{
+            store.taskCount()
+              ? progress() + '% across active changes'
+              : 'Appears when a change has tasks'
+          }}</small>
         </div>
-      </section>
+        <a class="metric" routerLink="/" [queryParams]="{ view: 'specs' }">
+          <span class="metric-label"><app-icon name="spec" />Specifications</span>
+          <strong>{{ workspace.specs.length }}</strong>
+          <small>published capabilities</small>
+        </a>
+        <a class="metric" routerLink="/" [queryParams]="{ view: 'archive' }">
+          <span class="metric-label"><app-icon name="archive" />Archived changes</span>
+          <strong>{{ store.archived().length }}</strong>
+          <small>part of your history</small>
+        </a>
+      </div>
     }
     @if (view() === 'overview' || view() === 'changes' || view() === 'archive') {
       <section>
@@ -118,22 +126,27 @@
           <h2>
             Specifications <span>{{ workspace.specs.length }}</span>
           </h2>
-          @if (view() === 'overview') {
-            <a routerLink="/" [queryParams]="{ view: 'specs' }">View all <span>↗</span></a>
+          @if (view() === 'overview' && workspace.specs.length) {
+            <a routerLink="/" [queryParams]="{ view: 'specs' }"
+              >View all <app-icon name="arrow-right"
+            /></a>
           }
         </div>
         <div class="document-list">
-          @for (spec of workspace.specs; track spec.path) {
+          @for (spec of specs(); track spec.path) {
             <a class="document-row" routerLink="/artifact" [queryParams]="{ path: spec.path }"
-              ><span class="file-icon green">▤</span>
+              ><span class="file-icon green"><app-icon name="spec" /></span>
               <div>
-                <strong>{{ spec.capability }}</strong
-                ><small
-                  >{{ spec.requirements }} requirements · {{ spec.scenarios }} scenarios</small
-                >
+                <strong>{{ spec.capability }}</strong>
+                @if (spec.summary) {
+                  <p class="one-line">{{ spec.summary }}</p>
+                }
               </div>
-              <span class="badge published">Published</span><span aria-hidden="true">↗</span></a
-            >
+              <span class="row-meta"
+                >{{ spec.requirements | i18nPlural: requirements }} ·
+                {{ spec.scenarios | i18nPlural: scenarios }}</span
+              ><app-icon class="row-arrow" name="arrow-right"
+            /></a>
           } @empty {
             <div class="empty-state">
               <h3>No published specifications yet</h3>
@@ -157,14 +170,16 @@
         <div class="document-list">
           @for (doc of workspace.documents; track doc.path) {
             <a class="document-row" routerLink="/artifact" [queryParams]="{ path: doc.path }"
-              ><span class="file-icon">▤</span>
+              ><span class="file-icon"
+                ><app-icon [name]="doc.format === 'yaml' ? 'code' : 'spec'"
+              /></span>
               <div>
                 <strong>{{ doc.title }}</strong
                 ><small>{{ doc.path }}</small>
               </div>
-              <span class="subtle">{{ doc.modified | date: 'MMM d' }}</span
-              ><span aria-hidden="true">↗</span></a
-            >
+              <span class="row-meta">{{ doc.modified | date: 'MMM d' }}</span
+              ><app-icon class="row-arrow" name="arrow-right"
+            /></a>
           } @empty {
             <div class="empty-state">
               <h3>No artifacts yet</h3>
