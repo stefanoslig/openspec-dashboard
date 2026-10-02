@@ -46,16 +46,3 @@ Thumbs.db
 # Browser test artifacts
 /test-results
 /playwright-report
-
-# Hosted credentials
-.env
-.env.*
-!.env.example
-
-# .NET builds and local encryption keys
-**/bin/
-**/obj/
-/.secrets/
-*.pfx
-*.p12
-*.user

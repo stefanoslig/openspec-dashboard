@@ -16,4 +16,9 @@ export class App {
     this.store.query.set((event.target as HTMLInputElement).value);
     if (this.#router.url.startsWith('/artifact')) void this.#router.navigate(['/']);
   }
+  // With hash routing, following the #main link would be read as a route.
+  protected skipToContent(event: Event, main: HTMLElement): void {
+    event.preventDefault();
+    main.focus();
+  }
 }

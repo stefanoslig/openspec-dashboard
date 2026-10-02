@@ -91,7 +91,7 @@
             <span>{{ changes().length }}</span>
           </h2>
           <span class="subtle">{{
-            workspace.source ? 'At the selected revision' : 'Most recently updated'
+            dated() ? 'Most recently updated' : 'At the published revision'
           }}</span>
         </div>
         <div class="change-grid">

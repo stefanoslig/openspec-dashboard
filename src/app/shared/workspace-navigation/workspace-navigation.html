@@ -4,116 +4,19 @@
     ><span>OpenSpec <b>Desk</b></span></a
   >
   <div class="workspace-label">WORKSPACE</div>
-  <details class="project-picker" #picker>
-    <summary>
-      <span class="project-avatar">{{ store.workspace()?.name?.slice(0, 1) || 'O' }}</span
-      ><span class="project-name"
-        >{{ store.workspace()?.name || 'Open a project'
-        }}<small>{{
-          store.hosted()
-            ? 'GitHub repository'
-            : store.workspace()?.isDemo
-              ? 'Sample workspace'
-              : 'Local repository'
-        }}</small></span
-      ><span>⌄</span>
-    </summary>
-    @if (store.hosted()) {
-      @if (!store.needsSignIn()) {
-        <form
-          (submit)="
-            openRepository(
-              $event,
-              repositoryInput.value,
-              branch.value,
-              artifactFolder.value,
-              picker
-            )
-          "
-        >
-          <label for="github-repository">GitHub repository</label>
-          <input
-            #repositoryInput
-            id="github-repository"
-            list="repositories"
-            placeholder="owner/repository"
-            [value]="store.selection().repository"
-            required
-            autocomplete="off"
-            (change)="selectedRepository.set(repositoryInput.value); branch.value = ''"
-          />
-          <datalist id="repositories">
-            @for (repository of store.repositoryChoices(); track repository.name) {
-              <option [value]="repository.name"></option>
-            }
-          </datalist>
-          @if (store.repositories.isLoading()) {
-            <p class="picker-note" role="status">Loading repositories…</p>
-          }
-          @if (store.repositoryError()) {
-            <p class="picker-note" role="status">{{ store.repositoryError() }}</p>
-          }
-          <label for="github-branch">Branch or commit</label>
-          <input
-            #branch
-            id="github-branch"
-            list="branches"
-            placeholder="Default branch"
-            [value]="store.selection().ref"
-            autocomplete="off"
-          />
-          <datalist id="branches">
-            @for (name of branchChoices(); track name) {
-              <option [value]="name"></option>
-            }
-          </datalist>
-          @if (branches.isLoading()) {
-            <p class="picker-note" role="status">Loading branches…</p>
-          }
-          @if (branchError()) {
-            <p class="picker-note" role="status">{{ branchError() }}</p>
-          }
-          <label for="artifact-folder">Artifact folder</label>
-          <input
-            #artifactFolder
-            id="artifact-folder"
-            [value]="store.selection().folder"
-            placeholder="openspec"
-            required
-          />
-          <button class="primary" type="submit">Open repository <span>↗</span></button>
-          <a class="text-button" [href]="store.session()?.installationUrl"
-            >Connect repositories on GitHub</a
-          >
-          <button class="text-button" type="button" (click)="store.repositories.reload()">
-            Refresh repository list
-          </button>
-        </form>
-      } @else {
-        <div class="picker-signin"><a [href]="store.signInUrl()">Sign in with GitHub →</a></div>
-      }
-    } @else {
-      <form (submit)="openFolder($event, folder.value, picker)">
-        <label for="folder-path">Repository or openspec folder</label>
-        <input
-          #folder
-          id="folder-path"
-          placeholder="~/Projects/my-app"
-          [value]="store.path()"
-          required
-          autocomplete="off"
-        />
-        <button class="primary" type="submit">Open folder <span>↗</span></button>
-        <button
-          type="button"
-          class="text-button"
-          (click)="store.open(''); picker.open = false; router.navigate(['/'])"
-        >
-          Explore sample workspace
-        </button>
-      </form>
-    }
-  </details>
+  <div class="project">
+    <span class="project-avatar">{{ store.workspace()?.name?.slice(0, 1) || 'O' }}</span
+    ><span class="project-name"
+      >{{ store.workspace()?.name || 'OpenSpec'
+      }}<small>{{
+        store.workspace()?.source
+          ? 'GitHub repository'
+          : store.workspace()?.isDemo
+            ? 'Sample workspace'
+            : 'OpenSpec workspace'
+      }}</small></span
+    >
+  </div>
   <nav aria-label="Workspace navigation">
     @for (item of navigation; track item.view) {
       <a
@@ -136,7 +39,8 @@
     <p>Your ideas, decisions, and progress.<br />Together in one place.</p>
   </div>
   <div class="sidebar-bottom">
-    <span class="small-dot"></span> {{ store.hosted() ? 'GitHub' : 'Local' }} · read only
+    <span class="small-dot"></span>
+    {{ store.workspace()?.source ? 'Published · read only' : 'Read only' }}
     <span class="version">v0.1</span>
   </div>
 </aside>

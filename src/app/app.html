@@ -1,5 +1,5 @@
-<a class="skip-link" href="#main">Skip to content</a>
-<app-workspace-navigation #navigation />
+<a class="skip-link" href="#main" (click)="skipToContent($event, main)">Skip to content</a>
+<app-workspace-navigation />
 <div class="workspace-shell">
   <header class="topbar">
     <label class="search"
@@ -11,9 +11,6 @@
         (input)="search($event)"
     /></label>
     <div class="topbar-actions">
-      @if (store.hosted() && store.session()?.user) {
-        <button class="text-button" (click)="store.logout()">Sign out</button>
-      }
       <span class="read-only">Read only</span
       ><button
         class="icon-button"
@@ -26,77 +23,35 @@
       </button>
     </div>
   </header>
-  <main id="main" tabindex="-1">
-    @if (store.resource.isLoading() || store.sessionResource.isLoading()) {
+  <main #main id="main" tabindex="-1">
+    @if (store.resource.isLoading()) {
       <div class="notice" role="status">Reading your workspace…</div>
     }
-    @if (store.authError()) {
-      <div class="notice warning" role="alert">{{ store.authError() }}</div>
-    }
-    @if (store.needsSignIn()) {
-      <section class="welcome">
-        <div class="eyebrow">OPENSPEC DESK</div>
-        <h1>Your specs, ready to share.</h1>
-        <p>Read proposals, decisions, and task progress from your GitHub repositories.</p>
-        <a class="primary" [href]="store.signInUrl()">Sign in with GitHub →</a>
-        <p class="subtle">Use a GitHub account with read access to the repository.</p>
-      </section>
-    } @else if (store.error()) {
+    @if (store.error()) {
       <div class="error-panel" role="alert">
         <h1>We couldn’t open that workspace.</h1>
         <p>{{ store.error() }}</p>
-        @if (store.session()) {
-          <button class="primary" (click)="navigation.openPicker()">
-            {{ store.hosted() ? 'Choose a repository' : 'Choose a folder' }}
-          </button>
-          @if (!store.hosted()) {
-            <button class="text-button" (click)="store.open('')">Open sample workspace</button>
-          }
-        } @else {
-          <button class="primary" (click)="store.sessionResource.reload()">Try again</button>
-        }
+        <button class="primary" (click)="store.resource.reload()">Try again</button>
       </div>
-    } @else if (store.hosted() && !store.selection().repository) {
-      <section class="welcome">
-        <div class="eyebrow">SIGNED IN AS {{ store.session()?.user?.login }}</div>
-        <h1>Open your team’s artifacts.</h1>
-        <p>Connect repositories using GitHub, then choose a repository and branch here.</p>
-        <a class="primary" [href]="store.session()?.installationUrl"
-          >Connect repositories on GitHub →</a
-        >
-        <button class="text-button" (click)="navigation.openPicker()">Choose a repository</button>
-        <p class="subtle">Already connected by your team? Choose a repository to start reading.</p>
-      </section>
     }
-    @if (!store.needsSignIn()) {
-      @if (store.workspace(); as workspace) {
-        @if (workspace.source; as source) {
-          <div class="repository-context">
-            <span
-              >{{ source.repository }} ·
-              {{ source.ref === source.commit ? 'Pinned revision' : source.ref }} ·
-              {{ source.commit.slice(0, 7) }}</span
-            >
-            <div>
-              <a [href]="store.snapshotLink()">Revision link</a
-              ><button class="text-button" (click)="store.copyLink()">Copy link</button>
-            </div>
-          </div>
-        }
-        @for (warning of workspace.warnings; track $index) {
-          <div class="notice warning" role="status">{{ warning }}</div>
-        }
-        <router-outlet />
+    @if (store.workspace(); as workspace) {
+      @if (workspace.source; as source) {
+        <div class="repository-context">
+          {{ source.repository }} ·
+          {{ source.ref === source.commit ? 'Pinned revision' : source.ref }} ·
+          {{ source.commit.slice(0, 7) }}
+        </div>
       }
-    }
-    @if (store.copyStatus()) {
-      <p class="subtle" role="status">{{ store.copyStatus() }}</p>
+      @for (warning of workspace.warnings; track $index) {
+        <div class="notice warning" role="status">{{ warning }}</div>
+      }
+      <router-outlet />
     }
   </main>
   <footer class="workspace-footer">
     <span>{{
       store.workspace()?.isDemo
-        ? 'SAMPLE DATA · Open your own repository from the workspace menu'
+        ? 'SAMPLE DATA'
         : store.workspace()?.source
           ? store.workspace()?.source?.repository + '/' + store.workspace()?.root
           : store.workspace()?.root

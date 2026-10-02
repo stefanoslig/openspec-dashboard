@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
-import { Change } from '../../core/workspace.model';
+import type { Change } from '../../../../cli/workspace.model';
 
 @Component({
   selector: 'app-change-card',

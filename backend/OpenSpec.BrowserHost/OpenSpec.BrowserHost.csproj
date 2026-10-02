@@ -1,4 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
-  <ItemGroup><ProjectReference Include="../OpenSpec.Api.Tests/OpenSpec.Api.Tests.csproj" /></ItemGroup>
-</Project>

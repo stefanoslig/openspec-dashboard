@@ -48,22 +48,15 @@
   font-weight: 600;
   margin: 0 10px 12px;
 }
-.project-picker {
+.project {
   border: 1px solid var(--border);
   border-radius: 8px;
   margin-bottom: 28px;
-  position: relative;
   background: #fdfefb;
-}
-.project-picker summary {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 13px 11px;
-  list-style: none;
-}
-.project-picker summary::-webkit-details-marker {
-  display: none;
 }
 .project-avatar {
   width: 30px;
@@ -89,50 +82,6 @@
   color: var(--muted);
   font-size: 10px;
   font-weight: 400;
-}
-.project-picker form {
-  position: absolute;
-  top: 70px;
-  left: 0;
-  width: 325px;
-  background: white;
-  padding: 20px;
-  border: 1px solid var(--border);
-  border-radius: 9px;
-  box-shadow: 0 12px 34px #20351c16;
-  z-index: 4;
-  max-height: calc(100dvh - 220px);
-  overflow-y: auto;
-}
-.picker-note {
-  font-size: 11px;
-  color: var(--muted);
-  overflow-wrap: anywhere;
-}
-.picker-signin {
-  padding: 14px;
-  font-size: 12px;
-}
-.project-picker label {
-  display: block;
-  font-size: 12px;
-  margin-bottom: 9px;
-}
-.project-picker input,
-.project-picker .primary {
-  width: 100%;
-  margin-bottom: 12px;
-}
-.project-picker .primary {
-  display: flex;
-  justify-content: space-between;
-}
-.project-picker .text-button {
-  display: block;
-  margin: auto;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 12px;
 }
 nav {
   display: flex;
@@ -226,19 +175,12 @@ nav a.active {
   .sidebar-bottom {
     display: none;
   }
-  .project-picker {
+  .project {
     position: absolute;
     right: 18px;
     top: 12px;
     width: 190px;
     margin: 0;
-  }
-  .project-picker form {
-    left: auto;
-    right: 0;
-    max-width: calc(100vw - 36px);
-  }
-  .project-picker summary {
     padding: 8px;
   }
   nav {

@@ -79,36 +79,12 @@ main {
 .error-panel p {
   color: var(--muted);
 }
-.welcome {
-  max-width: 650px;
-  padding: 35px 0;
-}
-.welcome p {
-  line-height: 1.7;
-  color: var(--muted);
-}
-.welcome .primary {
-  display: inline-block;
-  margin: 14px 16px 14px 0;
-}
 .repository-context {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
   margin-bottom: 26px;
   padding-bottom: 16px;
   border-bottom: 1px solid var(--border);
   font-size: 12px;
   overflow-wrap: anywhere;
-}
-.repository-context > span {
-  min-width: 0;
-}
-.repository-context > div {
-  display: flex;
-  gap: 14px;
-  align-items: center;
 }
 .workspace-footer {
   margin: 0 38px;

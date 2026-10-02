@@ -1,7 +1,48 @@
 import { test, expect } from '@playwright/test';
+import { spawn, spawnSync, type ChildProcess } from 'node:child_process';
+import { createReadStream, existsSync, statSync } from 'node:fs';
 import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises';
+import { createServer, type Server } from 'node:http';
 import os from 'node:os';
 import path from 'node:path';
+
+const cli = path.resolve('dist/cli/main.js');
+const local = 'http://127.0.0.1:4312';
+const servers: ChildProcess[] = [];
+
+/** Starts the CLI on a folder and waits until it listens. */
+function serve(folder: string, port: number): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const child = spawn(process.execPath, [cli, folder, '--port', String(port)]);
+    servers.push(child);
+    let errors = '';
+    child.stderr.on('data', (chunk) => (errors += chunk));
+    child.stdout.on('data', (chunk) => String(chunk).includes('Open http') && resolve());
+    child.on('exit', () => reject(new Error('The CLI stopped: ' + errors)));
+  });
+}
+
+/** A static host without any fallback page, like GitHub Pages. */
+function host(root: string, port: number): Promise<Server> {
+  const types: Record<string, string> = {
+    '.html': 'text/html',
+    '.js': 'text/javascript',
+    '.css': 'text/css',
+    '.json': 'application/json',
+    '.svg': 'image/svg+xml',
+  };
+  const server = createServer((request, response) => {
+    let file = path.join(root, decodeURIComponent(new URL(request.url!, 'http://host').pathname));
+    if (existsSync(file) && statSync(file).isDirectory()) file = path.join(file, 'index.html');
+    if (!existsSync(file)) {
+      response.writeHead(404).end('Not found');
+      return;
+    }
+    response.writeHead(200, { 'Content-Type': types[path.extname(file)] ?? 'text/plain' });
+    createReadStream(file).pipe(response);
+  });
+  return new Promise((resolve) => server.listen(port, '127.0.0.1', () => resolve(server)));
+}
 
 let repository: string;
 test.beforeAll(async () => {
@@ -22,8 +63,10 @@ test.beforeAll(async () => {
     path.join(repository, 'openspec/changes/nested-change/specs/domain/feature/spec.md'),
     '# Nested capability\n\n## ADDED Requirements\n\n### Requirement: Read safely\n\n<script>window.injected=true</script>\n\n![external](https://example.com/tracker.png)',
   );
+  await serve(repository, 4312);
 });
 test.afterAll(async () => {
+  for (const server of servers) server.kill();
   await rm(repository, { recursive: true, force: true });
 });
 
@@ -38,6 +81,11 @@ test('reads the sample change, navigates between artifacts and switches to sourc
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'A clearer view of what’s next.' })).toBeVisible();
   await page.screenshot({ path: 'test-results/overview.png', fullPage: true });
+  await expect(page.locator('.sidebar')).toContainText('Sample workspace');
+  await page.keyboard.press('Tab');
+  await page.keyboard.press('Enter');
+  await expect(page.locator('main')).toBeFocused();
+  await expect(page.getByRole('heading', { name: 'A clearer view of what’s next.' })).toBeVisible();
   await page
     .getByRole('link')
     .filter({ has: page.getByRole('heading', { name: 'Add project invitations' }) })
@@ -62,13 +110,10 @@ test('reads the sample change, navigates between artifacts and switches to sourc
   await expect(page.getByRole('heading', { name: 'Add project roles' })).toBeVisible();
   expect(errors).toEqual([]);
 });
-test('opens a local repository, resolves nested links, searches content and refreshes tasks', async ({
+test('reads a local repository, resolves nested links, searches content and refreshes tasks', async ({
   page,
 }) => {
-  await page.goto('/');
-  await page.locator('.project-picker summary').click();
-  await page.getByLabel('Repository or openspec folder').fill(repository);
-  await page.getByRole('button', { name: 'Open folder', exact: false }).click();
+  await page.goto(local);
   await expect(page.getByRole('heading', { name: 'Nested change' })).toBeVisible();
   await expect(
     page.getByRole('heading', { name: 'No published specifications yet' }),
@@ -96,14 +141,78 @@ test('opens a local repository, resolves nested links, searches content and refr
   await expect(page.getByRole('heading', { name: 'Tasks', exact: true })).toBeVisible();
   await expect(page.getByRole('checkbox').nth(1)).toBeChecked();
 });
-test('recovers from an invalid path', async ({ page }) => {
-  await page.goto('/');
-  await page.locator('.project-picker summary').click();
-  await page.getByLabel('Repository or openspec folder').fill('/does-not-exist');
-  await page.getByRole('button', { name: 'Open folder', exact: false }).click();
-  await expect(page.getByRole('alert')).toContainText('could not be opened');
-  await page.getByRole('button', { name: 'Open sample workspace', exact: true }).click();
-  await expect(page.getByRole('heading', { name: 'A clearer view of what’s next.' })).toBeVisible();
+test('reports a workspace that disappeared and recovers when it is back', async ({ page }) => {
+  const folder = await mkdtemp(path.join(os.tmpdir(), 'openspec-ui-'));
+  const proposal = path.join(folder, 'openspec/changes/short-lived/proposal.md');
+  try {
+    await mkdir(path.dirname(proposal), { recursive: true });
+    await writeFile(proposal, '# Short lived');
+    await serve(folder, 4314);
+    await page.goto('http://127.0.0.1:4314');
+    await expect(page.getByRole('heading', { name: 'Short lived' })).toBeVisible();
+    await rm(folder, { recursive: true });
+    await page.getByRole('button', { name: 'Refresh workspace' }).click();
+    await expect(page.getByRole('alert')).toContainText('could not be opened');
+    await mkdir(path.dirname(proposal), { recursive: true });
+    await writeFile(proposal, '# Short lived');
+    await page.getByRole('button', { name: 'Try again' }).click();
+    await expect(page.getByRole('heading', { name: 'Short lived' })).toBeVisible();
+  } finally {
+    await rm(folder, { recursive: true, force: true });
+  }
+});
+test('an exported site works under a subpath on a plain static host', async ({ page }) => {
+  const site = await mkdtemp(path.join(os.tmpdir(), 'openspec-site-'));
+  const github = {
+    GITHUB_ACTIONS: 'true',
+    GITHUB_REPOSITORY: 'acme/roadmap',
+    GITHUB_REF_NAME: 'main',
+    GITHUB_SHA: '0123456789abcdef0123456789abcdef01234567',
+    GITHUB_WORKSPACE: repository,
+  };
+  const exported = (args: string[], env = {}) =>
+    spawnSync(process.execPath, [cli, 'export', ...args], { env: { ...process.env, ...env } });
+  expect(exported(['--demo', '--out', path.join(site, 'specs')]).status).toBe(0);
+  expect(exported([repository, '--out', path.join(site, 'team/roadmap')], github).status).toBe(0);
+  const server = await host(site, 4313);
+  try {
+    await page.goto('http://127.0.0.1:4313/specs/');
+    await expect(
+      page.getByRole('heading', { name: 'A clearer view of what’s next.' }),
+    ).toBeVisible();
+    await expect(page.getByText('At the published revision')).toBeVisible();
+    await page
+      .getByRole('link')
+      .filter({ has: page.getByRole('heading', { name: 'Add project invitations' }) })
+      .click();
+    await expect(
+      page.getByRole('heading', { name: 'Project invitations', exact: true }),
+    ).toBeVisible();
+    expect(page.url()).toContain('/specs/#/artifact?path=');
+    await page.reload();
+    await expect(
+      page.getByRole('heading', { name: 'Project invitations', exact: true }),
+    ).toBeVisible();
+    await page.locator('.prose').getByRole('link', { name: 'design', exact: true }).click();
+    await expect(page.getByRole('heading', { name: 'Invitation design' })).toBeVisible();
+    await page.getByRole('navigation').getByRole('link', { name: 'Archive' }).click();
+    await expect(page.getByRole('heading', { name: 'Add project roles' })).toBeVisible();
+
+    await page.goto('http://127.0.0.1:4313/team/roadmap/');
+    await expect(page.locator('.repository-context')).toHaveText('acme/roadmap · main · 0123456');
+    await expect(page.locator('.sidebar')).toContainText('GitHub repository');
+    await page
+      .getByRole('link')
+      .filter({ has: page.getByRole('heading', { name: 'Nested change' }) })
+      .click();
+    await expect(page.getByRole('link', { name: 'View on GitHub' })).toHaveAttribute(
+      'href',
+      `https://github.com/acme/roadmap/blob/${github.GITHUB_SHA}/openspec/changes/nested-change/proposal.md`,
+    );
+  } finally {
+    server.close();
+    await rm(site, { recursive: true, force: true });
+  }
 });
 test('fits a phone screen and keeps navigation usable', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });

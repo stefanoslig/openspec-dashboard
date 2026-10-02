@@ -8,18 +8,10 @@ export default defineConfig({
     viewport: { width: 1440, height: 1000 },
     trace: 'retain-on-failure',
   },
-  webServer: [
-    {
-      command: 'dotnet run --project backend/OpenSpec.Api --no-launch-profile --no-build',
-      env: { PORT: '4311', DASHBOARD_MODE: 'local' },
-      url: 'http://127.0.0.1:4311',
-      reuseExistingServer: false,
-    },
-    {
-      command: 'dotnet run --project backend/OpenSpec.BrowserHost --no-launch-profile --no-build',
-      url: 'http://127.0.0.1:4312',
-      reuseExistingServer: false,
-      timeout: 120_000,
-    },
-  ],
+  // Tests run the built package, so run `npm run build` first.
+  webServer: {
+    command: 'node dist/cli/main.js --demo --port 4311',
+    url: 'http://127.0.0.1:4311',
+    reuseExistingServer: false,
+  },
 });

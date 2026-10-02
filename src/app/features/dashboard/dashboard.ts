@@ -19,6 +19,8 @@ export class Dashboard {
   protected readonly changes = computed(() =>
     this.view() === 'archive' ? this.store.archived() : this.store.active(),
   );
+  // An exported site carries no file times, so there is no recency to sort by.
+  protected readonly dated = computed(() => this.changes().some((change) => change.modified));
   protected readonly title = computed(
     () =>
       ({
