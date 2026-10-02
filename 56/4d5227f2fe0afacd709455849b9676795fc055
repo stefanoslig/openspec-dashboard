@@ -1,0 +1,21 @@
+.gitignore
+  s_c59db7d767d882::t_9376b0af490cd5 49-50
+vercel.json
+  s_c59db7d767d882::t_0b28cf0ee624c8 1-6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "564d5227f2fe0afacd709455849b9676795fc055",
+  "prompts": {},
+  "sessions": {
+    "s_c59db7d767d882": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "aca4d036-ba53-48d1-92aa-9165b7096621",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "stefanoslig <stefanoslignos@gmail.com>"
+    }
+  }
+}
