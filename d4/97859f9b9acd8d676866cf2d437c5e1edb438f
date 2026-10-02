@@ -1,0 +1,111 @@
+.agents/plans/node-cli-static-export/node-cli-static-export.PLAN.md
+  s_8b0c0a1ac3df8d::t_31c936151cbbd4 1-69
+cli/tsconfig.json
+  s_8b0c0a1ac3df8d::t_0ad1f7efbf4bd9 1-20
+cli/export.test.ts
+  s_8b0c0a1ac3df8d::t_7ba6ccd073ee5a 36-42,78
+  s_8b0c0a1ac3df8d::t_275696199d432c 1-35,43-77,79-90
+cli/paths.ts
+  s_8b0c0a1ac3df8d::t_f9ef99f4b996c4 1-20
+cli/parser.ts
+  s_8b0c0a1ac3df8d::t_199508d92a6319 1-181,183-204
+  s_8b0c0a1ac3df8d::t_7ba6ccd073ee5a 182
+src/app/core/workspace-store.ts
+  s_8b0c0a1ac3df8d::t_199508d92a6319 3
+  s_8b0c0a1ac3df8d::t_b82374b76b3024 1,9,15-16,32
+tests/dashboard.spec.ts
+  s_8b0c0a1ac3df8d::t_7ba6ccd073ee5a 2-3,5,9-46,66,69,84-88,113,116,144-215
+cli/reader.test.ts
+  s_8b0c0a1ac3df8d::t_7bed5834e8e993 1-5,7-9,11-73
+  s_8b0c0a1ac3df8d::t_275696199d432c 6,10
+angular.json
+  s_8b0c0a1ac3df8d::t_18bec7acefd6ea 47-50
+cli/main.ts
+  s_8b0c0a1ac3df8d::t_7ba6ccd073ee5a 43
+  s_8b0c0a1ac3df8d::t_fb311a65b4e868 62-63
+  s_8b0c0a1ac3df8d::t_f9ef99f4b996c4 1-42,44-61,64-87
+LICENSE
+  s_8b0c0a1ac3df8d::t_11c61132922e7e 1-21
+cli/main.test.ts
+  s_8b0c0a1ac3df8d::t_275696199d432c 1-28
+cli/tsconfig.test.json
+  s_8b0c0a1ac3df8d::t_fb311a65b4e868 1-6
+cli/server.ts
+  s_8b0c0a1ac3df8d::t_f9ef99f4b996c4 1-112
+src/app/app.html
+  s_8b0c0a1ac3df8d::t_fc4b5347d50921 1
+  s_8b0c0a1ac3df8d::t_352a18998f008d 2,26-27,30,34,37-43,45-48,54
+src/app/features/dashboard/dashboard.ts
+  s_8b0c0a1ac3df8d::t_352a18998f008d 22-23
+src/app/app.config.ts
+  s_8b0c0a1ac3df8d::t_352a18998f008d 2-7,15-16
+src/app/features/reader/reader.html
+  s_8b0c0a1ac3df8d::t_352a18998f008d 99
+cli/parser.test.ts
+  s_8b0c0a1ac3df8d::t_7ba6ccd073ee5a 18-21
+  s_8b0c0a1ac3df8d::t_7bed5834e8e993 1-17,22-102
+README.md
+  s_8b0c0a1ac3df8d::t_c44d226ceb3f5f 26-28,30,117-122
+  s_8b0c0a1ac3df8d::t_f257ee93b7d449 3,5,7-8,10,12,14,16-18,20,23,29,32-34,37,40-77,79,81,83,85,96,98,100,103-104,107-109,112-113,115,124-132,135,137,139,145-149,152-154
+  s_8b0c0a1ac3df8d::t_11c61132922e7e 158,160
+  s_8b0c0a1ac3df8d::t_cc2cc80370dc31 116,123,156
+.agents/plans/node-cli-static-export/node-cli-static-export.DESIGN.md
+  s_8b0c0a1ac3df8d::t_44a7d5441e18e0 113-117,145-146,152,168-169,172,175
+  s_8b0c0a1ac3df8d::t_c65d0b934ee4ad 207-208
+  s_8b0c0a1ac3df8d::t_0788c9b6aaf27c 1-112,118-144,147-151,153-167,170-171,173-174,176-206,209
+cli/server.test.ts
+  s_8b0c0a1ac3df8d::t_18bec7acefd6ea 59
+  s_8b0c0a1ac3df8d::t_275696199d432c 1-58,60-112
+cli/reader.ts
+  s_8b0c0a1ac3df8d::t_f9ef99f4b996c4 36,40
+  s_8b0c0a1ac3df8d::t_7bed5834e8e993 1-35,37-39,41,45-78,82-127
+  s_8b0c0a1ac3df8d::t_7ba6ccd073ee5a 42-44,79-81
+src/app/shared/workspace-navigation/workspace-navigation.css
+  s_8b0c0a1ac3df8d::t_352a18998f008d 51,178
+src/app/features/dashboard/dashboard.html
+  s_8b0c0a1ac3df8d::t_352a18998f008d 94
+cli/workspace.model.ts
+  s_8b0c0a1ac3df8d::t_0ad1f7efbf4bd9 1-52
+src/app/shared/workspace-navigation/workspace-navigation.ts
+  s_8b0c0a1ac3df8d::t_352a18998f008d 3
+playwright.config.ts
+  s_8b0c0a1ac3df8d::t_7ba6ccd073ee5a 11-16
+src/app/shared/workspace-navigation/workspace-navigation.html
+  s_8b0c0a1ac3df8d::t_352a18998f008d 7-19,42-43
+src/app/app.ts
+  s_8b0c0a1ac3df8d::t_352a18998f008d 19,21
+  s_8b0c0a1ac3df8d::t_fc4b5347d50921 20,22
+  s_8b0c0a1ac3df8d::t_e19d1fe2a9e3d2 23
+cli/export.ts
+  s_8b0c0a1ac3df8d::t_7ba6ccd073ee5a 53-55
+  s_8b0c0a1ac3df8d::t_f9ef99f4b996c4 1-42,44-52,56-66
+  s_8b0c0a1ac3df8d::t_fb311a65b4e868 43
+proxy.conf.json
+  s_8b0c0a1ac3df8d::t_18bec7acefd6ea 2
+src/app/shared/change-card/change-card.ts
+  s_8b0c0a1ac3df8d::t_199508d92a6319 4
+package.json
+  s_8b0c0a1ac3df8d::t_18bec7acefd6ea 2,4,6-13,16,18,20-23,33-34,36-39,43-44,48
+  s_8b0c0a1ac3df8d::t_11c61132922e7e 5
+  s_8b0c0a1ac3df8d::t_8eff2f7888af5a 28,41
+src/index.html
+  s_8b0c0a1ac3df8d::t_352a18998f008d 6
+package-lock.json
+  s_8b0c0a1ac3df8d::t_ebbea5605dbc55 2,8,10,13-16,21-22,24-27,29,31-32,36,262,279,364,390,411,434,3067,3084-3093,4994,5574,5591-5597,5779-5793,5839
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "d497859f9b9acd8d676866cf2d437c5e1edb438f",
+  "prompts": {},
+  "sessions": {
+    "s_8b0c0a1ac3df8d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a0d142bc-b662-45dc-a37b-5beab1b3ffb7",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "stefanoslig <stefanoslignos@gmail.com>"
+    }
+  }
+}
