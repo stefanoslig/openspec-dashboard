@@ -1,5 +1,3 @@
-<img width="2351" height="1280" alt="image" src="https://github.com/user-attachments/assets/5bfe23f1-8425-41f1-8e08-bf6479be8569" /># OpenSpec Desk
-
 A read-only dashboard for OpenSpec artifacts. It reads the Markdown and YAML in a repository's `openspec/` folder and shows changes, specifications, task progress, and archives in the browser.
 
 ![dashboard](./dashboard.png)
