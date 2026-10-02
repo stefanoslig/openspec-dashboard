@@ -1,6 +1,8 @@
 # OpenSpec Desk
 
-A read-only dashboard for OpenSpec artifacts, with local-folder and hosted GitHub modes. Angular 22 renders the interface; an ASP.NET Core 10 API reads Markdown and YAML through a shared C# parser. Local mode needs no account. Hosted mode lets teams connect repositories through GitHub’s installation UI and share artifact links without changing repository pipelines. Hosted mode uses PostgreSQL for accounts, sessions, and encrypted GitHub credentials. Local mode needs no database. Neither mode requires the OpenSpec CLI.
+A read-only dashboard for OpenSpec artifacts, with local-folder and hosted GitHub modes. Angular 22 renders the interface, an ASP.NET Core 10 API reads Markdown and YAML through a shared C# parser. Local mode needs no account. Hosted mode lets teams connect repositories through GitHub’s installation UI and share artifact links without changing repository pipelines. Hosted mode uses PostgreSQL for accounts, sessions, and encrypted GitHub credentials. Local mode needs no database. Neither mode requires the OpenSpec CLI.
+
+![dashboard](./dashboard.png)
 
 ## Run locally
 
