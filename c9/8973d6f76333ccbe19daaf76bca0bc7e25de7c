@@ -1,0 +1,33 @@
+vercel.json
+  s_c59db7d767d882::t_68a48c64009e55 1-6
+.gitignore
+  s_c59db7d767d882::t_86759d6b0d341d 49-50
+README.md
+  s_5c0791915e3ab9::t_f0fca1c532bda1 1-12
+package.json
+  s_5c0791915e3ab9::t_231d6513886d30 5-21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c98973d6f76333ccbe19daaf76bca0bc7e25de7c",
+  "prompts": {},
+  "sessions": {
+    "s_5c0791915e3ab9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4b963d66-e937-4e17-9f87-e2082e479fa0",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "stefanoslig <stefanoslignos@gmail.com>"
+    },
+    "s_c59db7d767d882": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "aca4d036-ba53-48d1-92aa-9165b7096621",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "stefanoslig <stefanoslignos@gmail.com>"
+    }
+  }
+}
