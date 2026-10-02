@@ -1,4 +1,15 @@
-A read-only dashboard for OpenSpec artifacts. It reads the Markdown and YAML in a repository's `openspec/` folder and shows changes, specifications, task progress, and archives in the browser.
+# OpenSpec Desk
+
+[![npm version](https://img.shields.io/npm/v/openspec-desk)](https://www.npmjs.com/package/openspec-desk)
+[![license](https://img.shields.io/npm/l/openspec-desk)](LICENSE)
+
+A read-only dashboard for [OpenSpec](https://openspec.dev) artifacts. It reads the Markdown and YAML in a repository's `openspec/` folder and shows changes, specifications, task progress, and archives in the browser.
+
+Try the **[live demo](https://openspec-desk.vercel.app/)**, or open the same sample workspace locally:
+
+```sh
+npx openspec-desk --demo
+```
 
 ![dashboard](./dashboard.png)
 

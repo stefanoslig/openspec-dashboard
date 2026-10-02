@@ -2,6 +2,23 @@
   "name": "openspec-desk",
   "version": "0.1.1",
   "description": "Read-only dashboard for OpenSpec artifacts: run it locally or export a static site.",
+  "keywords": [
+    "openspec",
+    "spec-driven-development",
+    "specs",
+    "dashboard",
+    "viewer",
+    "static-site",
+    "cli"
+  ],
+  "homepage": "https://openspec-desk.vercel.app/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stefanoslig/openspec-dashboard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/stefanoslig/openspec-dashboard/issues"
+  },
   "license": "MIT",
   "type": "module",
   "bin": {
