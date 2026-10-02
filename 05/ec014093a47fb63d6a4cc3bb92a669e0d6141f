@@ -1,0 +1,20 @@
+src/app/shared/icon/icon.ts
+  s_e5aaaec084b716::t_778f5c8640aa5b 9-10
+  s_e5aaaec084b716::t_9ce382128afbc1 1-8,11-46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "05ec014093a47fb63d6a4cc3bb92a669e0d6141f",
+  "prompts": {},
+  "sessions": {
+    "s_e5aaaec084b716": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "89d1417d-cca8-4105-a0fd-b396b91ed7f1",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": null
+    }
+  }
+}
