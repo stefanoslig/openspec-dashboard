@@ -1,0 +1,262 @@
+.page-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: center;
+  margin-bottom: 34px;
+}
+.page-heading p {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0;
+}
+.schema-tag {
+  font:
+    10px ui-monospace,
+    monospace;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: #88917c;
+  white-space: nowrap;
+}
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.metric {
+  background: white;
+  border: 1px solid var(--border);
+  padding: 22px;
+  border-radius: 8px;
+}
+.metric > span {
+  color: var(--muted);
+  font-size: 11px;
+  display: flex;
+  justify-content: space-between;
+}
+.metric > span > span {
+  color: #a7b19c;
+  font-size: 16px;
+}
+.metric strong {
+  display: block;
+  font-size: 30px;
+  font-weight: 500;
+  letter-spacing: -1px;
+  margin-top: 17px;
+}
+.metric small {
+  display: block;
+  color: #99a08f;
+  letter-spacing: 0;
+  font-size: 10px;
+  font-weight: 400;
+  margin-top: 6px;
+}
+.workspace-pulse {
+  background: #f0f3e9;
+  border: 1px solid #e3e8d9;
+  border-radius: 8px;
+  padding: 25px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  margin-bottom: 38px;
+}
+.workspace-pulse > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.pulse-mark {
+  font: 35px var(--serif);
+  color: #81966a;
+}
+.workspace-pulse h2 {
+  font-family: var(--serif);
+  font-weight: normal;
+  font-size: 20px;
+  margin: 0 0 7px;
+  color: #4c6540;
+}
+.workspace-pulse p {
+  font-size: 11px;
+  margin: 0;
+  color: #8a947c;
+}
+.overall-progress {
+  min-width: 150px;
+  display: flex;
+  align-items: center;
+  gap: 19px;
+}
+.overall-progress strong {
+  font-size: 27px;
+  font-weight: 500;
+  color: #68834f;
+}
+.overall-progress small {
+  font-size: 14px;
+}
+.overall-progress progress {
+  width: 90px;
+}
+section {
+  margin-bottom: 35px;
+}
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 17px;
+}
+.section-heading h2 {
+  margin: 0;
+}
+.section-heading h2 span {
+  display: inline-block;
+  margin-left: 7px;
+  background: #ecefe6;
+  color: #88947a;
+  font-size: 10px;
+  padding: 3px 7px;
+  border-radius: 4px;
+  vertical-align: 2px;
+  font-weight: 500;
+}
+.section-heading a {
+  color: #6c8257;
+  font-size: 11px;
+}
+.section-heading a span {
+  margin-left: 8px;
+}
+.change-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.document-list {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.document-list > .empty-state {
+  border: none;
+  border-radius: 0;
+}
+.document-row {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  padding: 21px 24px;
+  border-bottom: 1px solid #edf0e8;
+}
+.document-row:last-child {
+  border-bottom: 0;
+}
+.document-row:hover {
+  background: #fcfdf9;
+}
+.document-row > div {
+  flex: 1;
+  min-width: 0;
+}
+.document-row strong {
+  font-size: 13px;
+  font-weight: 550;
+  overflow-wrap: anywhere;
+}
+.document-row small {
+  display: block;
+  color: #909984;
+  font-size: 10px;
+  margin-top: 6px;
+  overflow-wrap: anywhere;
+}
+.document-row p {
+  color: var(--muted);
+  font-size: 12px;
+  margin: 9px 0 0;
+}
+.document-row > span:last-child {
+  color: #94a286;
+  margin-left: 4px;
+}
+.file-icon {
+  background: #f2f4ed;
+  color: #9ba88c;
+  width: 35px;
+  height: 39px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  font-size: 21px;
+  flex-shrink: 0;
+}
+.file-icon.green {
+  background: #edf2e6;
+  color: #7e9566;
+}
+@media (min-width: 1600px) {
+  .change-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 1100px) {
+  .metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .workspace-pulse {
+    padding: 22px;
+  }
+  .overall-progress {
+    min-width: 70px;
+  }
+  .overall-progress progress {
+    display: none;
+  }
+}
+@media (max-width: 800px) {
+  .change-grid {
+    grid-template-columns: 1fr;
+  }
+  .schema-tag {
+    display: none;
+  }
+}
+@media (max-width: 500px) {
+  .metric {
+    padding: 16px;
+  }
+  .metrics {
+    gap: 12px;
+  }
+  .workspace-pulse {
+    padding: 20px;
+    gap: 16px;
+  }
+  .pulse-mark {
+    display: none;
+  }
+  .workspace-pulse h2 {
+    font-size: 18px;
+  }
+  .document-row {
+    padding: 18px;
+    gap: 12px;
+  }
+  .document-row .badge {
+    display: none;
+  }
+  .section-heading .subtle {
+    font-size: 10px;
+  }
+}

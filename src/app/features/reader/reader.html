@@ -1,0 +1,120 @@
+@if (document(); as doc) {
+  <div class="reader-heading">
+    <a routerLink="/" [queryParams]="{ view: backView() }" class="back-link"
+      >← Back to {{ backView() }}</a
+    >
+    <div class="reader-title">
+      <div>
+        <div class="eyebrow">
+          {{
+            change()?.archived
+              ? 'Archived change'
+              : change()
+                ? 'Active change'
+                : 'Workspace artifact'
+          }}
+        </div>
+        <h1>{{ change()?.title || doc.title }}</h1>
+      </div>
+      @if (change(); as item) {
+        <span class="badge" [class.in-progress]="item.status === 'In progress'">{{
+          item.status
+        }}</span>
+      }
+    </div>
+  </div>
+  <div class="reader-layout">
+    <aside class="artifact-navigation" aria-label="Related artifacts">
+      <div class="eyebrow">ARTIFACTS</div>
+      @for (sibling of siblings(); track sibling.path) {
+        <a
+          routerLink="/artifact"
+          [queryParams]="{ path: sibling.path }"
+          [class.selected]="sibling.path === doc.path"
+          [attr.aria-current]="sibling.path === doc.path ? 'page' : null"
+          (click)="linkWarning.set(''); showSource.set(false)"
+          ><span>▤</span><span>{{ label(sibling.path) }}</span></a
+        >
+      }
+      @if (change(); as item) {
+        <div class="change-summary">
+          <div class="eyebrow">CHANGE PROGRESS</div>
+          <strong
+            >{{ item.completed }} <span>/ {{ item.total }} tasks</span></strong
+          ><progress
+            [value]="item.completed"
+            [max]="item.total || 1"
+            aria-label="Change task completion"
+          ></progress
+          ><small>{{ item.schema }}</small>
+        </div>
+      }
+    </aside>
+    <article class="document-panel">
+      <header class="document-toolbar">
+        <div>
+          <strong>{{ doc.title }}</strong
+          ><span>{{ doc.modified | date: 'MMM d, y' }}</span>
+        </div>
+        <div class="view-switch" aria-label="Document view">
+          <button
+            [class.selected]="!showSource()"
+            [attr.aria-pressed]="!showSource()"
+            (click)="showSource.set(false)"
+          >
+            Read</button
+          ><button
+            [class.selected]="showSource()"
+            [attr.aria-pressed]="showSource()"
+            (click)="showSource.set(true)"
+          >
+            Source
+          </button>
+        </div>
+      </header>
+      <div class="document-path">
+        {{ doc.path }}
+        @if (store.workspace()?.source) {
+          ·
+          <a [href]="store.sourceLink(doc.path)" target="_blank" rel="noopener noreferrer"
+            >View on GitHub ↗</a
+          >
+        }
+      </div>
+      @if (linkWarning()) {
+        <div class="notice warning" role="status">{{ linkWarning() }}</div>
+      }
+      @if (showSource() || doc.format === 'yaml') {
+        <pre class="source-view"><code>{{ doc.content }}</code></pre>
+      } @else {
+        <div class="prose" [innerHTML]="rendered().html" (click)="followLink($event)"></div>
+      }
+      <footer class="document-footer">
+        From your
+        {{
+          store.workspace()?.source
+            ? 'GitHub repository'
+            : store.workspace()?.isDemo
+              ? 'sample workspace'
+              : 'local working copy'
+        }}<span>Read only · {{ doc.format === 'markdown' ? 'Markdown' : 'YAML' }}</span>
+      </footer>
+    </article>
+    @if (!showSource() && rendered().headings.length) {
+      <aside class="table-of-contents" aria-label="On this page">
+        <div class="eyebrow">ON THIS PAGE</div>
+        @for (heading of rendered().headings; track heading.id) {
+          <button [class.nested]="heading.depth > 2" (click)="scrollTo(heading.id)">
+            {{ heading.text }}
+          </button>
+        }
+      </aside>
+    }
+  </div>
+} @else {
+  <div class="empty-state">
+    <h1>Artifact not found</h1>
+    <p>The file may have moved, or this link belongs to a different workspace.</p>
+    <a routerLink="/">Return to the overview →</a>
+  </div>
+}

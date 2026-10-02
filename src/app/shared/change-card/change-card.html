@@ -1,0 +1,30 @@
+<a class="change-card" routerLink="/artifact" [queryParams]="{ path: firstDocument() }">
+  <div class="card-top">
+    <span class="change-icon" aria-hidden="true">◇</span
+    ><span
+      class="badge"
+      [class.in-progress]="change().status === 'In progress'"
+      [class.complete]="change().status === 'Complete'"
+      >{{ change().status }}</span
+    >
+  </div>
+  <h3>{{ change().title }}</h3>
+  <p>{{ change().summary }}</p>
+  <div class="card-progress">
+    <div>
+      <span>{{ change().total ? 'Task progress' : 'Taking shape' }}</span
+      ><strong>{{
+        change().total ? change().completed + ' / ' + change().total : 'No tasks yet'
+      }}</strong>
+    </div>
+    <progress
+      [value]="change().completed"
+      [max]="change().total || 1"
+      [attr.aria-label]="change().title + ' task progress'"
+    ></progress>
+  </div>
+  <div class="card-bottom">
+    <span>▤ &nbsp;{{ count() }} artifacts</span
+    ><span>{{ change().modified | date: 'MMM d' }} <span class="card-arrow">↗</span></span>
+  </div>
+</a>

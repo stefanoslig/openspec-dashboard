@@ -1,0 +1,225 @@
+.back-link {
+  display: inline-block;
+  color: #788b67;
+  font-size: 11px;
+  margin-bottom: 25px;
+}
+.reader-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 32px;
+}
+.reader-title h1 {
+  font-size: 27px;
+  line-height: 1.35;
+  margin: 0;
+}
+.reader-title .eyebrow {
+  margin-bottom: 10px;
+}
+.reader-layout {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr) 150px;
+  gap: 24px;
+  align-items: start;
+}
+.artifact-navigation {
+  padding-top: 14px;
+}
+.artifact-navigation .eyebrow {
+  font-size: 9px;
+}
+.artifact-navigation a {
+  padding: 10px;
+  border-radius: 5px;
+  color: #808c73;
+  font-size: 11px;
+  display: flex;
+  gap: 9px;
+  align-items: baseline;
+  margin-bottom: 4px;
+  overflow-wrap: anywhere;
+}
+.artifact-navigation a span:last-child {
+  min-width: 0;
+}
+.artifact-navigation a:hover {
+  background: #f0f3e9;
+}
+.artifact-navigation a.selected {
+  background: #eaf0e2;
+  color: #4f6b3f;
+  font-weight: 550;
+}
+.change-summary {
+  border-top: 1px solid var(--border);
+  margin-top: 27px;
+  padding-top: 24px;
+}
+.change-summary strong {
+  font-size: 21px;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 14px;
+}
+.change-summary strong span {
+  font-size: 11px;
+  color: #94a085;
+  font-weight: 400;
+}
+.change-summary small {
+  display: block;
+  margin-top: 12px;
+  font:
+    9px ui-monospace,
+    monospace;
+  color: #949e89;
+}
+.document-panel {
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  overflow: hidden;
+  background: white;
+}
+.document-toolbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 17px 22px;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid #eef0ea;
+}
+.document-toolbar strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 550;
+}
+.document-toolbar span {
+  display: block;
+  font-size: 9px;
+  color: var(--muted);
+  margin-top: 5px;
+}
+.view-switch {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 2px;
+  background: #f9faf7;
+}
+.view-switch button {
+  border: none;
+  border-radius: 3px;
+  font-size: 10px;
+  padding: 6px 9px;
+  background: none;
+  color: #8d9882;
+}
+.view-switch button.selected {
+  background: white;
+  color: #4d6341;
+  box-shadow: 0 1px 3px #24381414;
+}
+.document-path {
+  font:
+    9px ui-monospace,
+    monospace;
+  color: #969f8b;
+  padding: 13px 22px;
+  background: #fdfefb;
+  border-bottom: 1px solid #f0f2ed;
+  overflow-wrap: anywhere;
+  line-height: 1.6;
+}
+.document-footer {
+  border-top: 1px solid var(--border);
+  padding: 17px 22px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #9ba38f;
+  font-size: 9px;
+}
+.source-view {
+  padding: 28px;
+  margin: 0;
+  font:
+    12px/1.85 ui-monospace,
+    SFMono-Regular,
+    monospace;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.table-of-contents {
+  position: sticky;
+  top: 24px;
+  max-height: calc(100vh - 60px);
+  overflow-y: auto;
+  padding-top: 14px;
+}
+.table-of-contents .eyebrow {
+  font-size: 9px;
+  margin-bottom: 16px;
+}
+.table-of-contents button {
+  display: block;
+  text-align: left;
+  background: none;
+  border: none;
+  border-left: 1px solid #e1e7d9;
+  border-radius: 0;
+  padding: 7px 0 7px 12px;
+  font-size: 10px;
+  color: #88967a;
+  line-height: 1.6;
+  width: 100%;
+}
+.table-of-contents button:hover {
+  color: #3a5d28;
+  border-left-color: #7a965f;
+}
+.table-of-contents button.nested {
+  padding-left: 21px;
+  font-size: 9px;
+}
+@media (max-width: 1300px) {
+  .reader-layout {
+    grid-template-columns: 155px minmax(0, 1fr);
+    gap: 20px;
+  }
+  .table-of-contents {
+    grid-column: 1;
+    grid-row: 2;
+    position: static;
+  }
+  .document-panel {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+}
+@media (max-width: 850px) {
+  .reader-layout {
+    display: block;
+  }
+  .artifact-navigation {
+    margin-bottom: 22px;
+  }
+  .artifact-navigation a {
+    display: inline-flex;
+    margin-right: 5px;
+  }
+  .change-summary,
+  .table-of-contents {
+    display: none;
+  }
+  .document-footer {
+    flex-wrap: wrap;
+  }
+  .reader-title {
+    align-items: start;
+  }
+}

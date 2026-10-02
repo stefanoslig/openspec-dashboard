@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="backend/OpenSpec.Api/OpenSpec.Api.csproj" />
+  <Project Path="backend/OpenSpec.Api.Tests/OpenSpec.Api.Tests.csproj" />
+  <Project Path="backend/OpenSpec.BrowserHost/OpenSpec.BrowserHost.csproj" />
+</Solution>

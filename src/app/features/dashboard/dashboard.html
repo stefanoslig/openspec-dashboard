@@ -1,0 +1,178 @@
+@if (store.workspace(); as workspace) {
+  <div class="page-heading">
+    <div>
+      <div class="eyebrow">
+        {{ workspace.name }} <span>/</span> {{ store.query().trim() ? 'Search' : view() }}
+      </div>
+      <h1>{{ store.query().trim() ? 'Find the thought you’re looking for.' : title() }}</h1>
+      <p>Ideas, decisions, and the details that bring them together.</p>
+    </div>
+    <span class="schema-tag">{{ workspace.schema }}</span>
+  </div>
+  @if (store.query().trim()) {
+    <section aria-label="Search results">
+      <div class="section-heading">
+        <h2>
+          Search results <span>{{ results().length }}</span>
+        </h2>
+        <button class="text-button" (click)="store.query.set('')">Clear search</button>
+      </div>
+      <div class="document-list">
+        @for (doc of results(); track doc.path) {
+          <a class="document-row" routerLink="/artifact" [queryParams]="{ path: doc.path }"
+            ><span class="file-icon">▤</span>
+            <div>
+              <strong>{{ doc.title }}</strong
+              ><small>{{ doc.path }}</small>
+              <p>{{ doc.summary || 'View source document' }}</p>
+            </div>
+            <span aria-hidden="true">↗</span></a
+          >
+        } @empty {
+          <div class="empty-state">
+            <h3>No matching artifacts</h3>
+            <p>Try a capability name, a decision, or a phrase from the document.</p>
+          </div>
+        }
+      </div>
+    </section>
+  } @else {
+    @if (view() === 'overview') {
+      <div class="metrics">
+        <div class="metric">
+          <span>Active changes <span>◇</span></span
+          ><strong>{{ store.active().length }}<small>in your workspace</small></strong>
+        </div>
+        <div class="metric">
+          <span>Specifications <span>▤</span></span
+          ><strong>{{ workspace.specs.length }}<small>published capabilities</small></strong>
+        </div>
+        <div class="metric">
+          <span>Tasks completed <span>✓</span></span
+          ><strong
+            >{{ store.completedCount()
+            }}<small>of {{ store.taskCount() }} tracked tasks</small></strong
+          >
+        </div>
+        <div class="metric">
+          <span>Archived changes <span>▱</span></span
+          ><strong>{{ store.archived().length }}<small>part of your history</small></strong>
+        </div>
+      </div>
+      <section class="workspace-pulse">
+        <div>
+          <span class="pulse-mark">↗</span>
+          <div>
+            <h2>A little progress, a bigger picture.</h2>
+            <p>
+              {{
+                store.taskCount()
+                  ? 'Task completion across your active changes.'
+                  : 'Your progress appears here when a change has tasks.'
+              }}
+            </p>
+          </div>
+        </div>
+        <div class="overall-progress">
+          <strong>{{ progress() }}<small>%</small></strong
+          ><progress
+            [value]="store.completedCount()"
+            [max]="store.taskCount() || 1"
+            aria-label="Active task completion"
+          ></progress>
+        </div>
+      </section>
+    }
+    @if (view() === 'overview' || view() === 'changes' || view() === 'archive') {
+      <section>
+        <div class="section-heading">
+          <h2>
+            {{ view() === 'archive' ? 'Archived changes' : 'Active changes' }}
+            <span>{{ changes().length }}</span>
+          </h2>
+          <span class="subtle">{{
+            workspace.source ? 'At the selected revision' : 'Most recently updated'
+          }}</span>
+        </div>
+        <div class="change-grid">
+          @for (change of changes(); track change.id) {
+            <app-change-card [change]="change" />
+          } @empty {
+            <div class="empty-state">
+              <h3>{{ view() === 'archive' ? 'No archived changes yet' : 'A fresh start' }}</h3>
+              <p>
+                {{
+                  view() === 'archive'
+                    ? 'Archived changes will appear here with their original artifacts.'
+                    : 'Changes from openspec/changes will appear here as you create them.'
+                }}
+              </p>
+            </div>
+          }
+        </div>
+      </section>
+    }
+    @if (view() === 'overview' || view() === 'specs') {
+      <section>
+        <div class="section-heading">
+          <h2>
+            Specifications <span>{{ workspace.specs.length }}</span>
+          </h2>
+          @if (view() === 'overview') {
+            <a routerLink="/" [queryParams]="{ view: 'specs' }">View all <span>↗</span></a>
+          }
+        </div>
+        <div class="document-list">
+          @for (spec of workspace.specs; track spec.path) {
+            <a class="document-row" routerLink="/artifact" [queryParams]="{ path: spec.path }"
+              ><span class="file-icon green">▤</span>
+              <div>
+                <strong>{{ spec.capability }}</strong
+                ><small
+                  >{{ spec.requirements }} requirements · {{ spec.scenarios }} scenarios</small
+                >
+              </div>
+              <span class="badge published">Published</span><span aria-hidden="true">↗</span></a
+            >
+          } @empty {
+            <div class="empty-state">
+              <h3>No published specifications yet</h3>
+              <p>
+                Specs inside an active change are proposals. Published capabilities from
+                openspec/specs appear here.
+              </p>
+            </div>
+          }
+        </div>
+      </section>
+    }
+    @if (view() === 'artifacts') {
+      <section>
+        <div class="section-heading">
+          <h2>
+            All artifacts <span>{{ workspace.documents.length }}</span>
+          </h2>
+          <span class="subtle">Markdown & YAML</span>
+        </div>
+        <div class="document-list">
+          @for (doc of workspace.documents; track doc.path) {
+            <a class="document-row" routerLink="/artifact" [queryParams]="{ path: doc.path }"
+              ><span class="file-icon">▤</span>
+              <div>
+                <strong>{{ doc.title }}</strong
+                ><small>{{ doc.path }}</small>
+              </div>
+              <span class="subtle">{{ doc.modified | date: 'MMM d' }}</span
+              ><span aria-hidden="true">↗</span></a
+            >
+          } @empty {
+            <div class="empty-state">
+              <h3>No artifacts yet</h3>
+              <p>Markdown and YAML files in your openspec folder will appear here.</p>
+            </div>
+          }
+        </div>
+      </section>
+    }
+  }
+}

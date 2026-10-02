@@ -1,0 +1,259 @@
+.sidebar {
+  width: 235px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  background: #fff;
+  padding: 30px 18px 0;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  z-index: 3;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.6px;
+  margin: 0 7px 46px;
+}
+.brand b {
+  font-weight: 400;
+  color: var(--muted);
+}
+.brand-symbol {
+  background: #3f624c;
+  color: #fff;
+  border-radius: 9px;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font:
+    29px Georgia,
+    serif;
+  padding-bottom: 5px;
+}
+.brand-symbol span {
+  color: #c6d3aa;
+}
+.workspace-label {
+  color: #92998e;
+  letter-spacing: 1.4px;
+  font-size: 10px;
+  font-weight: 600;
+  margin: 0 10px 12px;
+}
+.project-picker {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 28px;
+  position: relative;
+  background: #fdfefb;
+}
+.project-picker summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 11px;
+  list-style: none;
+}
+.project-picker summary::-webkit-details-marker {
+  display: none;
+}
+.project-avatar {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  background: #eaeee3;
+  color: var(--green);
+  border-radius: 6px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.project-name {
+  font-weight: 600;
+  flex: 1;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+}
+.project-name small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 400;
+}
+.project-picker form {
+  position: absolute;
+  top: 70px;
+  left: 0;
+  width: 325px;
+  background: white;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  box-shadow: 0 12px 34px #20351c16;
+  z-index: 4;
+  max-height: calc(100dvh - 220px);
+  overflow-y: auto;
+}
+.picker-note {
+  font-size: 11px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.picker-signin {
+  padding: 14px;
+  font-size: 12px;
+}
+.project-picker label {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 9px;
+}
+.project-picker input,
+.project-picker .primary {
+  width: 100%;
+  margin-bottom: 12px;
+}
+.project-picker .primary {
+  display: flex;
+  justify-content: space-between;
+}
+.project-picker .text-button {
+  display: block;
+  margin: auto;
+  font-size: 12px;
+  text-align: center;
+  margin-top: 12px;
+}
+nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+nav a {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 11px 12px;
+  border-radius: 6px;
+  color: #70796e;
+  font-size: 13px;
+}
+nav a:hover {
+  background: #f5f7f0;
+}
+nav a.active {
+  background: #eaf0e4;
+  color: #375640;
+  font-weight: 550;
+}
+.nav-icon {
+  font-size: 19px;
+  width: 18px;
+  text-align: center;
+  line-height: 1;
+}
+.nav-count {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #e6eade;
+  margin-left: auto;
+}
+.sidebar-note {
+  margin-top: auto;
+  padding: 30px 10px;
+  font-size: 11px;
+  line-height: 1.8;
+  color: #6a7664;
+}
+.sidebar-note p {
+  color: #949b8f;
+  font-size: 11px;
+  margin: 8px 0 0;
+}
+.small-dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #7e9666;
+  margin-right: 5px;
+  vertical-align: 2px;
+}
+.sidebar-bottom {
+  border-top: 1px solid var(--border);
+  padding: 19px 6px;
+  color: var(--muted);
+  font-size: 10px;
+}
+.version {
+  float: right;
+  color: #a2a99b;
+}
+@media (max-width: 950px) {
+  .sidebar {
+    width: 200px;
+    padding: 26px 12px 0;
+  }
+  .brand {
+    font-size: 15px;
+    margin-left: 0;
+  }
+}
+@media (max-width: 700px) {
+  .sidebar {
+    position: relative;
+    width: 100%;
+    padding: 18px;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .brand {
+    margin: 0 0 16px;
+  }
+  .workspace-label,
+  .sidebar-note,
+  .sidebar-bottom {
+    display: none;
+  }
+  .project-picker {
+    position: absolute;
+    right: 18px;
+    top: 12px;
+    width: 190px;
+    margin: 0;
+  }
+  .project-picker form {
+    left: auto;
+    right: 0;
+    max-width: calc(100vw - 36px);
+  }
+  .project-picker summary {
+    padding: 8px;
+  }
+  nav {
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 4px;
+    margin-top: 8px;
+  }
+  nav a {
+    white-space: nowrap;
+    padding: 9px;
+    font-size: 11px;
+    gap: 6px;
+  }
+  .nav-count {
+    display: none;
+  }
+}
