@@ -1,0 +1,225 @@
+.pull {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 16px;
+  margin: 10px 0 0;
+  color: var(--text-2);
+  font-size: 14px;
+}
+.pull a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.pull a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.pull strong {
+  color: var(--green);
+  font-weight: 650;
+}
+.pull app-icon {
+  width: 14px;
+  height: 14px;
+}
+.pull .review {
+  font-weight: 600;
+}
+.pull .review.open {
+  color: var(--amber);
+}
+.changes .no-deltas {
+  margin: 0;
+  color: var(--text-2);
+}
+.changes .discussion {
+  margin-top: 56px;
+}
+.changes .discussion:first-child,
+.changes .no-deltas + .discussion {
+  margin-top: 32px;
+}
+.changes .discussion > h2 {
+  margin-top: 0;
+  font-size: 18px;
+}
+.panel-title {
+  grid-area: 1 / 1;
+  margin: 0;
+  font-size: 15px;
+}
+.changes .capability + .capability {
+  margin-top: 56px;
+}
+.changes .capability > h2 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 16px;
+  margin-top: 0;
+  font-family: var(--mono);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.changes .capability-link,
+.capability-new {
+  font-family: var(--sans);
+  font-size: 13.5px;
+  font-weight: 550;
+}
+.changes .capability-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+}
+.changes .capability-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.capability-link app-icon {
+  width: 15px;
+  height: 15px;
+}
+.capability-new {
+  color: var(--muted);
+}
+/* One requirement change, with a rule in the colour of its kind. */
+.changes .requirement {
+  --delta: var(--green);
+  border-top: 0;
+  border-left: 3px solid var(--delta);
+  padding: 2px 0 2px 20px;
+  margin-bottom: 36px;
+}
+.changes .requirement:last-child {
+  margin-bottom: 0;
+}
+.changes .requirement.modified {
+  --delta: var(--amber);
+}
+.changes .requirement.removed {
+  --delta: var(--red);
+}
+.changes .requirement.renamed {
+  --delta: var(--blue);
+}
+.changes .requirement > h3 .kind {
+  color: var(--delta);
+}
+/* Both can follow the heading, where the reader's styles would enlarge a first paragraph. */
+.changes .requirement > .previous-name,
+.changes .requirement > .change-note {
+  font-size: 14.5px;
+  color: var(--text-2);
+}
+.changes .requirement > .change-note {
+  display: inline-block;
+  padding: 6px 12px;
+  border: 1px solid var(--amber-border);
+  border-radius: 8px;
+  color: var(--amber);
+  background: var(--amber-bg);
+}
+/* Removed text is struck through and added text underlined, so the marks do not depend on colour. */
+ins,
+del {
+  border-radius: 3px;
+  padding: 1px 2px;
+}
+ins {
+  color: var(--green);
+  background: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+del {
+  color: var(--red);
+  background: var(--red-bg);
+  text-decoration: line-through;
+}
+/* Spoken by screen readers, which do not announce these elements themselves; never shown. */
+ins:not(.part)::before,
+ins:not(.part)::after,
+del:not(.part)::before,
+del:not(.part)::after {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+ins:not(.part)::before {
+  content: ' [added: ';
+}
+del:not(.part)::before {
+  content: ' [removed: ';
+}
+ins:not(.part)::after,
+del:not(.part)::after {
+  content: '] ';
+}
+/* A scenario or a requirement's text that is added or removed as a whole. */
+.part {
+  display: block;
+  position: relative;
+  margin-bottom: 14px;
+  padding: 0;
+  color: inherit;
+  background: none;
+}
+ins.part {
+  text-decoration: none;
+}
+.part-label {
+  display: inline-block;
+  margin-bottom: 6px;
+  text-decoration: none;
+  font-size: 11.5px;
+  font-weight: 650;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--green);
+}
+del.part {
+  color: var(--text-2);
+}
+del.part .part-label {
+  color: var(--red);
+}
+ins.part > div,
+del.part > div {
+  border-radius: 10px;
+  outline: 1.5px solid color-mix(in srgb, var(--green) 45%, transparent);
+}
+del.part > div {
+  outline-color: color-mix(in srgb, var(--red) 45%, transparent);
+}
+.changes .lines {
+  list-style: none;
+  padding: 0;
+}
+.changes .lines:not(.steps) > li {
+  margin: 0 0 10px;
+  font-size: 17px;
+}
+.changes .scenario > .lines {
+  margin-bottom: 0;
+}
+.lines .step-text > .step-keyword {
+  margin-right: 8px;
+}
+.line-removed .step-keyword {
+  text-decoration: line-through;
+}
+@media (max-width: 600px) {
+  .changes .requirement {
+    padding-left: 14px;
+  }
+}

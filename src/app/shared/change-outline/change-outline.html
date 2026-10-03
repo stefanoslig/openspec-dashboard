@@ -1,0 +1,38 @@
+@for (group of groups(); track group.title) {
+  <div class="eyebrow">{{ group.title }}</div>
+  @if ($first && page(); as id) {
+    <a
+      routerLink="/change"
+      [queryParams]="{ id, path: null }"
+      [class.selected]="id === selected()"
+      [attr.aria-current]="id === selected() ? 'page' : null"
+      ><span>Behaviour changes</span></a
+    >
+  }
+  @for (entry of group.entries; track entry.path) {
+    <a
+      routerLink="/artifact"
+      [queryParams]="{ path: entry.path, id: null }"
+      [class.selected]="entry.path === selected()"
+      [attr.aria-current]="entry.path === selected() ? 'page' : null"
+      (click)="opened.emit()"
+      ><span>{{ entry.label }}</span>
+      @if (entry.note) {
+        <small>{{ entry.note }}</small>
+      }
+    </a>
+  }
+}
+@if (change(); as item) {
+  <div class="change-summary">
+    <div class="eyebrow">Change progress</div>
+    <strong
+      >{{ item.completed }} <span>/ {{ item.total }} tasks</span></strong
+    ><progress
+      [value]="item.completed"
+      [max]="item.total || 1"
+      aria-label="Change task completion"
+    ></progress
+    ><small>{{ item.schema }}</small>
+  </div>
+}

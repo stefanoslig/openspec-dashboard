@@ -34,7 +34,7 @@
     "prestart": "npm run build",
     "start": "node dist/cli/main.js --demo",
     "dev": "ng serve --host 127.0.0.1 --port 4200 --proxy-config proxy.conf.json",
-    "test": "tsc -p cli/tsconfig.test.json && node --test \"cli/*.test.ts\"",
+    "test": "tsc -p cli/tsconfig.test.json && node --test \"cli/*.test.ts\" \"src/**/*.test.ts\"",
     "test:ui": "playwright test",
     "format": "prettier --write src cli tests README.md package.json angular.json proxy.conf.json playwright.config.ts",
     "prepack": "npm run build"
@@ -56,6 +56,7 @@
     "@angular/router": "^22.2.0",
     "@playwright/test": "^1.63.0",
     "@types/node": "^22.20.5",
+    "diff": "^9.0.0",
     "prettier": "^3.8.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

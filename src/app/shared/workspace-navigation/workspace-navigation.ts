@@ -30,14 +30,14 @@ export class WorkspaceNavigation {
   ];
   protected count(view: string): number | undefined {
     return {
-      changes: this.store.active().length,
+      changes: this.store.active().length + this.store.inReview().length,
       specs: this.store.workspace()?.specs.length,
       archive: this.store.archived().length,
     }[view];
   }
   protected isActive(view: string): boolean {
     return (
-      !this.#currentUrl().startsWith('/artifact') &&
+      !/^\/(artifact|change)/.test(this.#currentUrl()) &&
       (this.router.parseUrl(this.#currentUrl()).queryParams['view'] ?? 'overview') === view
     );
   }

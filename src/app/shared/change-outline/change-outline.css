@@ -1,0 +1,84 @@
+:host {
+  display: block;
+}
+.eyebrow {
+  font-size: 11.5px;
+  margin: 0 0 8px 10px;
+}
+a + .eyebrow {
+  margin-top: 22px;
+}
+a {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  color: var(--text-2);
+  font-size: 14px;
+  line-height: 1.4;
+  margin-bottom: 2px;
+}
+a span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+a small {
+  font-size: 12.5px;
+  color: var(--muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+a:hover {
+  background: var(--hover);
+}
+a.selected {
+  background: var(--accent);
+  color: var(--green);
+  font-weight: 600;
+}
+.change-summary {
+  border-top: 1px solid var(--border);
+  margin-top: 20px;
+  padding: 20px 10px 0;
+}
+.change-summary .eyebrow {
+  margin-left: 0;
+}
+.change-summary strong {
+  font-size: 22px;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 10px;
+  font-variant-numeric: tabular-nums;
+}
+.change-summary strong span {
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 400;
+}
+.change-summary small {
+  display: block;
+  margin-top: 10px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+/* A row of pills above the document; the host becomes a wrapping flex row in the page's styles. */
+@media (max-width: 880px) {
+  a {
+    margin: 0;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 99px;
+    background: var(--paper);
+  }
+  a.selected {
+    border-color: transparent;
+  }
+  .eyebrow,
+  .change-summary {
+    display: none;
+  }
+}

@@ -48,7 +48,44 @@ Use **Refresh workspace** after files change on disk. The current document remai
 npx openspec-desk export --out site
 ```
 
-This writes the dashboard and a `workspace.json` snapshot of the specs into `site/`. The folder works on any static host and under any URL path. `export` accepts the same `path` and `--demo` options as the local command; `--out` defaults to `site`.
+This writes the dashboard and a `workspace.json` snapshot of the specs into `site/`. The folder works on any static host and under any URL path.
+
+```text
+openspec-desk export [path] [--out <folder>] [--pull-requests] [--demo]
+```
+
+| Option            | Meaning                                                                                           |
+| ----------------- | ------------------------------------------------------------------------------------------------- |
+| `path`            | Repository root or the `openspec/` folder itself. Default: the current folder.                    |
+| `--out <folder>`  | Folder for the exported site. Default: `site`.                                                    |
+| `--pull-requests` | Include the open pull requests that change the specs. See [Pull requests](#pull-requests).        |
+| `--demo`          | Export the bundled sample workspace instead of a path. Cannot be combined with `--pull-requests`. |
+
+In GitHub Actions the export records the repository, branch, and commit. The dashboard shows them and links each document to its source on GitHub.
+
+### Pull requests
+
+With `--pull-requests` the export also asks GitHub for the open pull requests of the repository, so the site shows the changes that are still in review. Without the option the export makes no request to GitHub.
+
+It reads:
+
+- The open pull requests that target the exported branch.
+- The changes of each pull request. A change counts when the pull request adds to or modifies its folder, `changes/<name>/`. It also counts when the pull request has already archived it under `changes/archive/<name>/`. The documents are read at the head commit of the pull request.
+- The review threads on those documents.
+
+The option works in a GitHub Actions workflow. It needs these environment variables:
+
+- `GITHUB_TOKEN`, or else `GH_TOKEN`: a token that can read the contents and the pull requests of the repository. In a workflow that is `${{ github.token }}` with the permissions `contents: read` and `pull-requests: read`.
+- `GITHUB_ACTIONS`, `GITHUB_REPOSITORY`, `GITHUB_REF_NAME`, and `GITHUB_SHA`: the repository, the exported branch, and its commit. GitHub Actions sets them.
+- `GITHUB_GRAPHQL_URL`: the API endpoint. GitHub Actions sets it; without it the export uses `https://api.github.com/graphql`.
+
+A failed read fails the export. When the token or a variable is missing, or a request to GitHub fails, the export exits with an error that names the missing variable or gives GitHub's answer, and it writes nothing. The workflow stops before it deploys, so the previously published site stays.
+
+Documents from pull requests follow the rules for documents on disk: only Markdown and YAML files, symbolic links are skipped, and a document may be at most 2 MB. The site holds at most 2,000 documents and 20 MB in total. Pull requests are added from the most recently updated one on; the first one that would exceed these totals is left out, together with all that follow. At most the 200 most recently updated pull requests are read. Pull requests from forks are skipped. The dashboard reports everything that was left out as a warning and still shows the rest.
+
+With `--pull-requests`, unmerged proposals, review comments, and the GitHub logins of their authors become visible to everyone who can reach the site.
+
+The option is tested against github.com only. GitHub Enterprise Server is untested.
 
 ### GitHub Pages
 
@@ -60,9 +97,16 @@ on:
   push:
     branches: [main]
     paths: ['openspec/**']
+  pull_request_target:
+    branches: [main]
+    types: [opened, synchronize, reopened, closed, edited, ready_for_review, converted_to_draft]
+    paths: ['openspec/**']
+  schedule:
+    - cron: '*/30 * * * *'
   workflow_dispatch:
 permissions:
   contents: read
+  pull-requests: read
   pages: write
   id-token: write
 concurrency:
@@ -79,7 +123,9 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22
-      - run: npx --yes openspec-desk export --out site
+      - run: npx --yes openspec-desk export --pull-requests --out site
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - uses: actions/upload-pages-artifact@v5
         with:
           path: site
@@ -87,24 +133,36 @@ jobs:
         uses: actions/deploy-pages@v5
 ```
 
-GitHub Pages sites are public unless the organization uses private Pages, which requires GitHub Enterprise Cloud. For specs that must stay internal on other plans, use a host that sits behind your sign-in.
+The `push` trigger publishes the specs when they change on `main`. The other two triggers keep the pull requests on the site up to date:
 
-In GitHub Actions the export records the repository, branch, and commit. The dashboard shows them and links each document to its source on GitHub.
+- `pull_request_target` runs when a pull request that targets `main` and touches `openspec/` is opened, updated, edited, or closed, or when its draft state changes. Unlike `pull_request`, it always runs the workflow of the default branch, with the default branch checked out. So the `github-pages` environment accepts the deployment, and no code from the pull request runs.
+- `schedule` picks up new review threads. Review comment events cannot deploy to the `github-pages` environment, so the site is rebuilt every 30 minutes instead.
+
+Both triggers export the default branch, so the workflow assumes that `main` is the default branch. Use its name in both places if it differs.
+
+**Keep the default checkout.** A `pull_request_target` job runs with the permissions of the workflow, also for a pull request from a fork. The job must never check out the branch of a pull request, and never install, build, or run anything that comes from one. The export does not need it: it reads pull request documents through the API, as data.
+
+GitHub Pages sites are public unless the organization uses private Pages, which requires GitHub Enterprise Cloud. For specs that must stay internal on other plans, use a host that sits behind your sign-in.
 
 ### Other hosts
 
 Upload the `site/` folder. Azure Static Web Apps, Cloudflare Pages with Cloudflare Access, and any internal web server behind single sign-on all work. Access control belongs to the host; the site contains no sign-in code.
 
+A workflow without `--pull-requests` still works, on GitHub Pages and on any other host: the `push` trigger alone, without the `pull-requests: read` permission and without a token. The site then shows the exported branch alone.
+
 ## Reading
 
 - Overview of active changes, published specifications, task counts, and archives.
 - Change pages group proposal, design, tasks, nested delta specs, and extra artifacts.
-- Full-text search across Markdown and YAML, including archived changes.
+- Behaviour changes for every active change: its delta specs read as added, modified, removed, and renamed requirements, grouped by capability and compared with the published spec. A modified requirement shows the removed and the added words, scenario by scenario. A note marks a requirement that the published spec lacks or already has.
+- Changes in review, when the export read pull requests (see [Pull requests](#pull-requests)): an "In review" section lists the changes of open pull requests apart from those of the published branch, each with its pull request and the time the pull requests were read. A change that its pull request has already archived still counts as in review. Its behaviour changes are compared with the published branch.
+- Review threads on a change in review, read-only: a thread on a requirement is shown with that requirement, the others under "Discussion". Each change states its unresolved threads ("3 open threads"), resolved threads are collapsed, and every thread links to GitHub for replies.
+- Full-text search across Markdown and YAML, including archived changes and pull request documents.
 - Markdown reader with an outline, internal document links, tables, code blocks, and disabled task checkboxes.
 - Source view for every artifact; YAML configuration and metadata are also browsable.
 - Task progress excludes fenced examples. Published specs are only files under `openspec/specs/**/spec.md`; proposed specs remain under their change.
 
-The sample workspace is fictional.
+The sample workspace is fictional, and so is its pull request. It is bundled with the package; the sample never contacts GitHub.
 
 ## Development
 
@@ -153,10 +211,13 @@ Angular disk caching is disabled in this project because the installed LMDB nati
 
 ## Current boundaries
 
-- Read-only: it does not clone, commit, push, edit artifacts, or run implementation tasks.
-- One workspace per local server. An exported site is one snapshot; it does not offer other branches or commits.
-- Refresh is manual. A published site updates when CI runs again.
-- An exported site has no modification dates, because file times in a CI checkout carry no meaning. It shows the published revision instead.
+- Read-only: it does not clone, commit, push, comment, edit artifacts, or run implementation tasks.
+- One workspace per local server. An exported site is one snapshot of one branch, with the open pull requests that target it when `--pull-requests` is given; it does not offer other branches or commits.
+- Refresh is manual. A published site, including its pull requests and review threads, updates when CI runs again.
+- An exported site has no modification dates, because file times in a CI checkout carry no meaning. It shows the published revision instead; a change in review shows when its pull request was last updated.
+- Pull requests are read from GitHub during an export only; the local server never contacts GitHub. Pull requests from forks and pull requests that target another branch are not shown, and neither is a spec that a pull request edits without a change folder.
+- Only review threads on the documents of a change are shown: not the pull request's conversation, and not threads on code. A thread shows at most 30 comments and links to GitHub for the rest. Avatars are not fetched.
+- Behaviour changes follow the OpenSpec delta format (`## ADDED|MODIFIED|REMOVED|RENAMED Requirements`). Archived changes have none, because the text they replaced is no longer in the published spec. Deltas are not validated; `openspec validate` does that.
 - Reads custom documents and schemas, but task progress uses a change's `tasks.md`. Progress describes checked tasks, not OpenSpec workflow readiness or implementation correctness.
 - External OpenSpec stores are not resolved automatically. Open the store repository directly.
 - Markdown images are represented by their alt text, raw HTML is escaped, and Mermaid is shown as code. External images are not fetched.

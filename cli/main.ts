@@ -12,13 +12,14 @@ const usage = `OpenSpec Desk ${version}: a read-only dashboard for OpenSpec arti
 Usage:
   openspec-desk [path] [--port <number>] [--demo]
       Serve the dashboard for one workspace on this machine.
-  openspec-desk export [path] [--out <folder>] [--demo]
+  openspec-desk export [path] [--out <folder>] [--pull-requests] [--demo]
       Write a static site that any web host can serve.
 
-  path     Repository root or its openspec folder (default: current folder)
-  --port   Port for the local server (default: PORT, then 4310)
-  --out    Folder for the exported site (default: site)
-  --demo   Use the bundled sample workspace instead of a path`;
+  path             Repository root or its openspec folder (default: current folder)
+  --port           Port for the local server (default: PORT, then 4310)
+  --out            Folder for the exported site (default: site)
+  --pull-requests  Include open pull requests (GitHub Actions only, needs GITHUB_TOKEN)
+  --demo           Use the bundled sample workspace instead of a path`;
 
 class UsageError extends Error {}
 
@@ -28,6 +29,7 @@ async function main(): Promise<void> {
     options: {
       port: { type: 'string' },
       out: { type: 'string' },
+      'pull-requests': { type: 'boolean', default: false },
       demo: { type: 'boolean', default: false },
       help: { type: 'boolean', short: 'h' },
       version: { type: 'boolean' },
@@ -41,12 +43,17 @@ async function main(): Promise<void> {
   if (exporting && values.port !== undefined)
     throw new UsageError('--port applies to the local server only.');
   if (!exporting && values.out !== undefined) throw new UsageError('--out applies to export only.');
+  if (!exporting && values['pull-requests'])
+    throw new UsageError('--pull-requests applies to export only.');
+  if (values.demo && values['pull-requests'])
+    throw new UsageError('--pull-requests cannot be combined with --demo.');
   const input = values.demo ? demoDir : (paths[0] ?? '.');
 
   if (exporting) {
     const { out, workspace } = await exportSite({
       input,
       demo: values.demo,
+      pullRequests: values['pull-requests'],
       out: values.out ?? 'site',
       appDir,
     });

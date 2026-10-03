@@ -22,7 +22,7 @@ export class App {
   }
   protected search(event: Event): void {
     this.store.query.set((event.target as HTMLInputElement).value);
-    if (this.#router.url.startsWith('/artifact')) void this.#router.navigate(['/']);
+    if (/^\/(artifact|change)/.test(this.#router.url)) void this.#router.navigate(['/']);
   }
   protected clearSearch(): void {
     this.store.query.set('');

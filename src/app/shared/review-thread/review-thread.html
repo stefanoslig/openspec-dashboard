@@ -1,0 +1,35 @@
+<details [class.resolved]="thread().resolved" [open]="!thread().resolved">
+  <summary>
+    <span class="state">{{ thread().resolved ? 'Resolved thread' : 'Open thread' }}</span>
+    @if (place()) {
+      <span>{{ place() }}</span>
+    }
+    @if (thread().outdated) {
+      <span>Outdated</span>
+    }
+    <span>{{ comments().length + thread().omitted | i18nPlural: count }}</span>
+  </summary>
+  <ol>
+    @for (comment of comments(); track comment.url) {
+      <li>
+        <div class="comment-head">
+          <strong>{{ comment.author }}</strong>
+          <time [attr.datetime]="comment.createdAt">{{
+            comment.createdAt | date: 'MMM d, y'
+          }}</time>
+        </div>
+        <div class="comment-body" [innerHTML]="comment.html"></div>
+      </li>
+    }
+  </ol>
+  <div class="thread-links">
+    @if (thread().omitted; as omitted) {
+      <a [href]="thread().url" target="_blank" rel="noopener noreferrer"
+        >{{ omitted | i18nPlural: more }} on GitHub</a
+      >
+    }
+    <a class="reply" [href]="thread().url" target="_blank" rel="noopener noreferrer"
+      >Reply on GitHub <app-icon name="external"
+    /></a>
+  </div>
+</details>

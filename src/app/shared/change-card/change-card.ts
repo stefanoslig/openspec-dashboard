@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import type { Change } from '../../../../cli/workspace.model';
+import { hasPage, kindCounts, WorkspaceStore } from '../../core/workspace-store';
 import { Icon } from '../icon/icon';
 
 @Component({
@@ -12,6 +13,7 @@ import { Icon } from '../icon/icon';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChangeCard {
+  readonly #store = inject(WorkspaceStore);
   readonly change = input.required<Change>();
   protected readonly firstDocument = computed(
     () =>
@@ -20,4 +22,8 @@ export class ChangeCard {
   protected readonly count = computed(
     () => this.change().documents.filter((path) => path.endsWith('.md')).length,
   );
+  protected readonly page = computed(() => hasPage(this.change()));
+  protected readonly kinds = computed(() => kindCounts(this.change()));
+  protected readonly pull = computed(() => this.#store.pullRequestOf(this.change()));
+  protected readonly review = computed(() => this.#store.reviewOf(this.change()));
 }

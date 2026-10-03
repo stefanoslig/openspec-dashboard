@@ -1,9 +1,9 @@
 import { createReadStream } from 'node:fs';
-import { readdir, realpath, stat } from 'node:fs/promises';
+import { readdir, readFile, realpath, stat } from 'node:fs/promises';
 import { homedir } from 'node:os';
 import path from 'node:path';
 import { buildWorkspace } from './parser.ts';
-import type { ArtifactFile, Workspace } from './workspace.model.ts';
+import type { ArtifactFile, PullRequestInput, Workspace } from './workspace.model.ts';
 
 export class WorkspaceError extends Error {
   readonly status: number;
@@ -13,14 +13,16 @@ export class WorkspaceError extends Error {
   }
 }
 
-const maxFileBytes = 2_000_000;
+export const maxFileBytes = 2_000_000;
+export const maxTotalBytes = 20_000_000;
+export const maxArtifacts = 2000;
 const unreadable = 'That folder could not be read. Check the path and its permissions.';
 
 export const isArtifact = (name: string) =>
   ['.md', '.yaml', '.yml'].includes(path.extname(name).toLowerCase());
 
 export function checkSize(fileBytes: number, totalBytes: number, count: number): void {
-  if (fileBytes > maxFileBytes || totalBytes > 20_000_000 || count > 2000)
+  if (fileBytes > maxFileBytes || totalBytes > maxTotalBytes || count > maxArtifacts)
     throw new WorkspaceError(
       'Workspace too large: maximum 2 MB per artifact, 20 MB total, and 2,000 artifacts.',
     );
@@ -112,6 +114,11 @@ export async function readFiles(
   return { files, warnings };
 }
 
+/** The fictional pull requests of the sample workspace, kept next to its openspec folder. */
+export async function samplePullRequests(root: string): Promise<PullRequestInput[]> {
+  return JSON.parse(await readFile(path.join(path.dirname(root), 'pull-requests.json'), 'utf8'));
+}
+
 export async function readWorkspace(
   input: string,
   options: { demo?: boolean } = {},
@@ -122,6 +129,7 @@ export async function readWorkspace(
     name: options.demo ? 'Atlas' : path.basename(path.dirname(root)),
     root,
     isDemo: options.demo,
+    ...(options.demo ? { pullRequests: await samplePullRequests(root) } : {}),
     warnings,
   });
 }

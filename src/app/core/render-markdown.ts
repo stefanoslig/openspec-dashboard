@@ -64,7 +64,17 @@ function countTasks(tokens: Token[], count = { completed: 0, total: 0 }) {
   return count;
 }
 
-export function renderMarkdown(content: string): { html: string; headings: Heading[] } {
+export interface RenderOptions {
+  /** The content is the body of a requirement: normative words are emphasized from the start. */
+  requirement?: boolean;
+  /** Shown outside the reader, where only web links work: no heading anchors, other links as text. */
+  standalone?: boolean;
+}
+
+export function renderMarkdown(
+  content: string,
+  options: RenderOptions = {},
+): { html: string; headings: Heading[] } {
   const headings: Heading[] = [];
   const used = new Map<string, number>();
   // Set while a section is rendered, for the renderers below.
@@ -120,7 +130,7 @@ export function renderMarkdown(content: string): { html: string; headings: Headi
             ? ' <span class="task-count">' + tasks.completed + ' / ' + tasks.total + '</span>'
             : '') +
           // Hidden from assistive technology: the same links are in "On this page".
-          (depth > 1
+          (depth > 1 && !options.standalone
             ? ' <a class="anchor" href="#' + id + '" aria-hidden="true" tabindex="-1">#</a>'
             : '') +
           '</h' +
@@ -136,8 +146,8 @@ export function renderMarkdown(content: string): { html: string; headings: Headi
       },
       link({ href, tokens }) {
         const label = this.parser.parseInline(tokens);
-        if (/^[a-z][a-z0-9+.-]*:/i.test(href) && !/^(https?:|mailto:)/i.test(href)) return label;
         const external = /^(https?:|mailto:)/i.test(href);
+        if (!external && (options.standalone || /^[a-z][a-z0-9+.-]*:/i.test(href))) return label;
         return (
           '<a href="' +
           escape(href) +
@@ -236,7 +246,10 @@ export function renderMarkdown(content: string): { html: string; headings: Headi
       );
       if (heading.depth > 1) tasks = countTasks(tokens.slice(index + 1, end < 0 ? undefined : end));
     }
-    emphasize = !heading && open.some(({ kind }) => kind === 'requirement' || kind === 'scenario');
+    emphasize =
+      !heading &&
+      (!!options.requirement ||
+        open.some(({ kind }) => kind === 'requirement' || kind === 'scenario'));
     html += parser.parser([token]);
     tasks = { completed: 0, total: 0 };
   });

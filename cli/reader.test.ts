@@ -10,16 +10,69 @@ test('reads the demo workspace and its task progress', async () => {
   const workspace = await readWorkspace(demoDir, { demo: true });
   assert.equal(workspace.name, 'Atlas');
   assert.equal(workspace.isDemo, true);
-  assert.equal(workspace.changes.length, 3);
+  assert.equal(workspace.changes.length, 4);
   assert.equal(workspace.changes.filter((change) => change.archived).length, 1);
   const active = workspace.changes.find((change) => change.name === 'add-project-invitations')!;
   assert.deepEqual([active.completed, active.total, active.status], [5, 9, 'In progress']);
   assert.ok(
     active.documents.includes('changes/add-project-invitations/specs/projects/membership/spec.md'),
   );
+  assert.deepEqual(
+    active.deltas.map((delta) => [
+      delta.capability,
+      delta.published,
+      delta.requirements.map((change) => change.kind + ' ' + change.name),
+    ]),
+    [
+      ['projects/access', 'specs/projects/access/spec.md', ['modified Owners manage membership']],
+      [
+        'projects/membership',
+        null,
+        ['added Owners can invite teammates', 'added Revoked invitations cannot be accepted'],
+      ],
+    ],
+  );
+  assert.match(
+    active.deltas[0].requirements[0].previous!,
+    /SHALL reserve membership management for/,
+  );
   assert.equal(workspace.specs[0].capability, 'projects/access');
   assert.equal(workspace.specs[0].requirements, 2);
-  assert.ok(workspace.documents.every((doc) => doc.modified));
+  assert.ok(workspace.documents.every((doc) => doc.modified || doc.pullRequest === 128));
+
+  // The sample has one fictional pull request, read from a file and never from GitHub.
+  const [pull] = workspace.pullRequests!;
+  assert.deepEqual(
+    [workspace.pullRequests!.length, pull.number, pull.changes],
+    [1, 128, ['.pulls/128/changes/let-editors-invite-viewers']],
+  );
+  const inReview = workspace.changes.find((change) => change.pullRequest === 128)!;
+  assert.deepEqual(
+    [
+      inReview.title,
+      inReview.status,
+      inReview.completed,
+      inReview.total,
+      inReview.documents.length,
+    ],
+    ['Let editors invite viewers', 'In progress', 2, 4, 3],
+  );
+  assert.deepEqual(
+    inReview.deltas[0].requirements.map((change) => [change.kind, change.name, !change.previous]),
+    [
+      ['added', 'Editors can invite viewers', true],
+      ['modified', 'Owners manage membership', false],
+      ['renamed', 'Viewers can read documents', false],
+    ],
+  );
+  assert.deepEqual(
+    pull.threads.map((thread) => [thread.requirement, thread.resolved, thread.comments.length]),
+    [
+      ['Owners manage membership', false, 2],
+      ['Editors can invite viewers', true, 2],
+      [null, true, 2],
+    ],
+  );
 });
 
 test('skips symbolic links and hidden files, and reports invalid YAML', async () => {

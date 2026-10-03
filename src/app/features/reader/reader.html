@@ -9,11 +9,13 @@
           {{
             change()?.archived
               ? 'Archived change'
-              : change()
-                ? 'Active change'
-                : capability()
-                  ? 'Specification'
-                  : 'Workspace artifact'
+              : pull()
+                ? 'Change in review'
+                : change()
+                  ? 'Active change'
+                  : capability()
+                    ? 'Specification'
+                    : 'Workspace artifact'
           }}
         </div>
         <h1>{{ change()?.title || capability() || doc.title }}</h1>
@@ -30,37 +32,13 @@
   </div>
   <div class="reader-layout">
     <div class="reader-side">
-      <aside class="artifact-navigation" aria-label="Related artifacts">
-        @for (group of groups(); track group.title) {
-          <div class="eyebrow">{{ group.title }}</div>
-          @for (entry of group.entries; track entry.path) {
-            <a
-              routerLink="/artifact"
-              [queryParams]="{ path: entry.path }"
-              [class.selected]="entry.path === doc.path"
-              [attr.aria-current]="entry.path === doc.path ? 'page' : null"
-              (click)="open()"
-              ><span>{{ entry.label }}</span>
-              @if (entry.note) {
-                <small>{{ entry.note }}</small>
-              }
-            </a>
-          }
-        }
-        @if (change(); as item) {
-          <div class="change-summary">
-            <div class="eyebrow">Change progress</div>
-            <strong
-              >{{ item.completed }} <span>/ {{ item.total }} tasks</span></strong
-            ><progress
-              [value]="item.completed"
-              [max]="item.total || 1"
-              aria-label="Change task completion"
-            ></progress
-            ><small>{{ item.schema }}</small>
-          </div>
-        }
-      </aside>
+      <app-change-outline
+        class="artifact-navigation"
+        [groups]="groups()"
+        [change]="change()"
+        [selected]="doc.path"
+        (opened)="open()"
+      />
       @if (!showSource() && outline().length > 1) {
         <nav class="table-of-contents" aria-label="On this page">
           <div class="eyebrow">On this page</div>
@@ -79,8 +57,14 @@
     </div>
     <article class="document-panel">
       <header class="document-toolbar">
-        <div class="document-path">{{ doc.path }}</div>
+        <div class="document-path">{{ store.repositoryPath(doc) }}</div>
         <div class="document-meta">
+          @if (pull(); as request) {
+            <span
+              ><a [href]="request.url" target="_blank" rel="noopener noreferrer"
+                >PR #{{ request.number }} <app-icon name="external" /></a
+            ></span>
+          }
           @if (doc.requirements) {
             <span>{{ doc.requirements | i18nPlural: requirements }}</span>
             <span>{{ doc.scenarios | i18nPlural: scenarios }}</span>
@@ -93,7 +77,7 @@
           }
           @if (store.workspace()?.source) {
             <span
-              ><a [href]="store.sourceLink(doc.path)" target="_blank" rel="noopener noreferrer"
+              ><a [href]="store.sourceLink(doc)" target="_blank" rel="noopener noreferrer"
                 >View on GitHub <app-icon name="external" /></a
             ></span>
           }

@@ -7,11 +7,17 @@
   height: 100%;
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 20px 22px 0;
   background: var(--paper);
   transition:
     border-color 0.15s,
     box-shadow 0.15s;
+}
+.card-main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 20px 22px 0;
+  border-radius: 12px;
 }
 .change-card:hover {
   border-color: var(--border-strong);
@@ -23,6 +29,11 @@
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 14px;
+}
+.card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 .card-date {
   color: var(--muted);
@@ -42,6 +53,45 @@ p {
   -webkit-box-orient: vertical;
   overflow: hidden;
   margin-bottom: 22px;
+}
+.card-kinds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  list-style: none;
+  margin: -6px 0 20px;
+  padding: 0;
+  color: var(--text-2);
+  font-size: 13px;
+  font-weight: 550;
+}
+.card-kinds li::before {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  vertical-align: 1px;
+}
+.card-kinds .modified::before {
+  background: var(--amber);
+}
+.card-kinds .removed::before {
+  background: var(--red);
+}
+.card-kinds .renamed::before {
+  background: var(--blue);
+}
+.card-kinds .review::before {
+  background: var(--bar);
+}
+.card-kinds .review.open {
+  color: var(--amber);
+}
+.card-kinds .review.open::before {
+  background: var(--amber);
 }
 .card-progress {
   margin-top: auto;
@@ -80,6 +130,39 @@ p {
   height: 16px;
   transition: transform 0.15s;
 }
-.change-card:hover .card-open app-icon {
+.card-main:hover .card-open app-icon {
   transform: translateX(2px);
+}
+/* The pull request of a change in review: a link of its own under the card's main link. */
+.card-pull {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-top: 1px solid var(--border);
+  padding: 11px 22px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.card-pull strong {
+  color: var(--green);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.card-pull span {
+  white-space: nowrap;
+}
+.card-pull .pull-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-2);
+}
+.card-pull app-icon {
+  width: 14px;
+  height: 14px;
+  margin-left: auto;
+}
+.card-pull:hover .pull-title {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }

@@ -1,0 +1,188 @@
+@if (change(); as item) {
+  <div class="reader-heading">
+    <a routerLink="/" [queryParams]="{ view: 'changes', id: null }" class="back-link"
+      ><app-icon name="arrow-left" />All changes</a
+    >
+    <div class="reader-title">
+      <div>
+        <div class="eyebrow">
+          {{ pull() ? 'Change in review' : item.archived ? 'Archived change' : 'Active change' }}
+        </div>
+        <h1>{{ item.title }}</h1>
+        @if (pull(); as request) {
+          <p class="pull">
+            <a [href]="request.url" target="_blank" rel="noopener noreferrer"
+              ><strong>PR #{{ request.number }}</strong> {{ request.title }}
+              <app-icon name="external"
+            /></a>
+            <span>by {{ request.author }}</span>
+            @if (request.draft) {
+              <span>Draft</span>
+            }
+            @if (review().label) {
+              <span class="review" [class.open]="review().open">{{ review().label }}</span>
+            }
+          </p>
+        }
+      </div>
+      <span
+        class="badge"
+        [class.in-progress]="item.status === 'In progress'"
+        [class.complete]="item.status === 'Complete'"
+        >{{ item.status }}</span
+      >
+    </div>
+  </div>
+  <div class="reader-layout">
+    <div class="reader-side">
+      <app-change-outline
+        class="artifact-navigation"
+        [groups]="groups()"
+        [change]="item"
+        [selected]="item.id"
+      />
+    </div>
+    <article class="document-panel">
+      <header class="document-toolbar">
+        <h2 class="panel-title">Behaviour changes</h2>
+        <div class="document-meta">
+          @for (entry of counts(); track entry.kind) {
+            <span>{{ entry.count }} {{ entry.kind }}</span>
+          } @empty {
+            <span>No spec changes yet</span>
+          }
+          @if (review().label) {
+            <span>{{ review().label }}</span>
+          }
+        </div>
+      </header>
+      <div class="prose changes">
+        @for (delta of deltas(); track delta.path) {
+          <section class="capability" [attr.aria-label]="delta.capability">
+            <h2>
+              {{ delta.capability }}
+              @if (delta.published; as path) {
+                <a class="capability-link" routerLink="/artifact" [queryParams]="{ path, id: null }"
+                  >Published spec <app-icon name="arrow-right"
+                /></a>
+              } @else {
+                <span class="capability-new">New capability</span>
+              }
+            </h2>
+            @for (requirement of delta.requirements; track requirement.line) {
+              <section class="requirement" [class]="requirement.kind">
+                <h3>
+                  <span class="kind">{{ requirement.kind }}</span> {{ requirement.name }}
+                </h3>
+                @if (requirement.previousName; as name) {
+                  <p class="previous-name">Previously “{{ name }}”</p>
+                }
+                @if (requirement.missing) {
+                  <p class="change-note">
+                    {{
+                      requirement.previousName
+                        ? '“' + requirement.previousName + '” was not'
+                        : 'Not'
+                    }}
+                    found in the published spec.
+                  </p>
+                }
+                @if (requirement.exists) {
+                  <p class="change-note">
+                    A requirement with this name already exists in the published spec.
+                  </p>
+                }
+                @if (requirement.identical) {
+                  <p class="change-note">No difference from the published spec.</p>
+                }
+                @if (requirement.previousHtml) {
+                  <del class="part" [innerHTML]="requirement.previousHtml"></del>
+                }
+                @for (part of requirement.parts; track $index) {
+                  @switch (part.kind) {
+                    @case ('added') {
+                      <ins class="part"
+                        ><span class="part-label">Added</span>
+                        <div [innerHTML]="part.html"></div
+                      ></ins>
+                    }
+                    @case ('removed') {
+                      <del class="part"
+                        ><span class="part-label">Removed</span>
+                        <div [innerHTML]="part.html"></div
+                      ></del>
+                    }
+                    @case ('changed') {
+                      <div [class.scenario]="part.name">
+                        @if (part.name) {
+                          <h4><span class="kind">Scenario</span> {{ part.name }}</h4>
+                        }
+                        <ul class="lines" [class.steps]="part.name">
+                          @for (line of part.lines; track $index) {
+                            <li [class]="'line-' + line.kind">
+                              @if (part.name) {
+                                <span class="step-keyword">{{ line.keyword }}</span>
+                              }
+                              <span class="step-text">
+                                @if (!part.name && line.keyword) {
+                                  <span class="step-keyword">{{ line.keyword }}</span>
+                                }
+                                @for (segment of line.segments; track $index) {
+                                  @switch (segment.kind) {
+                                    @case ('added') {
+                                      <ins>{{ segment.text }}</ins>
+                                    }
+                                    @case ('removed') {
+                                      <del>{{ segment.text }}</del>
+                                    }
+                                    @default {
+                                      <span>{{ segment.text }}</span>
+                                    }
+                                  }
+                                }
+                              </span>
+                            </li>
+                          }
+                        </ul>
+                      </div>
+                    }
+                    @default {
+                      <div [innerHTML]="part.html"></div>
+                    }
+                  }
+                } @empty {
+                  @if (requirement.html) {
+                    <div [innerHTML]="requirement.html"></div>
+                  }
+                }
+                @for (thread of requirement.threads; track thread.url) {
+                  <app-review-thread [thread]="thread" />
+                }
+              </section>
+            }
+          </section>
+        } @empty {
+          <p class="no-deltas">
+            This change has no spec changes yet. Its documents are listed beside this page.
+          </p>
+        }
+        @if (discussion().length) {
+          <section class="discussion" aria-label="Discussion">
+            <h2>Discussion</h2>
+            @for (entry of discussion(); track entry.thread.url) {
+              <app-review-thread [thread]="entry.thread" [place]="entry.place" />
+            }
+          </section>
+        }
+      </div>
+    </article>
+  </div>
+} @else {
+  <div class="empty-state">
+    <h1>Change not found</h1>
+    <p>
+      The change may have been archived or merged, or this link belongs to a different workspace.
+    </p>
+    <a routerLink="/">Return to the overview →</a>
+  </div>
+}

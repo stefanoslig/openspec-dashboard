@@ -2,7 +2,17 @@ import { createHash } from 'node:crypto';
 import { posix } from 'node:path';
 import { lexer, type Token, type Tokens } from 'marked';
 import { isMap, isScalar, parseAllDocuments, type Scalar } from 'yaml';
-import type { Artifact, ArtifactFile, Change, Workspace } from './workspace.model.ts';
+import { parseDelta, publishedRequirements } from './delta.ts';
+import type {
+  Artifact,
+  ArtifactFile,
+  Change,
+  PullRequest,
+  PullRequestInput,
+  RequirementChange,
+  SpecDelta,
+  Workspace,
+} from './workspace.model.ts';
 
 export interface MarkdownInfo {
   completed: number;
@@ -16,6 +26,8 @@ export interface BuildOptions {
   root: string;
   isDemo?: boolean;
   source?: Workspace['source'];
+  /** Open pull requests to show next to the files; leave out when they were not read. */
+  pullRequests?: PullRequestInput[];
   warnings?: string[];
   now?: Date;
 }
@@ -91,26 +103,75 @@ function configuration(content: string): Map<string, string | null> {
   return result;
 }
 
+/** A published spec: its path and the text of its requirements by name. */
+type Published = (
+  capability: string,
+) => { path: string; requirements: Map<string, string> } | undefined;
+
+/** What the delta specs of a change do to the requirements of the published specs. */
+function deltasOf(id: string, docs: Artifact[], published: Published): SpecDelta[] {
+  return docs.flatMap((doc): SpecDelta[] => {
+    const capability = /^specs\/(.+)\/spec\.md$/.exec(doc.path.slice(id.length + 1))?.[1];
+    if (!capability) return [];
+    const delta = parseDelta(doc.content);
+    const spec = published(capability);
+    const previous = (name: string) => spec?.requirements.get(name) ?? null;
+    const renames = new Map(delta.renamed.map((rename) => [rename.to, rename]));
+    const requirements: RequirementChange[] = [];
+    for (const block of delta.added)
+      requirements.push({ kind: 'added', ...block, previous: previous(block.name) });
+    for (const block of delta.modified) {
+      // OpenSpec renames before it modifies, so a renamed requirement is modified under its new name.
+      const rename = renames.get(block.name);
+      renames.delete(block.name);
+      requirements.push({
+        kind: 'modified',
+        ...block,
+        ...(rename ? { previousName: rename.from } : {}),
+        previous: previous(rename?.from ?? block.name),
+      });
+    }
+    for (const block of delta.removed)
+      requirements.push({ kind: 'removed', ...block, previous: previous(block.name) });
+    for (const rename of renames.values())
+      requirements.push({
+        kind: 'renamed',
+        name: rename.to,
+        previousName: rename.from,
+        text: '',
+        previous: previous(rename.from),
+        line: rename.line,
+        endLine: rename.endLine,
+      });
+    if (!requirements.length) return [];
+    requirements.sort((a, b) => a.line - b.line);
+    return [{ path: doc.path, capability, published: spec?.path ?? null, requirements }];
+  });
+}
+
 export function buildWorkspace(files: ArtifactFile[], options: BuildOptions): Workspace {
   const warnings = [...(options.warnings ?? [])];
   const modified = new Map(files.map((file) => [file.path, file.modified]));
   const iso = (time: number | null | undefined) =>
     time == null ? null : new Date(time).toISOString();
-  const documents = files
-    .map((file): Artifact => {
-      const markdown = file.path.toLowerCase().endsWith('.md');
-      const filename = posix.parse(file.path).name;
-      return {
-        path: file.path,
-        title: labels.get(filename) ?? humanize(filename),
-        content: file.content,
-        format: markdown ? 'markdown' : 'yaml',
-        modified: iso(file.modified),
-        revision: createHash('sha256').update(file.content, 'utf8').digest('hex'),
-        ...inspectMarkdown(markdown ? file.content : ''),
-      };
-    })
-    .sort((a, b) => ordinal(a.path, b.path));
+  const artifacts = (from: ArtifactFile[], prefix = '', pullRequest?: number) =>
+    from
+      .map((file): Artifact => {
+        const markdown = file.path.toLowerCase().endsWith('.md');
+        const filename = posix.parse(file.path).name;
+        return {
+          path: prefix + file.path,
+          title: labels.get(filename) ?? humanize(filename),
+          content: file.content,
+          format: markdown ? 'markdown' : 'yaml',
+          modified: iso(file.modified),
+          revision: createHash('sha256').update(file.content, 'utf8').digest('hex'),
+          ...inspectMarkdown(markdown ? file.content : ''),
+          ...(pullRequest === undefined ? {} : { pullRequest }),
+        };
+      })
+      .sort((a, b) => ordinal(a.path, b.path));
+  const documents = artifacts(files);
 
   let settings = new Map<string, string | null>();
   try {
@@ -126,16 +187,37 @@ export function buildWorkspace(files: ArtifactFile[], options: BuildOptions): Wo
     );
   const schema = settings.get('schema') ?? 'spec-driven';
 
-  const groups = new Map<string, Artifact[]>();
-  for (const doc of documents) {
-    const parts = doc.path.split('/');
-    const depth = parts[1] === 'archive' ? 3 : 2;
-    if (parts[0] !== 'changes' || parts.length <= depth) continue;
-    const id = parts.slice(0, depth).join('/');
-    groups.set(id, [...(groups.get(id) ?? []), doc]);
-  }
+  const read = new Map<string, ReturnType<Published>>();
+  const published: Published = (capability) => {
+    const path = 'specs/' + capability + '/spec.md';
+    if (!read.has(path)) {
+      const spec = documents.find((doc) => doc.path === path);
+      read.set(
+        path,
+        spec && {
+          path,
+          requirements: new Map(
+            publishedRequirements(spec.content).map((block) => [block.name, block.text]),
+          ),
+        },
+      );
+    }
+    return read.get(path);
+  };
   const changeTimes = new Map<string, number | null>();
-  const changes = [...groups].map(([id, docs]): Change => {
+  /** Groups documents into changes. The documents of a pull request share a path prefix. */
+  const changesOf = (all: Artifact[], prefix = '', pull?: PullRequestInput): Change[] => {
+    const groups = new Map<string, Artifact[]>();
+    for (const doc of all) {
+      const parts = doc.path.slice(prefix.length).split('/');
+      const depth = parts[1] === 'archive' ? 3 : 2;
+      if (parts[0] !== 'changes' || parts.length <= depth) continue;
+      const id = prefix + parts.slice(0, depth).join('/');
+      groups.set(id, [...(groups.get(id) ?? []), doc]);
+    }
+    return [...groups].map(([id, docs]) => changeOf(id, docs, pull));
+  };
+  const changeOf = (id: string, docs: Artifact[], pull?: PullRequestInput): Change => {
     const name = id.slice(id.lastIndexOf('/') + 1);
     const tasks = docs.find((doc) => doc.path === id + '/tasks.md');
     const proposal = docs.find((doc) => doc.path === id + '/proposal.md');
@@ -148,17 +230,21 @@ export function buildWorkspace(files: ArtifactFile[], options: BuildOptions): Wo
     }
     const total = tasks?.total ?? 0;
     const completed = tasks?.completed ?? 0;
-    const times = docs.map((doc) => modified.get(doc.path)).filter((time) => time != null);
+    const times = pull
+      ? [Date.parse(pull.updatedAt)].filter((time) => !Number.isNaN(time))
+      : docs.map((doc) => modified.get(doc.path)).filter((time) => time != null);
     changeTimes.set(id, times.length ? Math.max(...times) : null);
     const rank = (doc: Artifact) => {
       const index = order.indexOf(doc.path.slice(id.length + 1));
       return index < 0 ? 10 : index;
     };
+    // Until it merges a change is in review, also when its pull request has archived it already.
+    const archived = !pull && id.startsWith('changes/archive/');
     return {
       id,
       name,
       title: humanize(name),
-      archived: id.startsWith('changes/archive/'),
+      archived,
       schema: changeSchema,
       status:
         total === 0
@@ -175,7 +261,41 @@ export function buildWorkspace(files: ArtifactFile[], options: BuildOptions): Wo
       documents: [...docs]
         .sort((a, b) => rank(a) - rank(b) || ordinal(a.path, b.path))
         .map((doc) => doc.path),
+      // An archived change is already in the published specs, so the text it replaced is gone.
+      deltas: archived ? [] : deltasOf(id, docs, published),
+      ...(pull ? { pullRequest: pull.number } : {}),
     };
+  };
+  const changes = changesOf(documents);
+  // A pull request that changes no specs is left out, with its documents.
+  const pullRequests = (options.pullRequests ?? []).flatMap((pull): PullRequest[] => {
+    const prefix = `.pulls/${pull.number}/`;
+    const docs = artifacts(pull.files, prefix, pull.number);
+    const found = changesOf(docs, prefix, pull);
+    if (!found.length) return [];
+    documents.push(...docs);
+    changes.push(...found);
+    const { files: _, threads, ...details } = pull;
+    const owned = new Set(found.flatMap((change) => change.documents));
+    const deltas = found.flatMap((change) => change.deltas);
+    return [
+      {
+        ...details,
+        changes: found.map((change) => change.id),
+        threads: threads.flatMap((thread) => {
+          const path = prefix + thread.path;
+          if (!owned.has(path)) return [];
+          const { line } = thread;
+          const pinned =
+            line === null
+              ? undefined
+              : deltas
+                  .find((delta) => delta.path === path)
+                  ?.requirements.find((change) => change.line <= line && line <= change.endLine);
+          return [{ ...thread, path, requirement: pinned?.name ?? null }];
+        }),
+      },
+    ];
   });
   // Newest first; changes without a date come last.
   const time = (change: Change) => changeTimes.get(change.id) ?? Number.NEGATIVE_INFINITY;
@@ -200,5 +320,6 @@ export function buildWorkspace(files: ArtifactFile[], options: BuildOptions): Wo
     changes,
     warnings,
     specs,
+    ...(options.pullRequests ? { pullRequests } : {}),
   };
 }

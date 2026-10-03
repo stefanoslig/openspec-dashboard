@@ -10,5 +10,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/reader/reader').then((m) => m.Reader),
     title: 'Artifact · OpenSpec Desk',
   },
+  {
+    path: 'change',
+    loadComponent: () => import('./features/change/change').then((m) => m.ChangePage),
+    title: 'Change · OpenSpec Desk',
+  },
   { path: '**', redirectTo: '' },
 ];

@@ -30,8 +30,11 @@
               ><app-icon [name]="result.doc.format === 'yaml' ? 'code' : 'spec'"
             /></span>
             <div>
-              <strong>{{ result.doc.title }}</strong
-              ><small>{{ result.doc.path }}</small>
+              <strong>{{ result.doc.title }}</strong>
+              @if (result.doc.pullRequest; as number) {
+                <span class="pull-tag">PR #{{ number }}</span>
+              }
+              <small>{{ store.repositoryPath(result.doc) }}</small>
               <p>
                 @for (part of result.excerpt; track $index) {
                   <!-- Elements on both sides: loose text here would gain spaces inside words. -->
@@ -90,6 +93,28 @@
           <small>part of your history</small>
         </a>
       </div>
+    }
+    @if ((view() === 'overview' || view() === 'changes') && workspace.pullRequests) {
+      <section aria-label="In review">
+        <div class="section-heading">
+          <h2>
+            In review <span>{{ store.inReview().length }}</span>
+          </h2>
+          <span class="subtle"
+            >Pull requests read {{ workspace.loadedAt | date: 'MMM d, y, HH:mm' }}</span
+          >
+        </div>
+        <div class="change-grid">
+          @for (change of store.inReview(); track change.id) {
+            <app-change-card [change]="change" />
+          } @empty {
+            <div class="empty-state">
+              <h3>Nothing in review</h3>
+              <p>No open pull request changes the specs.</p>
+            </div>
+          }
+        </div>
+      </section>
     }
     @if (view() === 'overview' || view() === 'changes' || view() === 'archive') {
       <section>
@@ -174,8 +199,11 @@
                 ><app-icon [name]="doc.format === 'yaml' ? 'code' : 'spec'"
               /></span>
               <div>
-                <strong>{{ doc.title }}</strong
-                ><small>{{ doc.path }}</small>
+                <strong>{{ doc.title }}</strong>
+                @if (doc.pullRequest; as number) {
+                  <span class="pull-tag">PR #{{ number }}</span>
+                }
+                <small>{{ store.repositoryPath(doc) }}</small>
               </div>
               <span class="row-meta">{{ doc.modified | date: 'MMM d' }}</span
               ><app-icon class="row-arrow" name="arrow-right"

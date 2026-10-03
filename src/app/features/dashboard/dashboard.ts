@@ -80,7 +80,7 @@ export class Dashboard {
     const terms = this.store.query().trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
     return (this.store.workspace()?.documents ?? [])
       .filter((doc) => {
-        const haystack = (doc.path + ' ' + doc.content).toLocaleLowerCase();
+        const haystack = (this.store.repositoryPath(doc) + ' ' + doc.content).toLocaleLowerCase();
         return terms.every((term) => haystack.includes(term));
       })
       .map((doc) => ({ doc, excerpt: excerpt(doc.content, terms) }));

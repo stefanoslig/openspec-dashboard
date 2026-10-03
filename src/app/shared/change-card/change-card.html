@@ -1,32 +1,61 @@
-<a class="change-card" routerLink="/artifact" [queryParams]="{ path: firstDocument() }">
-  <div class="card-top">
-    <span
-      class="badge"
-      [class.in-progress]="change().status === 'In progress'"
-      [class.complete]="change().status === 'Complete'"
-      >{{ change().status }}</span
-    >
-    @if (change().modified; as modified) {
-      <span class="card-date">Updated {{ modified | date: 'MMM d' }}</span>
-    }
-  </div>
-  <h3>{{ change().title }}</h3>
-  <p>{{ change().summary }}</p>
-  <div class="card-progress">
-    <div>
-      <span>{{ change().total ? 'Task progress' : 'Taking shape' }}</span
-      ><strong>{{
-        change().total ? change().completed + ' / ' + change().total : 'No tasks yet'
-      }}</strong>
+<div class="change-card">
+  <a
+    class="card-main"
+    [routerLink]="page() ? '/change' : '/artifact'"
+    [queryParams]="page() ? { id: change().id, path: null } : { path: firstDocument(), id: null }"
+  >
+    <div class="card-top">
+      <span class="card-badges">
+        <span
+          class="badge"
+          [class.in-progress]="change().status === 'In progress'"
+          [class.complete]="change().status === 'Complete'"
+          >{{ change().status }}</span
+        >
+        @if (pull()?.draft) {
+          <span class="badge">Draft pull request</span>
+        }
+      </span>
+      @if (change().modified; as modified) {
+        <span class="card-date">Updated {{ modified | date: 'MMM d' }}</span>
+      }
     </div>
-    <progress
-      [value]="change().completed"
-      [max]="change().total || 1"
-      [attr.aria-label]="change().title + ' task progress'"
-    ></progress>
-  </div>
-  <div class="card-bottom">
-    <span>{{ count() }} {{ count() === 1 ? 'document' : 'documents' }}</span
-    ><span class="card-open">Open <app-icon name="arrow-right" /></span>
-  </div>
-</a>
+    <h3>{{ change().title }}</h3>
+    <p>{{ change().summary }}</p>
+    @if (kinds().length || review().label) {
+      <ul class="card-kinds" aria-label="Requirement changes and review">
+        @for (entry of kinds(); track entry.kind) {
+          <li [class]="entry.kind">{{ entry.count }} {{ entry.kind }}</li>
+        }
+        @if (review().label) {
+          <li class="review" [class.open]="review().open">{{ review().label }}</li>
+        }
+      </ul>
+    }
+    <div class="card-progress">
+      <div>
+        <span>{{ change().total ? 'Task progress' : 'Taking shape' }}</span
+        ><strong>{{
+          change().total ? change().completed + ' / ' + change().total : 'No tasks yet'
+        }}</strong>
+      </div>
+      <progress
+        [value]="change().completed"
+        [max]="change().total || 1"
+        [attr.aria-label]="change().title + ' task progress'"
+      ></progress>
+    </div>
+    <div class="card-bottom">
+      <span>{{ count() }} {{ count() === 1 ? 'document' : 'documents' }}</span
+      ><span class="card-open">Open <app-icon name="arrow-right" /></span>
+    </div>
+  </a>
+  @if (pull(); as item) {
+    <a class="card-pull" [href]="item.url" target="_blank" rel="noopener noreferrer"
+      ><strong>PR #{{ item.number }}</strong
+      ><span class="pull-title">{{ item.title }}</span
+      ><span>by {{ item.author }}</span
+      ><app-icon name="external"
+    /></a>
+  }
+</div>

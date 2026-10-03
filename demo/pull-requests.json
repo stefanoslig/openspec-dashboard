@@ -1,0 +1,97 @@
+[
+  {
+    "number": 128,
+    "title": "Let editors invite viewers",
+    "url": "https://github.example/atlas/atlas/pull/128",
+    "author": "mara",
+    "draft": false,
+    "branch": "editors-invite-viewers",
+    "commit": "4f9d2c7a1b8e3d6f5a0c9b8e7d6c5b4a3f2e1d0c",
+    "updatedAt": "2026-10-01T15:20:00Z",
+    "files": [
+      {
+        "path": "changes/let-editors-invite-viewers/proposal.md",
+        "content": "# Let editors invite viewers\n\n## Why\n\nOwners are a bottleneck for read-only access. Editors already know who needs to follow a project, so let them invite viewers themselves.\n\n## What changes\n\n- Editors can invite people as viewers.\n- Owners still decide who edits and who manages the project.\n- Viewer access gets a clearer name in the spec.\n\nRead the [requirements](specs/projects/access/spec.md), or the [access spec](../../specs/projects/access/spec.md) as it is published today.\n",
+        "modified": null
+      },
+      {
+        "path": "changes/let-editors-invite-viewers/specs/projects/access/spec.md",
+        "content": "# Access changes\n\n## ADDED Requirements\n\n### Requirement: Editors can invite viewers\n\nThe system SHALL allow editors to invite people with the viewer role.\n\n#### Scenario: An editor invites a viewer\n\n- **WHEN** an editor sends an invitation with the viewer role\n- **THEN** the invitation is created\n\n#### Scenario: An editor tries to invite an editor\n\n- **WHEN** an editor sends an invitation with the editor role\n- **THEN** the system refuses and explains that only owners can add editors\n\n## MODIFIED Requirements\n\n### Requirement: Owners manage membership\n\nThe system SHALL reserve role changes and removals for project owners.\n\n#### Scenario: An editor opens project settings\n\n- **WHEN** an editor opens the people settings\n- **THEN** membership is visible, and viewers can be invited, but roles cannot be changed\n\n## RENAMED Requirements\n\n- FROM: `### Requirement: Viewers have read access`\n- TO: `### Requirement: Viewers can read documents`\n",
+        "modified": null
+      },
+      {
+        "path": "changes/let-editors-invite-viewers/tasks.md",
+        "content": "# Implementation tasks\n\n## 1. Permissions\n\n- [x] 1.1 Allow editors to create viewer invitations.\n- [x] 1.2 Keep role changes and removals with owners.\n\n## 2. People settings\n\n- [ ] 2.1 Show the invite form to editors, limited to the viewer role.\n- [ ] 2.2 Verify that an editor cannot invite another editor.\n",
+        "modified": null
+      }
+    ],
+    "threads": [
+      {
+        "url": "https://github.example/atlas/atlas/pull/128#discussion_r1",
+        "path": "changes/let-editors-invite-viewers/specs/projects/access/spec.md",
+        "line": 28,
+        "resolved": false,
+        "outdated": false,
+        "comments": [
+          {
+            "author": "ivo",
+            "body": "Can an editor also revoke an invitation they sent, or does that stay with owners?",
+            "createdAt": "2026-09-30T09:12:00Z",
+            "url": "https://github.example/atlas/atlas/pull/128#discussion_r1"
+          },
+          {
+            "author": "mara",
+            "body": "With owners for now. I will add a scenario so that it is written down.",
+            "createdAt": "2026-09-30T11:40:00Z",
+            "url": "https://github.example/atlas/atlas/pull/128#discussion_r2"
+          }
+        ],
+        "omitted": 0
+      },
+      {
+        "url": "https://github.example/atlas/atlas/pull/128#discussion_r3",
+        "path": "changes/let-editors-invite-viewers/specs/projects/access/spec.md",
+        "line": 17,
+        "resolved": true,
+        "outdated": false,
+        "comments": [
+          {
+            "author": "lena",
+            "body": "\"Refuses\" was vague in the first draft. What does the editor see?",
+            "createdAt": "2026-09-29T14:05:00Z",
+            "url": "https://github.example/atlas/atlas/pull/128#discussion_r3"
+          },
+          {
+            "author": "mara",
+            "body": "Reworded: the system now explains that only owners can add editors.",
+            "createdAt": "2026-09-29T16:30:00Z",
+            "url": "https://github.example/atlas/atlas/pull/128#discussion_r4"
+          }
+        ],
+        "omitted": 0
+      },
+      {
+        "url": "https://github.example/atlas/atlas/pull/128#discussion_r5",
+        "path": "changes/let-editors-invite-viewers/proposal.md",
+        "line": 5,
+        "resolved": true,
+        "outdated": false,
+        "comments": [
+          {
+            "author": "sofia",
+            "body": "Agreed on the direction. Do owners need a notice when an editor invites someone?",
+            "createdAt": "2026-09-29T08:20:00Z",
+            "url": "https://github.example/atlas/atlas/pull/128#discussion_r5"
+          },
+          {
+            "author": "mara",
+            "body": "Not in this change. The people settings already list who invited whom.",
+            "createdAt": "2026-09-29T09:02:00Z",
+            "url": "https://github.example/atlas/atlas/pull/128#discussion_r6"
+          }
+        ],
+        "omitted": 0
+      }
+    ]
+  }
+]

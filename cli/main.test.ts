@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { test } from 'node:test';
@@ -12,6 +13,8 @@ test('prints usage', () => {
   const result = run('--help');
   assert.equal(result.status, 0);
   assert.match(result.stdout, /openspec-desk export \[path\]/);
+  assert.match(result.stdout, /^  openspec-desk export .*\[--pull-requests\]/m);
+  assert.match(result.stdout, /^  --pull-requests  \S/m);
 });
 
 test('exits with the reason when the workspace or the arguments are wrong', () => {
@@ -25,4 +28,14 @@ test('exits with the reason when the workspace or the arguments are wrong', () =
     assert.equal(result.status, 1, args.join(' '));
     assert.match(result.stderr, /--help/);
   }
+});
+
+test('accepts --pull-requests for an export of a repository only', () => {
+  const server = run('--pull-requests');
+  assert.equal(server.status, 1);
+  assert.match(server.stderr, /^--pull-requests applies to export only\.\n.*--help/);
+  const sample = run('export', '--demo', '--pull-requests', '--out', 'openspec-desk-no-site');
+  assert.equal(sample.status, 1);
+  assert.match(sample.stderr, /^--pull-requests cannot be combined with --demo\.\n.*--help/);
+  assert.equal(existsSync(path.join(tmpdir(), 'openspec-desk-no-site')), false);
 });

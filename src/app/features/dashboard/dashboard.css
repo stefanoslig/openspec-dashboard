@@ -147,6 +147,16 @@ section {
   font-weight: 600;
   overflow-wrap: anywhere;
 }
+.pull-tag {
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: var(--accent);
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
 .document-row small {
   display: block;
   color: var(--muted);

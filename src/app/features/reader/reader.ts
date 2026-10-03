@@ -15,13 +15,13 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import type { Artifact } from '../../../../cli/workspace.model';
 import { WorkspaceStore } from '../../core/workspace-store';
 import { renderMarkdown } from '../../core/render-markdown';
+import {
+  ChangeOutline,
+  outlineOf,
+  type OutlineGroup,
+} from '../../shared/change-outline/change-outline';
 import { Icon } from '../../shared/icon/icon';
 
-interface Entry {
-  path: string;
-  label: string;
-  note?: string;
-}
 // Where the "Hide completed" choice is kept between visits.
 const hideDoneKey = 'openspec-desk.hide-done';
 // Past this many headings, the outline shows scenarios only for the requirement being read.
@@ -29,7 +29,7 @@ const longOutline = 18;
 
 @Component({
   selector: 'app-reader',
-  imports: [RouterLink, DatePipe, I18nPluralPipe, Icon],
+  imports: [RouterLink, DatePipe, I18nPluralPipe, ChangeOutline, Icon],
   templateUrl: './reader.html',
   styleUrl: './reader.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -49,52 +49,35 @@ export class Reader {
       .workspace()
       ?.changes.find((change) => change.documents.includes(this.document()?.path ?? '')),
   );
+  /** The pull request the document was read from. */
+  protected readonly pull = computed(() => {
+    const doc = this.document();
+    return doc && this.store.pullRequestOf(doc);
+  });
   /** Capability name when the document is a published specification. */
   protected readonly capability = computed(
     () => /^specs\/(.+)\/spec\.md$/.exec(this.document()?.path ?? '')?.[1],
   );
-  protected readonly groups = computed((): { title: string; entries: Entry[] }[] => {
+  protected readonly groups = computed((): OutlineGroup[] => {
     const change = this.change();
     const documents = this.store.workspace()?.documents ?? [];
-    if (!change) {
-      const specs = this.capability() !== undefined;
-      return [
-        {
-          title: specs ? 'Specifications' : 'Workspace files',
-          entries: documents
-            .filter((doc) =>
-              specs ? /^specs\/.+\/spec\.md$/.test(doc.path) : !/^(specs|changes)\//.test(doc.path),
-            )
-            .map((doc) => ({
-              path: doc.path,
-              label: specs ? doc.path.slice('specs/'.length, -'/spec.md'.length) : doc.path,
-            })),
-        },
-      ];
-    }
-    const byPath = new Map(documents.map((doc) => [doc.path, doc]));
-    const files: Entry[] = [];
-    const deltas: Entry[] = [];
-    const others: Entry[] = [];
-    for (const path of change.documents) {
-      const doc = byPath.get(path);
-      if (!doc) continue;
-      const relative = path.slice(change.id.length + 1);
-      const spec = /^specs\/(.+)\/spec\.md$/.exec(relative);
-      if (spec) deltas.push({ path, label: spec[1] });
-      else if (doc.format === 'yaml') others.push({ path, label: relative });
-      else
-        files.push({
-          path,
-          label: doc.title,
-          ...(doc.total ? { note: doc.completed + ' / ' + doc.total } : {}),
-        });
-    }
+    if (change) return outlineOf(change, documents);
+    const specs = this.capability() !== undefined;
     return [
-      { title: 'In this change', entries: files },
-      { title: 'Spec changes', entries: deltas },
-      { title: 'Other files', entries: others },
-    ].filter((group) => group.entries.length);
+      {
+        title: specs ? 'Specifications' : 'Workspace files',
+        entries: documents
+          .filter((doc) =>
+            specs
+              ? /^specs\/.+\/spec\.md$/.test(doc.path)
+              : doc.pullRequest === undefined && !/^(specs|changes)\//.test(doc.path),
+          )
+          .map((doc) => ({
+            path: doc.path,
+            label: specs ? doc.path.slice('specs/'.length, -'/spec.md'.length) : doc.path,
+          })),
+      },
+    ];
   });
   readonly #neighbours = computed(() => {
     const entries = this.groups().flatMap((group) => group.entries);
@@ -239,8 +222,13 @@ export class Reader {
       }
       const resolved = new URL(href, 'https://workspace.local/openspec/' + this.document()!.path);
       if (resolved.origin !== 'https://workspace.local') return;
-      const path = decodeURIComponent(resolved.pathname.replace(/^\/openspec\//, ''));
-      if (!this.store.workspace()?.documents.some((doc) => doc.path === path)) {
+      let path = decodeURIComponent(resolved.pathname.replace(/^\/openspec\//, ''));
+      const known = (candidate: string) =>
+        this.store.workspace()?.documents.some((doc) => doc.path === candidate);
+      // A pull request document may link to a document of the published branch.
+      const prefix = /^\.pulls\/\d+\//.exec(path)?.[0] ?? '';
+      if (!known(path) && known(path.slice(prefix.length))) path = path.slice(prefix.length);
+      if (!known(path)) {
         this.linkWarning.set('This link points outside the loaded OpenSpec artifacts: ' + href);
         return;
       }
