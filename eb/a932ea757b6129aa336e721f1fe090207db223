@@ -1,0 +1,16 @@
+package-lock.json
+  h_0cc28ef96e4406 3,9
+package.json
+  h_0cc28ef96e4406 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "eba932ea757b6129aa336e721f1fe090207db223",
+  "prompts": {},
+  "humans": {
+    "h_0cc28ef96e4406": {
+      "author": "stefanoslig <stefanoslignos@gmail.com>"
+    }
+  }
+}
