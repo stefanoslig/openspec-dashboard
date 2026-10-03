@@ -1,0 +1,73 @@
+openspec/changes/show-scenario-test-evidence/.openspec.yaml
+  s_d2d0641f200991::t_be57cc86483b7a 1-2
+openspec/changes/show-scenario-test-evidence/proposal.md
+  s_d2d0641f200991::t_06cb8c418d82da 1-34
+openspec/changes/show-scenario-test-evidence/tasks.md
+  s_d2d0641f200991::t_9380312311ac57 1-4,6-43
+  s_d2d0641f200991::t_b6c59c5367e169 5
+openspec/changes/add-review-comment-links/tasks.md
+  s_5ce164e562ad1a::t_35c1eca3567488 1-16
+openspec/changes/show-scenario-test-evidence/specs/scenario-test-evidence/spec.md
+  s_d2d0641f200991::t_2760de49a4ae94 1-63,65-66,73-180,182-220
+  s_d2d0641f200991::t_8fec4df2c26fb5 64,67-72
+  s_d2d0641f200991::t_7c3e8be9911ca5 181
+playwright.screenshots.config.ts
+  s_303aa91b238696::t_4cf8a63eb9b3a4 1-8
+openspec/changes/add-review-comment-links/.openspec.yaml
+  s_5ce164e562ad1a::t_e63bbe31d4c75c 1-2
+openspec/changes/add-review-comment-links/specs/review-comment-links/spec.md
+  s_5ce164e562ad1a::t_1b867a2dca510a 1-10,12-100
+  s_5ce164e562ad1a::t_669900fcd76931 11
+openspec/changes/show-scenario-test-evidence/design.md
+  s_d2d0641f200991::t_8fec4df2c26fb5 21,40-41,98,100-101,160
+  s_d2d0641f200991::t_15eb54efad6420 80-86,139-147
+  s_d2d0641f200991::t_7c6a25ddac2a94 1-20,22-39,42-79,87-97,99,102-138,148-159,161-173
+README.md
+  s_303aa91b238696::t_07a346655671b7 39
+  s_303aa91b238696::t_2f0888427c4b4a 23-38,40-58
+  s_303aa91b238696::t_08a00e14d2779c 228-236
+  s_303aa91b238696::t_3fbf622f503e54 14
+openspec/changes/add-review-comment-links/design.md
+  s_5ce164e562ad1a::t_35c1eca3567488 1-22
+package.json
+  s_303aa91b238696::t_525fdae160749b 39-40
+tests/readme-screenshots.ts
+  s_303aa91b238696::t_9d6d8e3938691e 28
+  s_303aa91b238696::t_ab8e68c99eb6ab 1-21,24-27,29-36
+  s_303aa91b238696::t_a987e13ea5af0d 22-23
+openspec/changes/add-review-comment-links/proposal.md
+  s_5ce164e562ad1a::t_669900fcd76931 30
+  s_5ce164e562ad1a::t_1b867a2dca510a 1-29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "264645788a3b9fe38118596b934b3528d2043749",
+  "prompts": {},
+  "sessions": {
+    "s_303aa91b238696": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d841af39-10ac-43d4-995e-1fd4c9b0b296",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "stefanoslig <stefanoslignos@gmail.com>"
+    },
+    "s_5ce164e562ad1a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1031b-2a3c-7183-8835-66fd0f3d2f72",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "stefanoslig <stefanoslignos@gmail.com>"
+    },
+    "s_d2d0641f200991": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a102a3-64dc-7e82-994f-c05f40918584",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "stefanoslig <stefanoslignos@gmail.com>"
+    }
+  }
+}
