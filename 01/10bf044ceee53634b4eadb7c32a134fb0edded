@@ -1,0 +1,219 @@
+openspec/changes/show-in-flight-changes/proposal.md
+  s_2b089e0293628b::t_a5f113dd57ae53 15
+  s_2b089e0293628b::t_a8d5faae88a33b 1-11,13-14,16-34,36
+  s_2b089e0293628b::t_f80861f706591c 12
+  s_2b089e0293628b::t_b858a51f7b83f0 35
+cli/delta.test.ts
+  s_2b089e0293628b::t_fbc27e55337efa 1-222
+src/app/shared/review-thread/review-thread.ts
+  s_2b089e0293628b::t_c39e1e067d0011 1-27
+openspec/changes/show-in-flight-changes/design.md
+  s_2b089e0293628b::t_6d90c61aaa5d87 164,201
+  s_2b089e0293628b::t_8d33258d3231c5 1-31,33-135,137-152,154,156-159,163,165-166,169,178-180,184-185,197-198,202-209,211-220
+  s_2b089e0293628b::t_87bd4ced7c97b2 136
+  s_2b089e0293628b::t_7051416e332de2 32,153,155,160-162,167-168,170-177,181-183,186-196,199-200,210,221
+src/app/features/change/change.ts
+  s_2b089e0293628b::t_97d50100f2754d 1-6,8-9,11-41,43-56,69-71,83-84,102,105-106
+  s_2b089e0293628b::t_c39e1e067d0011 10,42,57-68,72-74,81-82,85-90,92-93,95-101
+  s_2b089e0293628b::t_8afbf239cfb9d5 75-80,91,94
+  s_2b089e0293628b::t_9b07a5b6bff0ed 7,103-104
+src/app/features/dashboard/dashboard.html
+  s_2b089e0293628b::t_dab499adf13f21 33-37,202-206
+  s_2b089e0293628b::t_200d1dccee9ed5 97-118
+cli/export.ts
+  s_2b089e0293628b::t_3a7acaac0ca6d8 4,13,19-20,27,49-87,89-91,93-102,111-118,129,133
+  s_2b089e0293628b::t_6d90c61aaa5d87 6-12,88,92
+cli/workspace.model.ts
+  s_2b089e0293628b::t_56a1f99b31bcf5 13-70,84-86,107-108
+src/app/shared/change-outline/change-outline.css
+  s_2b089e0293628b::t_ca71c84e572236 1-84
+src/app/shared/change-card/change-card.ts
+  s_2b089e0293628b::t_200d1dccee9ed5 1,5,16,27-28
+  s_2b089e0293628b::t_9b07a5b6bff0ed 25-26
+tests/dashboard.spec.ts
+  s_2b089e0293628b::t_e2652bb246a314 4,158,433-541,546-575,615-628,645-695,714-726
+  s_2b089e0293628b::t_2efe9e3e79a9af 291-292
+  s_2b089e0293628b::t_65e26c355fd80a 93,226-230,254,264-287,290,293-328,330-432,712-713
+  s_2b089e0293628b::t_86bdac27ff38c5 329
+  s_2b089e0293628b::t_116a6581e4d1d9 288-289
+  s_2b089e0293628b::t_f47ed0e3d4b430 542-545,576-577,580-606,610-611,629-644
+  s_2b089e0293628b::t_dd02b5a707850d 578-579,607-609,612-614
+package.json
+  s_2b089e0293628b::t_20d6cf86deb2f9 59
+  s_2b089e0293628b::t_7a2bdb714c8c5f 37
+tsconfig.app.json
+  s_2b089e0293628b::t_7a2bdb714c8c5f 12-13
+src/app/features/change/change.css
+  s_2b089e0293628b::t_f71e68aab004db 146-167
+  s_2b089e0293628b::t_c39e1e067d0011 1-47
+  s_2b089e0293628b::t_bd2ccdbf090386 114-116,120,168,176-177,183
+  s_2b089e0293628b::t_97d50100f2754d 48-113,117-119,121-145,169-175,178-182,184-225
+src/app/shared/review-thread/review-thread.html
+  s_2b089e0293628b::t_c39e1e067d0011 1-35
+README.md
+  s_2b089e0293628b::t_3693dabfdda7c3 151
+  s_2b089e0293628b::t_4c99b80b3873c7 82,84,143
+  s_2b089e0293628b::t_4c127fa6271a92 157,220
+  s_2b089e0293628b::t_835238f5be96b1 158-160,165,214-219
+  s_2b089e0293628b::t_7c2701297e734f 51-81,83,85-88,100,102-105,109,126-128,136,142,145
+  s_2b089e0293628b::t_6d90c61aaa5d87 101,138-140
+  s_2b089e0293628b::t_8afbf239cfb9d5 141
+  s_2b089e0293628b::t_5433425c079b1e 144,152
+src/app/core/render-markdown.ts
+  s_2b089e0293628b::t_1d606c4e090732 67-77,133,150,249-252
+src/app/core/requirement-diff.ts
+  s_2b089e0293628b::t_8afbf239cfb9d5 73-74,137-138
+  s_2b089e0293628b::t_7a2bdb714c8c5f 121-124,192-198
+  s_2b089e0293628b::t_87da97751a0240 36-38
+  s_2b089e0293628b::t_da3d2336628426 1-35,39-72,75-86,118-120,125-129,131-136,139-191,199-201
+  s_2b089e0293628b::t_117461e3582713 87-89,95-96,98-109,114-117,130
+  s_2b089e0293628b::t_116a6581e4d1d9 90-94,97,110-113
+src/app/app.routes.ts
+  s_2b089e0293628b::t_1d606c4e090732 13-17
+src/app/core/workspace-store.ts
+  s_2b089e0293628b::t_57e4d778621158 3-9,11-13,38,40-47,59-70,84-91,93,95
+  s_2b089e0293628b::t_200d1dccee9ed5 71-83
+  s_2b089e0293628b::t_9b07a5b6bff0ed 15-21
+  s_2b089e0293628b::t_1d606c4e090732 10
+  s_2b089e0293628b::t_578c876a75d2ae 14
+src/app/shared/change-card/change-card.html
+  s_2b089e0293628b::t_200d1dccee9ed5 1-20,22-33,35-50,52-61
+  s_2b089e0293628b::t_9b07a5b6bff0ed 21
+cli/tsconfig.test.json
+  s_2b089e0293628b::t_7a2bdb714c8c5f 3-4
+openspec/changes/show-in-flight-changes/specs/pull-request-changes/spec.md
+  s_2b089e0293628b::t_8cfe73b73f0ff5 1-187
+cli/reader.test.ts
+  s_2b089e0293628b::t_77cc5c91fb31ae 13,41-75
+  s_2b089e0293628b::t_794b5e0fffcf79 20-34
+  s_2b089e0293628b::t_38a78e92c4a9db 35-38
+cli/delta.ts
+  s_2b089e0293628b::t_e1dde1c3761650 1-42,44-104,107-120,127-153
+  s_2b089e0293628b::t_38a78e92c4a9db 43,105-106,121-126
+src/app/core/requirement-diff.test.ts
+  s_2b089e0293628b::t_7a2bdb714c8c5f 28-31,88-95,103-106
+  s_2b089e0293628b::t_117461e3582713 121-133
+  s_2b089e0293628b::t_27693b9d6ee84b 1-27,32-87,96-102,107-110,116-120,134-160,170-172
+  s_2b089e0293628b::t_f47ed0e3d4b430 112-115
+  s_2b089e0293628b::t_51cf4ab8596e80 111,161-169
+src/app/features/change/change.html
+  s_2b089e0293628b::t_c39e1e067d0011 12-26,51-52,54-56,157-159,162-173
+  s_2b089e0293628b::t_2efe9e3e79a9af 3,65
+  s_2b089e0293628b::t_97d50100f2754d 1-2,4-7,11,27-50,53,57-64,66-98,100-156,160-161,174-188
+  s_2b089e0293628b::t_70d14b10a05e53 8-10
+  s_2b089e0293628b::t_f71e68aab004db 99
+src/app/shared/workspace-navigation/workspace-navigation.ts
+  s_2b089e0293628b::t_200d1dccee9ed5 33
+  s_2b089e0293628b::t_1d606c4e090732 40
+src/app/shared/change-card/change-card.css
+  s_2b089e0293628b::t_200d1dccee9ed5 15-21,33-37,86-88,90-95,133,136-168
+  s_2b089e0293628b::t_9b07a5b6bff0ed 57-85,89
+cli/export.test.ts
+  s_2b089e0293628b::t_f47ed0e3d4b430 127-137,139
+  s_2b089e0293628b::t_477d180c8fbf24 69
+  s_2b089e0293628b::t_77cc5c91fb31ae 158-162
+  s_2b089e0293628b::t_1b079823d5b4b7 2,24-68,70-90,173-327
+openspec/changes/show-in-flight-changes/specs/behaviour-changes/spec.md
+  s_2b089e0293628b::t_a192ecd1908906 1-86,88-174
+  s_2b089e0293628b::t_34dcc0f759dd9c 87
+cli/main.test.ts
+  s_2b089e0293628b::t_1b079823d5b4b7 3,16-17,32-40
+  s_2b089e0293628b::t_7becd131086655 41
+cli/github.ts
+  s_2b089e0293628b::t_3bd2d8de681375 1-61,64-89,94-117,123-161,163-172,176,179,181-196,198-263,266-336
+  s_2b089e0293628b::t_c944a4af6e4e5b 264-265
+  s_2b089e0293628b::t_9dd8f3f88776d9 90-93,197
+  s_2b089e0293628b::t_8afbf239cfb9d5 118-122,174-175
+  s_2b089e0293628b::t_51cf4ab8596e80 162,173,177-178,180
+  s_2b089e0293628b::t_a9d67b25aba0d5 62-63
+src/app/shared/change-outline/change-outline.ts
+  s_2b089e0293628b::t_ca71c84e572236 2-3,5-54,56-57,63
+  s_2b089e0293628b::t_1d606c4e090732 1,4,55,58-62
+openspec/changes/show-in-flight-changes/.openspec.yaml
+  s_2b089e0293628b::t_c3e708b3a02282 1-2
+src/app/app.ts
+  s_2b089e0293628b::t_1d606c4e090732 25
+cli/reader.ts
+  s_2b089e0293628b::t_77cc5c91fb31ae 2,6,117-121,132
+  s_2b089e0293628b::t_3bd2d8de681375 16
+  s_2b089e0293628b::t_6d90c61aaa5d87 17-18,25
+cli/github.test.ts
+  s_2b089e0293628b::t_1c75e0d663ce94 1-179,186-260,264-269,275,287-309,316-319,326-330,336-338,343,348-355
+  s_2b089e0293628b::t_51cf4ab8596e80 180-185,261-263,270-274,276-285,310-315,320-325,331-335,339-342,344-347
+  s_2b089e0293628b::t_f47ed0e3d4b430 286
+demo/pull-requests.json
+  s_2b089e0293628b::t_77cc5c91fb31ae 1-97
+src/app/features/reader/reader.html
+  s_2b089e0293628b::t_dab499adf13f21 12-18,60,62-67
+  s_2b089e0293628b::t_ca71c84e572236 35-41
+  s_2b089e0293628b::t_57e4d778621158 80
+openspec/changes/show-in-flight-changes/specs/review-threads/spec.md
+  s_2b089e0293628b::t_c58ce5bfbb3fee 1-124
+src/app/features/reader/reader.ts
+  s_2b089e0293628b::t_ca71c84e572236 18-22,32,61,64-65,67-70,74-80
+  s_2b089e0293628b::t_dab499adf13f21 52-56,225-231
+  s_2b089e0293628b::t_8afbf239cfb9d5 71-73
+cli/parser.test.ts
+  s_2b089e0293628b::t_b5f6bfe240454d 103-132,137,142-203
+  s_2b089e0293628b::t_38a78e92c4a9db 133-136,138-141
+  s_2b089e0293628b::t_7695be912c5a57 204-363
+src/app/shared/review-thread/review-thread.css
+  s_2b089e0293628b::t_c39e1e067d0011 1-24,41-107
+  s_2b089e0293628b::t_117461e3582713 25-40
+src/app/shared/change-outline/change-outline.html
+  s_2b089e0293628b::t_ca71c84e572236 1-2,12-14,16-38
+  s_2b089e0293628b::t_2efe9e3e79a9af 6,15
+  s_2b089e0293628b::t_1d606c4e090732 3-5,7-11
+cli/main.ts
+  s_2b089e0293628b::t_1b079823d5b4b7 21
+  s_2b089e0293628b::t_d6fe5c98747c15 15,18-20,22,32,46-49,56
+demo/openspec/changes/add-project-invitations/specs/projects/access/spec.md
+  s_2b089e0293628b::t_1d01657d957e25 1-17
+openspec/changes/show-in-flight-changes/tasks.md
+  s_2b089e0293628b::t_835238f5be96b1 34
+  s_2b089e0293628b::t_382dfbd920b123 24
+  s_2b089e0293628b::t_87bd4ced7c97b2 40-41
+  s_2b089e0293628b::t_d65970560d3d63 6
+  s_2b089e0293628b::t_b0af7b41691640 32-33
+  s_2b089e0293628b::t_9b07a5b6bff0ed 14
+  s_2b089e0293628b::t_41b030da78e38b 23,25
+  s_2b089e0293628b::t_e2652bb246a314 31
+  s_2b089e0293628b::t_a9d67b25aba0d5 21
+  s_2b089e0293628b::t_e264f0ee60dea0 1-4,9-11,18-20,26-28,35,37
+  s_2b089e0293628b::t_1d01657d957e25 7
+  s_2b089e0293628b::t_391f70bb921d03 5
+  s_2b089e0293628b::t_4c127fa6271a92 15-17
+  s_2b089e0293628b::t_9b12cf0fcf6159 22
+  s_2b089e0293628b::t_38a78e92c4a9db 8
+  s_2b089e0293628b::t_ca71c84e572236 12
+  s_2b089e0293628b::t_1d606c4e090732 13
+  s_2b089e0293628b::t_c39e1e067d0011 29-30
+  s_2b089e0293628b::t_e620e66b8d4e2e 36
+  s_2b089e0293628b::t_e28ac4baa4ae05 38-39
+src/app/features/dashboard/dashboard.css
+  s_2b089e0293628b::t_dab499adf13f21 150-159
+cli/parser.ts
+  s_2b089e0293628b::t_d65970560d3d63 5-9,12-15,106-151,191-192,194,196-204,206,247,264-265
+  s_2b089e0293628b::t_c944a4af6e4e5b 10-11,29-30,157-174,208-220,233-235,241-242,266,268-298,323
+  s_2b089e0293628b::t_d7f8ec4c5ccf09 190,193,195,205
+src/app/features/dashboard/dashboard.ts
+  s_2b089e0293628b::t_8afbf239cfb9d5 83
+package-lock.json
+  s_2b089e0293628b::t_3c8888cceedd0e 30,3529-3538
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "0110bf044ceee53634b4eadb7c32a134fb0edded",
+  "prompts": {},
+  "sessions": {
+    "s_2b089e0293628b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d43cdb0d-a499-4b89-8730-f0e726774b74",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "stefanoslig <stefanoslignos@gmail.com>"
+    }
+  }
+}
