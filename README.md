@@ -11,7 +11,7 @@ Try the **[live demo](https://openspec-desk.vercel.app/)**, or open the same sam
 npx openspec-desk --demo
 ```
 
-![dashboard](./dashboard.png)
+![The overview of the sample workspace](docs/screenshots/overview.png)
 
 There are two ways to use it:
 
@@ -19,6 +19,42 @@ There are two ways to use it:
 - **As a static site:** one command in CI writes a folder of plain files. Host it behind your company's sign-in, and everyone can read the specs without a GitHub account.
 
 Both need only Node.js 22 or newer. The OpenSpec CLI is not required.
+
+## Features
+
+The overview, in the picture at the top, lists the active changes, the published specifications, the task counts, and the archives. Each feature below links to its page in the live demo.
+
+### Behaviour changes
+
+Each active change shows what it does to the published specs: its delta specs read as added, modified, removed, and renamed requirements, grouped by capability and compared with the published spec. A modified requirement shows the removed and the added words, scenario by scenario. A note marks a requirement that the published spec lacks or already has. [See it in the demo](https://openspec-desk.vercel.app/#/change?id=changes%2Fadd-project-invitations).
+
+![A modified requirement with its removed and added words](docs/screenshots/behaviour-changes.png)
+
+The same page groups the proposal, design, tasks, nested delta specs, and extra artifacts of the change.
+
+### Changes in review
+
+When the export read pull requests (see [Pull requests](#pull-requests)), an "In review" section lists the changes of open pull requests apart from those of the published branch, each with its pull request and the time the pull requests were read. A change that its pull request has already archived still counts as in review. Its behaviour changes are compared with the published branch.
+
+Review threads are shown read-only: a thread on a requirement with that requirement, the others under "Discussion". Each change states its unresolved threads ("3 open threads"), resolved threads are collapsed, and every thread links to GitHub for replies. [See it in the demo](https://openspec-desk.vercel.app/#/change?id=.pulls%2F128%2Fchanges%2Flet-editors-invite-viewers).
+
+![An open review thread below the requirement it belongs to](docs/screenshots/review-threads.png)
+
+### Search
+
+Full-text search across Markdown and YAML, including archived changes and pull request documents. Try it in the search box of [the demo](https://openspec-desk.vercel.app/).
+
+![Search results with the matching words marked](docs/screenshots/search.png)
+
+### Reader
+
+A Markdown reader with an outline, internal document links, tables, code blocks, and disabled task checkboxes. Every artifact also has a source view; YAML configuration and metadata are browsable too. [See it in the demo](https://openspec-desk.vercel.app/#/artifact?path=specs%2Fprojects%2Faccess%2Fspec.md).
+
+![A published specification in the reader](docs/screenshots/reader.png)
+
+Task progress excludes fenced examples. Published specs are only files under `openspec/specs/**/spec.md`; proposed specs remain under their change.
+
+The sample workspace is fictional, and so is its pull request. It is bundled with the package; the sample never contacts GitHub.
 
 ## Run locally
 
@@ -150,20 +186,6 @@ Upload the `site/` folder. Azure Static Web Apps, Cloudflare Pages with Cloudfla
 
 A workflow without `--pull-requests` still works, on GitHub Pages and on any other host: the `push` trigger alone, without the `pull-requests: read` permission and without a token. The site then shows the exported branch alone.
 
-## Reading
-
-- Overview of active changes, published specifications, task counts, and archives.
-- Change pages group proposal, design, tasks, nested delta specs, and extra artifacts.
-- Behaviour changes for every active change: its delta specs read as added, modified, removed, and renamed requirements, grouped by capability and compared with the published spec. A modified requirement shows the removed and the added words, scenario by scenario. A note marks a requirement that the published spec lacks or already has.
-- Changes in review, when the export read pull requests (see [Pull requests](#pull-requests)): an "In review" section lists the changes of open pull requests apart from those of the published branch, each with its pull request and the time the pull requests were read. A change that its pull request has already archived still counts as in review. Its behaviour changes are compared with the published branch.
-- Review threads on a change in review, read-only: a thread on a requirement is shown with that requirement, the others under "Discussion". Each change states its unresolved threads ("3 open threads"), resolved threads are collapsed, and every thread links to GitHub for replies.
-- Full-text search across Markdown and YAML, including archived changes and pull request documents.
-- Markdown reader with an outline, internal document links, tables, code blocks, and disabled task checkboxes.
-- Source view for every artifact; YAML configuration and metadata are also browsable.
-- Task progress excludes fenced examples. Published specs are only files under `openspec/specs/**/spec.md`; proposed specs remain under their change.
-
-The sample workspace is fictional, and so is its pull request. It is bundled with the package; the sample never contacts GitHub.
-
 ## Development
 
 Requires Node.js 22.22.3 or newer (Angular 22) and npm.
@@ -202,6 +224,15 @@ npm run test:ui                   # browser tests against the built package
 ```
 
 The unit tests cover parsing, folder boundaries and size limits, the local server's request checks, and the export. The browser tests cover reading, search, links, refresh, the phone layout, and an exported site served under a subpath by a host without fallback pages.
+
+### Screenshots
+
+```sh
+npm run build
+npm run screenshots               # writes the pictures of this README to docs/screenshots/
+```
+
+The pictures come from the sample workspace in the built package. Take them again after a change to the interface.
 
 ### Release
 

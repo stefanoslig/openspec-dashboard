@@ -36,7 +36,8 @@
     "dev": "ng serve --host 127.0.0.1 --port 4200 --proxy-config proxy.conf.json",
     "test": "tsc -p cli/tsconfig.test.json && node --test \"cli/*.test.ts\" \"src/**/*.test.ts\"",
     "test:ui": "playwright test",
-    "format": "prettier --write src cli tests README.md package.json angular.json proxy.conf.json playwright.config.ts",
+    "screenshots": "playwright test --config playwright.screenshots.config.ts",
+    "format": "prettier --write src cli tests README.md package.json angular.json proxy.conf.json playwright.config.ts playwright.screenshots.config.ts",
     "prepack": "npm run build"
   },
   "packageManager": "npm@11.12.1",
