@@ -1,0 +1,23 @@
+openspec/specs/review-threads/spec.md
+  s_1201e61a2cdce2::t_552741606bbaa7 1-124
+openspec/specs/behaviour-changes/spec.md
+  s_1201e61a2cdce2::t_552741606bbaa7 1-174
+openspec/specs/pull-request-changes/spec.md
+  s_1201e61a2cdce2::t_552741606bbaa7 1-187
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "24b026d0548f3d03db1e3ee479288e77caf68b27",
+  "prompts": {},
+  "sessions": {
+    "s_1201e61a2cdce2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8c5c5992-f312-4761-be7b-8773c1accc82",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "stefanoslig <stefanoslignos@gmail.com>"
+    }
+  }
+}
