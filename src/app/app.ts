@@ -1,9 +1,18 @@
-import { ChangeDetectionStrategy, Component, ElementRef, inject, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { ViewportScroller } from '@angular/common';
 import { Router, RouterOutlet } from '@angular/router';
 import { WorkspaceStore } from './core/workspace-store';
 import { Icon } from './shared/icon/icon';
 import { WorkspaceNavigation } from './shared/workspace-navigation/workspace-navigation';
+type Theme = 'light' | 'dark';
+const THEME_KEY = 'openspec-desk.theme';
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, WorkspaceNavigation, Icon],
@@ -16,9 +25,10 @@ export class App {
   protected readonly store = inject(WorkspaceStore);
   readonly #router = inject(Router);
   private readonly searchBox = viewChild.required<ElementRef<HTMLInputElement>>('searchBox');
+  protected readonly theme = signal<Theme>(this.#preferredTheme());
   constructor() {
     // Anchors stop below the sticky top bar; matches scroll-margin-top in styles.css.
-    inject(ViewportScroller).setOffset([0, 84]);
+    inject(ViewportScroller).setOffset([0, 76]);
   }
   protected search(event: Event): void {
     this.store.query.set((event.target as HTMLInputElement).value);
@@ -27,6 +37,26 @@ export class App {
   protected clearSearch(): void {
     this.store.query.set('');
     this.searchBox().nativeElement.focus();
+  }
+  protected toggleTheme(): void {
+    const theme = this.theme() === 'dark' ? 'light' : 'dark';
+    this.theme.set(theme);
+    document.documentElement.dataset['theme'] = theme;
+    try {
+      localStorage.setItem(THEME_KEY, theme);
+    } catch {
+      // Private windows may refuse storage; the choice then lasts for the session.
+    }
+  }
+  // Saved choice first, else the OS setting. index.html applies the saved one before paint.
+  #preferredTheme(): Theme {
+    try {
+      const stored = localStorage.getItem(THEME_KEY);
+      if (stored === 'light' || stored === 'dark') return stored;
+    } catch {
+      // Private windows may refuse storage.
+    }
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   }
   /** "/" jumps to the search box, Escape empties it. */
   protected shortcut(event: KeyboardEvent): void {

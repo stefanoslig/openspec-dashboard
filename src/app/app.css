@@ -6,9 +6,9 @@
   position: fixed;
   top: -60px;
   left: 20px;
-  padding: 10px 14px;
+  padding: 8px 12px;
   z-index: 20;
-  border-radius: 8px;
+  border-radius: var(--radius);
   background: var(--paper);
   box-shadow: var(--shadow);
 }
@@ -16,7 +16,7 @@
   top: 12px;
 }
 .workspace-shell {
-  margin-left: 248px;
+  margin-left: 240px;
   flex: 1;
   min-width: 0;
   display: flex;
@@ -31,34 +31,40 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 40px;
-  gap: 20px;
-  background: color-mix(in srgb, var(--canvas) 86%, transparent);
-  backdrop-filter: blur(10px);
+  padding: 0 32px;
+  gap: 16px;
+  background: var(--canvas);
 }
 .search {
   display: flex;
   align-items: center;
-  gap: 10px;
-  width: min(520px, 100%);
-  height: 38px;
-  padding: 0 10px 0 12px;
+  gap: 8px;
+  width: min(560px, 100%);
+  height: 34px;
+  padding: 0 8px 0 10px;
   border: 1px solid var(--border);
-  border-radius: 9px;
+  border-radius: var(--radius);
   background: var(--paper);
   color: var(--muted);
   cursor: text;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+.search app-icon {
+  width: 16px;
+  height: 16px;
 }
 .search:focus-within {
-  border-color: var(--focus);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus) 22%, transparent);
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--green) 18%, transparent);
 }
 .search input {
   background: none;
   border: 0;
   padding: 0;
   flex: 1;
-  font-size: 14px;
+  font-size: 13.5px;
   outline: none;
   appearance: none;
 }
@@ -69,12 +75,12 @@
   color: var(--muted);
 }
 kbd {
-  font-family: var(--mono);
-  font-size: 12px;
+  font-size: 11px;
   line-height: 1;
-  padding: 4px 7px;
+  padding: 3px 6px;
   border: 1px solid var(--border);
-  border-radius: 5px;
+  border-radius: 3px;
+  background: var(--wash);
   color: var(--muted);
 }
 .clear-search {
@@ -82,7 +88,7 @@ kbd {
   place-items: center;
   border: 0;
   padding: 3px;
-  border-radius: 5px;
+  border-radius: 4px;
   background: none;
   color: var(--muted);
 }
@@ -93,28 +99,44 @@ kbd {
 .topbar-actions {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 6px;
 }
 .read-only {
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-right: 10px;
+  font-family: var(--mono);
+  font-size: 11px;
   letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--muted);
   white-space: nowrap;
+}
+.read-only::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
 }
 .icon-button {
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   padding: 0;
   background: transparent;
   border-color: transparent;
   color: var(--text-2);
 }
+.icon-button app-icon {
+  width: 17px;
+  height: 17px;
+}
 .icon-button:hover:not(:disabled) {
   background: var(--hover);
+  color: var(--text);
 }
 .spinning {
   animation: spin 0.9s linear infinite;
@@ -125,7 +147,7 @@ kbd {
   }
 }
 main {
-  padding: 36px 40px 56px;
+  padding: 28px 32px 48px;
   flex: 1;
   outline: none;
 }
@@ -136,23 +158,35 @@ main {
   color: var(--muted);
 }
 .repository-context {
-  margin-bottom: 24px;
-  padding-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 22px;
+  padding-bottom: 12px;
   border-bottom: 1px solid var(--border);
   font-family: var(--mono);
-  font-size: 12.5px;
-  color: var(--text-2);
+  font-size: 12px;
+  color: var(--muted);
   overflow-wrap: anywhere;
 }
+.repository-context::before {
+  content: '';
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--green);
+}
 .workspace-footer {
-  margin: 0 40px;
-  padding: 18px 0;
+  margin: 0 32px;
+  padding: 16px 0;
   border-top: 1px solid var(--border);
   display: flex;
   gap: 20px;
   justify-content: space-between;
   color: var(--muted);
-  font-size: 12px;
+  font-family: var(--mono);
+  font-size: 11.5px;
 }
 .workspace-footer > span:first-child {
   overflow-wrap: anywhere;
@@ -169,16 +203,16 @@ main {
 }
 @media (max-width: 950px) {
   .workspace-shell {
-    margin-left: 208px;
+    margin-left: 200px;
   }
   main {
-    padding: 28px 24px 48px;
+    padding: 24px 20px 44px;
   }
   .topbar {
-    padding: 0 24px;
+    padding: 0 20px;
   }
   .workspace-footer {
-    margin: 0 24px;
+    margin: 0 20px;
   }
   .workspace-footer > span:last-child {
     display: none;
@@ -195,7 +229,7 @@ main {
     padding: 0 16px;
   }
   main {
-    padding: 24px 16px 40px;
+    padding: 20px 16px 40px;
   }
   .workspace-footer {
     margin: 0 16px;

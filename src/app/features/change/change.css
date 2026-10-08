@@ -5,7 +5,7 @@
   gap: 4px 16px;
   margin: 10px 0 0;
   color: var(--text-2);
-  font-size: 14px;
+  font-size: 13.5px;
 }
 .pull a {
   display: inline-flex;
@@ -18,7 +18,9 @@
 }
 .pull strong {
   color: var(--green);
-  font-weight: 650;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  font-weight: 600;
 }
 .pull app-icon {
   width: 14px;
@@ -35,7 +37,7 @@
   color: var(--text-2);
 }
 .changes .discussion {
-  margin-top: 56px;
+  margin-top: 52px;
 }
 .changes .discussion:first-child,
 .changes .no-deltas + .discussion {
@@ -43,15 +45,15 @@
 }
 .changes .discussion > h2 {
   margin-top: 0;
-  font-size: 18px;
+  font-size: 17px;
 }
 .panel-title {
   grid-area: 1 / 1;
   margin: 0;
-  font-size: 15px;
+  font-size: 14px;
 }
 .changes .capability + .capability {
-  margin-top: 56px;
+  margin-top: 52px;
 }
 .changes .capability > h2 {
   display: flex;
@@ -61,15 +63,15 @@
   gap: 4px 16px;
   margin-top: 0;
   font-family: var(--mono);
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 600;
   letter-spacing: 0;
 }
 .changes .capability-link,
 .capability-new {
   font-family: var(--sans);
-  font-size: 13.5px;
-  font-weight: 550;
+  font-size: 12.5px;
+  font-weight: 600;
 }
 .changes .capability-link {
   display: inline-flex;
@@ -82,19 +84,19 @@
   text-underline-offset: 3px;
 }
 .capability-link app-icon {
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
 }
 .capability-new {
   color: var(--muted);
 }
 /* One requirement change, with a rule in the colour of its kind. */
 .changes .requirement {
-  --delta: var(--green);
+  --delta: var(--added);
   border-top: 0;
-  border-left: 3px solid var(--delta);
-  padding: 2px 0 2px 20px;
-  margin-bottom: 36px;
+  border-left: 2px solid var(--delta);
+  padding: 2px 0 2px 18px;
+  margin-bottom: 34px;
 }
 .changes .requirement:last-child {
   margin-bottom: 0;
@@ -115,33 +117,35 @@
 .changes .requirement > .previous-name,
 .changes .requirement > .change-note,
 .changes .comment-guide > .change-note {
-  font-size: 14.5px;
+  font-size: 14px;
   color: var(--text-2);
 }
 .changes .requirement > .change-note,
 .changes .comment-guide > .change-note {
   display: inline-block;
-  padding: 6px 12px;
+  padding: 5px 10px;
   border: 1px solid var(--amber-border);
-  border-radius: 8px;
+  border-radius: 4px;
   color: var(--amber);
   background: var(--amber-bg);
+  font-size: 13px;
 }
 /* Discussions start on GitHub: a link under each requirement, and how it works above them. */
 .changes .comment-guide {
-  margin-bottom: 40px;
-  font-size: 14.5px;
+  margin-bottom: 36px;
+  font-size: 14px;
   line-height: 1.55;
 }
 .changes .comment-guide details {
   border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--paper);
+  border-radius: var(--radius);
+  background: var(--wash);
 }
 .changes .comment-guide summary {
-  padding: 9px 14px;
-  border-radius: 10px;
+  padding: 8px 14px;
+  border-radius: var(--radius);
   color: var(--text-2);
+  font-size: 13px;
   font-weight: 600;
 }
 .changes .comment-guide summary:hover {
@@ -150,7 +154,7 @@
 .changes .comment-guide details[open] > summary {
   margin-bottom: 10px;
   border-bottom: 1px solid var(--border);
-  border-radius: 10px 10px 0 0;
+  border-radius: var(--radius) var(--radius) 0 0;
 }
 .changes .comment-guide details > :is(ol, p) {
   margin: 0 14px 10px;
@@ -164,14 +168,14 @@
   align-items: baseline;
   gap: 2px 14px;
   margin-bottom: 14px;
-  font-size: 13.5px;
+  font-size: 13px;
   color: var(--text-2);
 }
 .comment-action :is(a, button) {
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  font-weight: 550;
+  font-weight: 600;
 }
 .changes .comment-action a {
   text-decoration: none;
@@ -184,6 +188,7 @@
   border: 0;
   background: none;
   color: var(--muted);
+  font-size: inherit;
   cursor: not-allowed;
 }
 .comment-action app-icon {
@@ -197,8 +202,8 @@ del {
   padding: 1px 2px;
 }
 ins {
-  color: var(--green);
-  background: var(--accent);
+  color: var(--added);
+  background: color-mix(in srgb, var(--added) 14%, transparent);
   text-decoration: underline;
   text-decoration-thickness: 1.5px;
   text-underline-offset: 3px;
@@ -246,11 +251,12 @@ ins.part {
   display: inline-block;
   margin-bottom: 6px;
   text-decoration: none;
-  font-size: 11.5px;
-  font-weight: 650;
-  letter-spacing: 0.09em;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--green);
+  color: var(--added);
 }
 del.part {
   color: var(--text-2);
@@ -260,8 +266,8 @@ del.part .part-label {
 }
 ins.part > div,
 del.part > div {
-  border-radius: 10px;
-  outline: 1.5px solid color-mix(in srgb, var(--green) 45%, transparent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  outline: 1px solid color-mix(in srgb, var(--added) 45%, transparent);
 }
 del.part > div {
   outline-color: color-mix(in srgb, var(--red) 45%, transparent);
@@ -272,7 +278,7 @@ del.part > div {
 }
 .changes .lines:not(.steps) > li {
   margin: 0 0 10px;
-  font-size: 17px;
+  font-size: 16.5px;
 }
 .changes .scenario > .lines {
   margin-bottom: 0;
@@ -285,6 +291,6 @@ del.part > div {
 }
 @media (max-width: 600px) {
   .changes .requirement {
-    padding-left: 14px;
+    padding-left: 12px;
   }
 }

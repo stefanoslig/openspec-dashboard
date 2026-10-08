@@ -22,7 +22,7 @@ Both need only Node.js 22 or newer. The OpenSpec CLI is not required.
 
 ## Features
 
-The overview, in the picture at the top, lists the active changes, the published specifications, the task counts, and the archives. Each feature below links to its page in the live demo.
+The overview, in the picture at the top, lists the active changes, the published specifications, the task counts, and the archives. Each feature below links to its page in the live demo. The dashboard follows the system's light or dark theme, and a button in the top bar switches between the two.
 
 ### Behaviour changes
 

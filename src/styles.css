@@ -1,63 +1,55 @@
+/* Tokens. Each colour names its light and dark value once; the theme is chosen by color-scheme. */
 :root {
   color-scheme: light dark;
-  --canvas: #f7f8f4;
-  --paper: #fff;
-  --wash: #f4f6ef;
-  --hover: #f0f3ea;
-  --text: #1e2621;
-  --text-2: #465148;
-  --muted: #68736a;
-  --border: #e1e6dc;
-  --border-strong: #cbd4c4;
-  --green: #2f5f44;
-  --green-strong: #244b35;
-  --on-green: #fff;
-  --accent: #e8f0e2;
-  --bar: #6c9460;
-  --track: #e5eade;
-  --amber: #85590f;
-  --amber-bg: #fbf3dc;
-  --amber-border: #efdfb4;
-  --red: #a3392f;
-  --red-bg: #fbecea;
-  --blue: #36598a;
-  --code-bg: #f0f3ea;
-  --focus: #6f9a7c;
-  --shadow: 0 1px 2px rgb(30 45 30 / 5%), 0 6px 20px rgb(30 45 30 / 5%);
+  --canvas: light-dark(#f1efe8, #0e100f);
+  --paper: light-dark(#fbfaf7, #151816);
+  --wash: light-dark(#f4f2ec, #1a1e1b);
+  --hover: light-dark(#ebe9e1, #20251f);
+  --text: light-dark(#1a1b18, #e7e9e3);
+  --text-2: light-dark(#4a4c45, #b5bab0);
+  --muted: light-dark(#767a70, #7f867a);
+  --border: light-dark(#e0ddd2, #252a25);
+  --border-strong: light-dark(#c6c2b3, #364036);
+  /* The brand: forest ink in the light, signal lime in the dark. */
+  --green: light-dark(#1d6b3f, #c3f25f);
+  --green-strong: light-dark(#154f2e, #d6f786);
+  --on-green: light-dark(#fff, #0f1a0c);
+  --accent: light-dark(#e6efd8, #1f2d1a);
+  --lime: #c3f25f;
+  --bar: var(--green);
+  --track: light-dark(#dfdcd0, #2a302a);
+  --added: light-dark(#2a8a46, #6fd98a);
+  --amber: light-dark(#8f6200, #e9c46a);
+  --amber-bg: light-dark(#f9f1d6, #2e2714);
+  --amber-border: light-dark(#e8d59c, #4d4120);
+  --red: light-dark(#b9372a, #f08a80);
+  --red-bg: light-dark(#fbe9e6, #3a2220);
+  --blue: light-dark(#2d5cb4, #8fb3f0);
+  --code-bg: light-dark(#ebe9e0, #1d221e);
+  --focus: var(--green);
+  --shadow: 0 1px 2px rgb(0 0 0 / 8%), 0 8px 24px rgb(0 0 0 / 12%);
+  /* The sidebar is ink in both themes. */
+  --rail: light-dark(#141814, #0a0c0a);
+  --rail-2: light-dark(#1b201b, #121512);
+  --rail-text: #e4e8e1;
+  --rail-muted: #8c948a;
+  --rail-border: light-dark(#262c26, #1c211c);
+  --rail-hover: light-dark(#1e241e, #161a16);
+  --rail-active: light-dark(#243024, #1c261b);
   --sans:
-    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    'Schibsted Grotesk Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
-  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --radius: 6px;
+  --radius-lg: 8px;
   /* Height of the sticky top bar; anchors stop below it. */
-  --topbar: 60px;
+  --topbar: 52px;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --canvas: #131714;
-    --paper: #1a1f1b;
-    --wash: #212821;
-    --hover: #232b24;
-    --text: #e4e9e2;
-    --text-2: #bbc4ba;
-    --muted: #919c91;
-    --border: #2b332c;
-    --border-strong: #3d483e;
-    --green: #93c7a3;
-    --green-strong: #aad7b7;
-    --on-green: #10201a;
-    --accent: #25332a;
-    --bar: #7fb08a;
-    --track: #2d362e;
-    --amber: #e2bd6b;
-    --amber-bg: #33291a;
-    --amber-border: #4b3c21;
-    --red: #ee9f96;
-    --red-bg: #3a2220;
-    --blue: #9dbbe6;
-    --code-bg: #242c25;
-    --focus: #7fb08a;
-    --shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 6px 20px rgb(0 0 0 / 25%);
-  }
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
 }
 * {
   box-sizing: border-box;
@@ -67,10 +59,11 @@ body {
   font-family: var(--sans);
   color: var(--text);
   background: var(--canvas);
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  font-feature-settings: 'ss01', 'cv05';
 }
 a {
   color: inherit;
@@ -99,20 +92,22 @@ summary {
 }
 :focus-visible {
   outline: 2px solid var(--focus);
-  outline-offset: 3px;
+  outline-offset: 2px;
   border-radius: 4px;
 }
 button {
   border: 1px solid var(--border-strong);
   background: var(--paper);
-  border-radius: 8px;
-  padding: 8px 14px;
+  border-radius: var(--radius);
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
 }
 input {
   min-width: 0;
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 9px 12px;
+  border-radius: var(--radius);
+  padding: 7px 10px;
   color: var(--text);
   background: var(--paper);
 }
@@ -123,79 +118,91 @@ p {
   margin-top: 0;
 }
 h1 {
-  font-size: clamp(25px, 2.3vw, 31px);
-  font-weight: 650;
-  letter-spacing: -0.022em;
-  line-height: 1.2;
+  font-size: clamp(28px, 2.6vw, 38px);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
   margin-bottom: 10px;
+  text-wrap: balance;
 }
 h2 {
-  font-size: 18px;
-  font-weight: 650;
+  font-size: 16px;
+  font-weight: 700;
   letter-spacing: -0.01em;
 }
 h3 {
-  font-size: 17px;
-  font-weight: 650;
+  font-size: 15px;
+  font-weight: 700;
 }
 p {
-  line-height: 1.6;
+  line-height: 1.55;
 }
 mark {
-  background: var(--amber-bg);
+  background: color-mix(in srgb, var(--lime) 45%, transparent);
   color: inherit;
-  border-radius: 3px;
-  padding: 1px 2px;
-  box-shadow: 0 0 0 1px var(--amber-border);
+  border-radius: 2px;
+  padding: 0 2px;
+}
+code,
+kbd,
+pre {
+  font-family: var(--mono);
+  font-variant-ligatures: none;
 }
 .primary {
   background: var(--green);
   color: var(--on-green);
   border-color: var(--green);
-  font-weight: 600;
 }
 .primary:hover {
   background: var(--green-strong);
+  border-color: var(--green-strong);
 }
 .text-button {
   border: none;
   background: transparent;
   color: var(--green);
-  font-size: 14px;
-  font-weight: 550;
-  padding: 6px 8px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 5px 8px;
 }
 .text-button:hover {
   background: var(--hover);
 }
-.eyebrow {
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 600;
+/* Small labels in the instrument voice: mono, spaced, upper case. */
+.eyebrow,
+.label {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  margin-bottom: 12px;
+  color: var(--muted);
+}
+.eyebrow {
+  margin-bottom: 10px;
 }
 .eyebrow span {
-  padding: 0 8px;
+  padding: 0 6px;
   color: var(--border-strong);
 }
 .subtle {
   color: var(--muted);
-  font-size: 13px;
+  font-size: 12.5px;
 }
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
   color: var(--text-2);
   border: 1px solid var(--border);
   background: var(--wash);
-  padding: 3px 10px;
-  border-radius: 99px;
+  padding: 2px 8px;
+  border-radius: 4px;
   white-space: nowrap;
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 600;
+  line-height: 1.4;
 }
 .badge:before {
   content: '';
@@ -203,7 +210,6 @@ mark {
   height: 6px;
   background: currentColor;
   border-radius: 50%;
-  opacity: 0.75;
 }
 .badge.in-progress {
   color: var(--amber);
@@ -213,15 +219,15 @@ mark {
 .badge.complete {
   color: var(--green);
   background: var(--accent);
-  border-color: transparent;
+  border-color: color-mix(in srgb, var(--green) 30%, transparent);
 }
 progress {
   display: block;
   appearance: none;
   border: none;
   width: 100%;
-  height: 6px;
-  border-radius: 6px;
+  height: 4px;
+  border-radius: 2px;
   overflow: hidden;
   background: var(--track);
   accent-color: var(--bar);
@@ -231,31 +237,33 @@ progress::-webkit-progress-bar {
 }
 progress::-webkit-progress-value {
   background: var(--bar);
-  border-radius: 6px;
+  border-radius: 2px;
 }
 progress::-moz-progress-bar {
   background: var(--bar);
-  border-radius: 6px;
+  border-radius: 2px;
 }
 .notice {
-  padding: 12px 16px;
+  padding: 10px 14px;
   color: var(--green);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--wash);
+  border-left: 3px solid var(--green);
+  border-radius: 4px;
+  background: var(--paper);
   margin-bottom: 16px;
   overflow-wrap: anywhere;
-  font-size: 14px;
+  font-size: 13px;
 }
 .warning {
   color: var(--amber);
   background: var(--amber-bg);
   border-color: var(--amber-border);
+  border-left-color: var(--amber);
 }
 .empty-state {
   border: 1px dashed var(--border-strong);
-  padding: 44px 26px;
-  border-radius: 10px;
+  padding: 40px 24px;
+  border-radius: var(--radius-lg);
   text-align: center;
   width: 100%;
   grid-column: 1 / -1;
@@ -267,20 +275,20 @@ progress::-moz-progress-bar {
   color: var(--muted);
   margin: 0 auto;
   max-width: 470px;
-  font-size: 14px;
+  font-size: 13.5px;
 }
 .empty-state a {
   display: inline-block;
-  margin-top: 18px;
+  margin-top: 16px;
   color: var(--green);
-  font-weight: 550;
+  font-weight: 600;
 }
 
 /* Rendered Markdown. The markup comes from render-markdown.ts. */
 .prose {
   font-size: 16px;
-  line-height: 1.7;
-  padding: 40px clamp(20px, 5vw, 56px) 56px;
+  line-height: 1.65;
+  padding: 36px clamp(20px, 5vw, 56px) 56px;
   overflow-wrap: anywhere;
 }
 .prose > :first-child,
@@ -294,33 +302,34 @@ progress::-moz-progress-bar {
 }
 .prose h1 {
   font-family: var(--serif);
-  font-size: clamp(29px, 3.2vw, 36px);
+  font-size: clamp(30px, 3.2vw, 38px);
   font-weight: normal;
-  letter-spacing: -0.015em;
-  line-height: 1.2;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
   margin: 0 0 28px;
 }
 .prose h2 {
-  font-size: 22px;
+  font-size: 21px;
   line-height: 1.3;
+  letter-spacing: -0.02em;
   border-bottom: 1px solid var(--border);
-  padding-bottom: 10px;
-  margin: 48px 0 20px;
+  padding-bottom: 8px;
+  margin: 44px 0 18px;
 }
 .prose h3 {
-  font-size: 18px;
+  font-size: 17px;
   line-height: 1.4;
-  margin: 32px 0 10px;
+  margin: 30px 0 10px;
 }
 .prose h4 {
-  font-size: 16px;
+  font-size: 15.5px;
   line-height: 1.4;
-  margin: 26px 0 8px;
+  margin: 24px 0 8px;
 }
 .prose :is(h5, h6) {
   font-size: 14px;
   color: var(--text-2);
-  margin: 22px 0 8px;
+  margin: 20px 0 8px;
 }
 .prose .anchor {
   position: absolute;
@@ -341,13 +350,13 @@ progress::-moz-progress-bar {
 .prose p,
 .prose ul,
 .prose ol {
-  margin: 0 0 18px;
+  margin: 0 0 16px;
 }
 .prose li {
-  margin: 6px 0;
+  margin: 5px 0;
 }
 .prose li > :is(ul, ol) {
-  margin: 6px 0 0;
+  margin: 5px 0 0;
 }
 .prose ul,
 .prose ol {
@@ -357,24 +366,23 @@ progress::-moz-progress-bar {
   color: var(--muted);
 }
 .prose strong {
-  font-weight: 650;
+  font-weight: 700;
 }
 .prose code {
-  font-family: var(--mono);
-  font-size: 0.86em;
+  font-size: 0.85em;
   background: var(--code-bg);
-  padding: 2px 5px;
-  border-radius: 5px;
+  padding: 1px 5px;
+  border-radius: 4px;
 }
 .prose pre {
   background: var(--wash);
   border: 1px solid var(--border);
-  padding: 16px 18px;
+  padding: 14px 16px;
   overflow-x: auto;
-  border-radius: 8px;
-  font-size: 14px;
-  line-height: 1.6;
-  margin: 0 0 18px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  line-height: 1.65;
+  margin: 0 0 16px;
 }
 .prose pre code {
   background: none;
@@ -387,7 +395,7 @@ progress::-moz-progress-bar {
   max-width: 100%;
   overflow-x: auto;
   border-collapse: collapse;
-  font-size: 15px;
+  font-size: 14.5px;
   line-height: 1.5;
   margin: 0 0 20px;
   overflow-wrap: normal;
@@ -395,15 +403,18 @@ progress::-moz-progress-bar {
 .prose th,
 .prose td {
   border-bottom: 1px solid var(--border);
-  padding: 9px 20px 9px 0;
+  padding: 8px 20px 8px 0;
   text-align: left;
   vertical-align: top;
 }
 .prose th {
   border-bottom-color: var(--border-strong);
-  color: var(--text-2);
-  font-size: 13px;
-  font-weight: 650;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   white-space: nowrap;
 }
 .prose a:not(.anchor) {
@@ -416,9 +427,9 @@ progress::-moz-progress-bar {
   text-decoration-color: currentColor;
 }
 .prose blockquote {
-  margin: 0 0 18px;
-  border-left: 3px solid var(--border-strong);
-  padding: 2px 0 2px 18px;
+  margin: 0 0 16px;
+  border-left: 2px solid var(--border-strong);
+  padding: 2px 0 2px 16px;
   color: var(--text-2);
 }
 .prose blockquote > :last-child {
@@ -449,28 +460,28 @@ progress::-moz-progress-bar {
 .task-checkbox {
   position: absolute;
   left: -24px;
-  top: 0.32em;
+  top: 0.3em;
   display: grid;
   place-items: center;
-  width: 17px;
-  height: 17px;
+  width: 16px;
+  height: 16px;
   border: 1.5px solid var(--border-strong);
-  border-radius: 5px;
-  font-size: 11px;
+  border-radius: 4px;
+  font-size: 10px;
   font-weight: 700;
   line-height: 1;
 }
 .task-checkbox[aria-checked='true'] {
-  background: var(--bar);
-  border-color: var(--bar);
-  color: var(--paper);
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--on-green);
 }
 .prose .task-count {
   float: right;
-  margin: 0.3em 0 0 12px;
-  font-family: var(--sans);
-  font-size: 13px;
-  font-weight: 600;
+  margin: 0.4em 0 0 12px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
   letter-spacing: 0;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
@@ -480,17 +491,17 @@ progress::-moz-progress-bar {
 .prose .kind {
   display: block;
   margin-bottom: 6px;
-  font-family: var(--sans);
-  font-size: 11.5px;
-  font-weight: 650;
-  letter-spacing: 0.09em;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
   line-height: 1.4;
   text-transform: uppercase;
   color: var(--green);
 }
 .prose .requirement {
   margin: 0;
-  padding: 28px 0 8px;
+  padding: 26px 0 8px;
   border-top: 1px solid var(--border);
 }
 .prose h2 + .requirement {
@@ -498,20 +509,21 @@ progress::-moz-progress-bar {
   padding-top: 4px;
 }
 .prose h2:has(+ .requirement) {
-  margin-bottom: 24px;
+  margin-bottom: 22px;
 }
 .prose .requirement > h3 {
-  font-size: 21px;
+  font-size: 20px;
   line-height: 1.3;
-  letter-spacing: -0.012em;
+  letter-spacing: -0.02em;
   margin: 0 0 10px;
 }
 .prose .requirement > h3 + p {
-  font-size: 17px;
+  font-size: 16.5px;
 }
 .prose .normative {
-  font-size: 0.8em;
-  font-weight: 700;
+  font-family: var(--mono);
+  font-size: 0.78em;
+  font-weight: 600;
   letter-spacing: 0.06em;
   color: var(--green);
 }
@@ -519,13 +531,14 @@ progress::-moz-progress-bar {
   color: var(--red);
 }
 .prose .scenario {
-  margin: 0 0 14px;
-  padding: 16px 20px;
-  border-radius: 10px;
+  margin: 0 0 12px;
+  padding: 14px 18px;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  border-left: 2px solid var(--border-strong);
   background: var(--wash);
 }
 .prose .scenario > h4 {
-  font-size: 15.5px;
+  font-size: 15px;
   margin: 0 0 10px;
 }
 .prose .scenario > :last-child {
@@ -545,7 +558,7 @@ progress::-moz-progress-bar {
 .prose ul.steps {
   list-style: none;
   padding: 0;
-  font-size: 15.5px;
+  font-size: 15px;
   line-height: 1.6;
 }
 .prose .steps > li {
@@ -557,9 +570,9 @@ progress::-moz-progress-bar {
 }
 .prose .step-keyword {
   font-family: var(--mono);
-  font-size: 11.5px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   color: var(--muted);
 }
 .prose .step-when .step-keyword {
@@ -569,8 +582,8 @@ progress::-moz-progress-bar {
   color: var(--green);
 }
 .prose .delta {
-  --delta: var(--green);
-  margin-top: 48px;
+  --delta: var(--added);
+  margin-top: 44px;
 }
 .prose .delta:first-child {
   margin-top: 0;
@@ -587,22 +600,23 @@ progress::-moz-progress-bar {
 .prose .delta > h2 {
   border: 0;
   padding: 0;
-  margin: 0 0 18px;
+  margin: 0 0 16px;
 }
 .prose .delta > h2 .kind {
   display: inline-block;
-  margin: 0 6px 0 0;
-  padding: 3px 9px;
-  border-radius: 6px;
+  margin: 0 8px 0 0;
+  padding: 2px 7px;
+  border-radius: 4px;
   vertical-align: 3px;
   color: var(--delta);
   background: color-mix(in srgb, var(--delta) 12%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--delta) 30%, transparent);
 }
 .prose .delta > :is(.requirement, .steps) {
   border-top: 0;
-  border-left: 3px solid var(--delta);
-  padding: 2px 0 2px 20px;
-  margin-bottom: 28px;
+  border-left: 2px solid var(--delta);
+  padding: 2px 0 2px 18px;
+  margin-bottom: 26px;
 }
 .prose .delta > .requirement > h3 .kind {
   color: var(--delta);
@@ -620,14 +634,14 @@ progress::-moz-progress-bar {
 
 @media (max-width: 600px) {
   .prose {
-    padding-top: 28px;
+    padding-top: 26px;
     padding-bottom: 40px;
   }
   .prose .scenario {
-    padding: 14px 16px;
+    padding: 12px 14px;
   }
   .prose .delta > :is(.requirement, .steps) {
-    padding-left: 14px;
+    padding-left: 12px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

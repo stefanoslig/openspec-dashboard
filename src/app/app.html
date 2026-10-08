@@ -27,6 +27,14 @@
     <div class="topbar-actions">
       <span class="read-only">Read only</span
       ><button
+        class="icon-button theme-toggle"
+        type="button"
+        [attr.aria-label]="theme() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'"
+        [title]="theme() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'"
+        (click)="toggleTheme()"
+      >
+        <app-icon [name]="theme() === 'dark' ? 'sun' : 'moon'" /></button
+      ><button
         class="icon-button"
         aria-label="Refresh workspace"
         title="Read the latest workspace revision"

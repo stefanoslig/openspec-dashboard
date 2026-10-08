@@ -2,80 +2,87 @@
   display: block;
 }
 .eyebrow {
-  font-size: 11.5px;
-  margin: 0 0 8px 10px;
+  font-size: 10.5px;
+  margin: 0 0 6px 10px;
 }
 a + .eyebrow {
-  margin-top: 22px;
+  margin-top: 18px;
 }
 a {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   gap: 10px;
-  padding: 7px 10px;
-  border-radius: 8px;
+  padding: 6px 10px;
+  border-radius: 4px;
   color: var(--text-2);
-  font-size: 14px;
+  font-size: 13.5px;
   line-height: 1.4;
-  margin-bottom: 2px;
+  margin-bottom: 1px;
 }
 a span {
   min-width: 0;
   overflow-wrap: anywhere;
 }
 a small {
-  font-size: 12.5px;
+  font-family: var(--mono);
+  font-size: 11.5px;
   color: var(--muted);
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
 a:hover {
   background: var(--hover);
+  color: var(--text);
 }
 a.selected {
   background: var(--accent);
   color: var(--green);
   font-weight: 600;
+  box-shadow: inset 2px 0 0 var(--green);
 }
 .change-summary {
   border-top: 1px solid var(--border);
-  margin-top: 20px;
-  padding: 20px 10px 0;
+  margin-top: 18px;
+  padding: 18px 10px 0;
 }
 .change-summary .eyebrow {
   margin-left: 0;
 }
 .change-summary strong {
-  font-size: 22px;
-  font-weight: 600;
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
 .change-summary strong span {
-  font-size: 14px;
-  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
   font-weight: 400;
+  letter-spacing: 0;
+  color: var(--muted);
 }
 .change-summary small {
   display: block;
-  margin-top: 10px;
+  margin-top: 8px;
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 11px;
   color: var(--muted);
 }
 /* A row of pills above the document; the host becomes a wrapping flex row in the page's styles. */
 @media (max-width: 880px) {
   a {
     margin: 0;
-    padding: 6px 12px;
+    padding: 5px 10px;
     border: 1px solid var(--border);
-    border-radius: 99px;
+    border-radius: 4px;
     background: var(--paper);
   }
   a.selected {
     border-color: transparent;
+    box-shadow: none;
   }
   .eyebrow,
   .change-summary {

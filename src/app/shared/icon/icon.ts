@@ -15,6 +15,11 @@ const paths = {
   'arrow-left': 'M19 12H5M11 6l-6 6 6 6',
   external: 'M8 16l8-8M9 8h7v7',
   close: 'M7 7l10 10M17 7L7 17',
+  sun: 'M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM12 2.5L12 4.5M12 19.5L12 21.5M2.5 12L4.5 12M19.5 12L21.5 12M5.3 5.3L6.7 6.7M17.3 17.3L18.7 18.7M5.3 18.7L6.7 17.3M17.3 6.7L18.7 5.3',
+  moon: 'M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z',
+  pull: 'M6 3a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM6 9v12M13 6h3a2 2 0 0 1 2 2v7M18 15a3 3 0 1 0 0 6 3 3 0 0 0 0-6z',
+  check: 'M5 12.5l4.5 4.5L19 7',
+  comment: 'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z',
 };
 export type IconName = keyof typeof paths;
 

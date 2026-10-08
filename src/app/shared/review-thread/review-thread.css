@@ -5,23 +5,26 @@
 }
 details {
   border: 1px solid var(--amber-border);
-  border-radius: 10px;
+  border-left: 2px solid var(--amber);
+  border-radius: 0 var(--radius) var(--radius) 0;
   background: var(--paper);
-  font-size: 14.5px;
+  font-size: 14px;
   line-height: 1.55;
 }
 details.resolved {
   border-color: var(--border);
+  border-left-color: var(--border-strong);
 }
 summary {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   gap: 2px 14px;
-  padding: 9px 14px;
-  border-radius: 10px;
+  padding: 8px 14px;
+  border-radius: 0 var(--radius) var(--radius) 0;
   color: var(--muted);
-  font-size: 13px;
+  font-family: var(--mono);
+  font-size: 11.5px;
   list-style: none;
 }
 /* The marker a flex summary loses. */
@@ -29,7 +32,7 @@ summary::before {
   content: '';
   align-self: center;
   border: 4px solid transparent;
-  border-left: 6px solid var(--muted);
+  border-left: 5px solid var(--muted);
   border-right: 0;
   transition: transform 0.15s;
 }
@@ -44,11 +47,13 @@ summary:hover {
 }
 details[open] > summary {
   border-bottom: 1px solid var(--border);
-  border-radius: 10px 10px 0 0;
+  border-radius: 0 var(--radius) 0 0;
 }
 .state {
   color: var(--amber);
-  font-weight: 650;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 .resolved .state {
   color: var(--text-2);
@@ -72,26 +77,27 @@ li + li {
   margin-bottom: 2px;
 }
 .comment-head strong {
-  font-weight: 650;
+  font-weight: 700;
 }
 time {
   color: var(--muted);
-  font-size: 13px;
+  font-family: var(--mono);
+  font-size: 11.5px;
 }
 .thread-links {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 4px 16px;
-  padding: 0 14px 11px;
-  font-size: 13px;
+  padding: 0 14px 10px;
+  font-size: 12.5px;
 }
 .thread-links a {
   display: inline-flex;
   align-items: center;
   gap: 3px;
   color: var(--green);
-  font-weight: 550;
+  font-weight: 600;
   text-decoration: none;
 }
 .thread-links a:hover {
