@@ -275,7 +275,7 @@ export function buildWorkspace(files: ArtifactFile[], options: BuildOptions): Wo
     if (!found.length) return [];
     documents.push(...docs);
     changes.push(...found);
-    const { files: _, threads, ...details } = pull;
+    const { files: _, threads, reviewFiles, ...details } = pull;
     const owned = new Set(found.flatMap((change) => change.documents));
     const deltas = found.flatMap((change) => change.deltas);
     return [
@@ -294,6 +294,15 @@ export function buildWorkspace(files: ArtifactFile[], options: BuildOptions): Wo
                   ?.requirements.find((change) => change.line <= line && line <= change.endLine);
           return [{ ...thread, path, requirement: pinned?.name ?? null }];
         }),
+        // Older inputs have none: the key stays absent rather than claiming no document changed.
+        ...(reviewFiles
+          ? {
+              reviewFiles: reviewFiles.flatMap((file) => {
+                const path = prefix + file.path;
+                return owned.has(path) ? [{ ...file, path }] : [];
+              }),
+            }
+          : {}),
       },
     ];
   });

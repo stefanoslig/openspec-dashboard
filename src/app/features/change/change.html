@@ -57,6 +57,39 @@
         </div>
       </header>
       <div class="prose changes">
+        @if (pull(); as request) {
+          @if (deltas().length) {
+            <div class="comment-guide">
+              @if (store.workspace()?.isDemo) {
+                <p id="fictional-pull" class="change-note">
+                  PR #{{ request.number }} is fictional, so “Comment on GitHub” is disabled in this
+                  sample.
+                </p>
+              }
+              <details>
+                <summary>How to comment</summary>
+                <ol>
+                  <li>
+                    Select “Comment on GitHub” beside a requirement. Its pull request opens on
+                    GitHub in a new tab.
+                  </li>
+                  <li>In Files changed, select a line of the spec and type your feedback.</li>
+                  <li>Post it as a single comment.</li>
+                </ol>
+                <p>You need a GitHub account with read access to the repository.</p>
+                <p>
+                  Only review threads on this change’s documents show up here, after the next CI
+                  publication of this dashboard.
+                </p>
+                <p>
+                  This page shows the pull request as read on
+                  {{ store.workspace()?.loadedAt | date: 'MMM d, y, HH:mm' }}. GitHub may show newer
+                  commits, so a linked location may have moved.
+                </p>
+              </details>
+            </div>
+          }
+        }
         @for (delta of deltas(); track delta.path) {
           <section class="capability" [attr.aria-label]="delta.capability">
             <h2>
@@ -76,6 +109,29 @@
                 </h3>
                 @if (requirement.previousName; as name) {
                   <p class="previous-name">Previously “{{ name }}”</p>
+                }
+                @if (requirement.comment; as comment) {
+                  <p class="comment-action">
+                    @if (store.workspace()?.isDemo) {
+                      <button type="button" disabled aria-describedby="fictional-pull">
+                        Comment on GitHub <app-icon name="external" />
+                      </button>
+                    } @else {
+                      <a [href]="comment.url" target="_blank" rel="noopener noreferrer"
+                        >Comment on GitHub <app-icon name="external"
+                      /></a>
+                      @if (comment.target === 'file') {
+                        <span
+                          >Opens the diff of the spec. Find “{{ requirement.name }}” there.</span
+                        >
+                      } @else if (comment.target === 'pull') {
+                        <span
+                          >No direct link to this spec is available. In Files changed, find
+                          <code>{{ delta.file }}</code> and “{{ requirement.name }}”.</span
+                        >
+                      }
+                    }
+                  </p>
                 }
                 @if (requirement.missing) {
                   <p class="change-note">

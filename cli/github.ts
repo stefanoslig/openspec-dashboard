@@ -1,5 +1,6 @@
+import { createHash } from 'node:crypto';
 import { isArtifact, maxFileBytes } from './reader.ts';
-import type { ArtifactFile, PullRequestInput } from './workspace.model.ts';
+import type { ArtifactFile, PullRequestInput, ReviewFile } from './workspace.model.ts';
 
 export interface GitHubOptions {
   /** The GraphQL endpoint, https://api.github.com/graphql on github.com. */
@@ -144,6 +145,24 @@ function changeFolders(changed: ChangedFile[], prefix: string): string[] {
   return [...folders];
 }
 
+/** The imported documents that a pull request changes, with their diffs in its Files changed view. */
+function reviewFiles(
+  url: string,
+  changed: ChangedFile[],
+  files: ArtifactFile[],
+  prefix: string,
+): ReviewFile[] {
+  const types = new Map(changed.map((file) => [file.path, file.changeType]));
+  return files.flatMap((file) => {
+    const path = prefix + file.path;
+    const type = types.get(path);
+    if (!type) return [];
+    // GitHub names a file's diff after the SHA-256 of its path in the repository.
+    const anchor = createHash('sha256').update(path, 'utf8').digest('hex');
+    return [{ path: file.path, url: url + '/files#diff-' + anchor, added: type === 'ADDED' }];
+  });
+}
+
 /**
  * Reads the open pull requests that target a branch: the documents of the changes each one adds
  * to or modifies, at its head commit, and the review threads on them.
@@ -225,14 +244,21 @@ export async function readPullRequests(
     return found;
   }
 
-  const candidates: { node: Node; folders: string[]; threads: Thread[]; files: ArtifactFile[] }[] =
-    [];
+  const candidates: {
+    node: Node;
+    changed: ChangedFile[];
+    folders: string[];
+    threads: Thread[];
+    files: ArtifactFile[];
+  }[] = [];
   for (const node of nodes) {
     if (node.isCrossRepository || !node.files) continue;
-    const folders = changeFolders(await rest(node.number, 'files', node.files), prefix);
+    const changed = await rest(node.number, 'files', node.files);
+    const folders = changeFolders(changed, prefix);
     if (folders.length)
       candidates.push({
         node,
+        changed,
         folders,
         threads: await rest(node.number, 'threads', node.reviewThreads),
         files: [],
@@ -297,7 +323,7 @@ export async function readPullRequests(
 
   return {
     warnings,
-    pullRequests: candidates.map(({ node, folders, threads, files }) => ({
+    pullRequests: candidates.map(({ node, changed, folders, threads, files }) => ({
       number: node.number,
       title: node.title,
       url: node.url,
@@ -331,6 +357,7 @@ export async function readPullRequests(
           })),
           omitted: thread.comments.totalCount - thread.comments.nodes.length,
         })),
+      reviewFiles: reviewFiles(node.url, changed, files, prefix),
     })),
   };
 }

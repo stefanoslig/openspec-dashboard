@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { existsSync } from 'node:fs';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -160,6 +161,7 @@ test('exports the sample workspace without a revision', async () => {
     workspace.pullRequests!.map((pull) => [pull.number, pull.threads.length]),
     [[128, 3]],
   );
+  assert.equal('reviewFiles' in workspace.pullRequests![0], false);
 });
 
 test('fails clearly when there is nothing to export', async () => {
@@ -186,6 +188,9 @@ test('reads the open pull requests when asked', async () => {
   ]);
   const { out } = await exportSite({ ...options, out: 'with-pulls', env, fetch });
   const workspace = await published(out);
+  const diff = (file: string) =>
+    'https://github.example/acme/roadmap/pull/7/files#diff-' +
+    createHash('sha256').update(file).digest('hex');
   assert.deepEqual(workspace.pullRequests, [
     {
       number: 7,
@@ -198,6 +203,18 @@ test('reads the open pull requests when asked', async () => {
       updatedAt: '2026-10-01T10:00:00Z',
       changes: ['.pulls/7/changes/add-x'],
       threads: [],
+      reviewFiles: [
+        {
+          path: '.pulls/7/changes/add-x/proposal.md',
+          url: diff('docs/openspec/changes/add-x/proposal.md'),
+          added: true,
+        },
+        {
+          path: '.pulls/7/changes/add-x/tasks.md',
+          url: diff('docs/openspec/changes/add-x/tasks.md'),
+          added: true,
+        },
+      ],
     },
   ]);
   const change = workspace.changes.find((item) => item.id === '.pulls/7/changes/add-x')!;

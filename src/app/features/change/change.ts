@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import type { RequirementChange } from '../../../../cli/workspace.model';
+import { commentLink } from '../../core/comment-link';
 import { renderMarkdown } from '../../core/render-markdown';
 import { diffRequirement } from '../../core/requirement-diff';
 import { kindCounts, WorkspaceStore } from '../../core/workspace-store';
@@ -39,7 +41,7 @@ function view(change: RequirementChange) {
 
 @Component({
   selector: 'app-change-page',
-  imports: [RouterLink, ChangeOutline, Icon, ReviewThreadView],
+  imports: [DatePipe, RouterLink, ChangeOutline, Icon, ReviewThreadView],
   templateUrl: './change.html',
   styleUrls: ['../reader/reader.css', './change.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -66,11 +68,21 @@ export class ChangePage {
     const change = this.change();
     return change ? this.store.threadsOf(change) : [];
   });
-  protected readonly deltas = computed(() =>
-    (this.change()?.deltas ?? []).map((delta) => ({
+  protected readonly deltas = computed(() => {
+    const change = this.change();
+    const pull = this.pull();
+    return (change?.deltas ?? []).map((delta) => ({
       ...delta,
+      // The document as GitHub lists it among the files of the pull request.
+      file: [
+        this.store.workspace()?.source?.folder,
+        this.store.repositoryPath({ path: delta.path, pullRequest: change?.pullRequest }),
+      ]
+        .filter(Boolean)
+        .join('/'),
       requirements: delta.requirements.map((requirement) => ({
         ...view(requirement),
+        comment: pull && commentLink(pull, delta.path, requirement),
         threads: this.#threads().filter(
           (thread) =>
             thread.path === delta.path &&
@@ -80,8 +92,8 @@ export class ChangePage {
             thread.line <= requirement.endLine,
         ),
       })),
-    })),
-  );
+    }));
+  });
   /** The threads that belong to no requirement, each with its document and line. */
   protected readonly discussion = computed(() => {
     const change = this.change();

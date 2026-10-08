@@ -693,6 +693,142 @@ test('shows drafts, long threads and comment markup safely, and says when nothin
     await rm(site, { recursive: true, force: true });
   }
 });
+test('offers a comment link beside each requirement of a real pull request', async ({
+  page,
+  context,
+}) => {
+  const requirement = (name: string) =>
+    page.locator('.requirement').filter({ has: page.getByRole('heading', { name }) });
+  // The sample's pull request is fictional, so its links only show where they would be.
+  await page.goto('/#/change?id=.pulls%2F128%2Fchanges%2Flet-editors-invite-viewers');
+  const examples = page.getByRole('button', { name: 'Comment on GitHub' });
+  await expect(examples).toHaveCount(3);
+  for (const example of await examples.all()) {
+    await expect(example).toBeDisabled();
+    await expect(example).toHaveAccessibleDescription(
+      'PR #128 is fictional, so “Comment on GitHub” is disabled in this sample.',
+    );
+  }
+  await expect(page.getByRole('link', { name: 'Comment on GitHub' })).toHaveCount(0);
+  // Changes on disk and published specs have no pull request to comment on.
+  await page.goto('/#/change?id=changes%2Fadd-project-invitations');
+  await expect(requirement('Owners manage membership')).toBeVisible();
+  await expect(page.getByText('Comment on GitHub')).toHaveCount(0);
+  await expect(page.getByText('How to comment')).toHaveCount(0);
+  await page.goto('/#/artifact?path=specs%2Fprojects%2Faccess%2Fspec.md');
+  await expect(page.getByRole('heading', { name: 'Project access', exact: true })).toBeVisible();
+  await expect(page.getByText('Comment on GitHub')).toHaveCount(0);
+
+  // A site published from a real repository, under a subpath.
+  const site = await mkdtemp(path.join(os.tmpdir(), 'openspec-site-'));
+  const out = path.join(site, 'team/specs');
+  expect(spawnSync(process.execPath, [cli, 'export', '--demo', '--out', out]).status).toBe(0);
+  const workspace = JSON.parse(await readFile(path.join(out, 'workspace.json'), 'utf8'));
+  workspace.isDemo = false;
+  workspace.source = {
+    provider: 'github',
+    repository: 'atlas/atlas',
+    ref: 'main',
+    commit: '0123456789abcdef0123456789abcdef01234567',
+    committedAt: null,
+    folder: 'openspec',
+    url: 'https://github.example/atlas/atlas',
+  };
+  const [pull] = workspace.pullRequests;
+  const diff = pull.url + '/files#diff-5ac1';
+  const spec = 'changes/let-editors-invite-viewers/specs/projects/access/spec.md';
+  pull.reviewFiles = [{ path: '.pulls/128/' + spec, url: diff, added: false }];
+  // The same change in a second pull request, exported before diff locations were read.
+  const copy = (from: string) => from.replace('.pulls/128/', '.pulls/132/');
+  workspace.documents.push(
+    ...workspace.documents
+      .filter((doc: any) => doc.pullRequest === 128)
+      .map((doc: any) => ({ ...doc, path: copy(doc.path), pullRequest: 132 })),
+  );
+  const change = workspace.changes.find((change: any) => change.pullRequest === 128);
+  workspace.changes.push({
+    ...change,
+    id: copy(change.id),
+    documents: change.documents.map(copy),
+    deltas: change.deltas.map((delta: any) => ({ ...delta, path: copy(delta.path) })),
+    pullRequest: 132,
+  });
+  const { reviewFiles: _, ...older } = pull;
+  workspace.pullRequests.push({
+    ...older,
+    number: 132,
+    url: 'https://github.example/atlas/atlas/pull/132',
+    changes: [copy(change.id)],
+    threads: [],
+  });
+  await writeFile(path.join(out, 'workspace.json'), JSON.stringify(workspace));
+  await context.route('https://github.example/**', (route) => route.fulfill({ body: 'GitHub' }));
+  const origins = new Set<string>();
+  page.on('request', (request) => origins.add(new URL(request.url()).origin));
+  const server = await host(site, 4317);
+  try {
+    const review =
+      'http://127.0.0.1:4317/team/specs/#/change?id=.pulls%2F128%2Fchanges%2Flet-editors-invite-viewers';
+    await page.goto(review);
+    const comment = (name: string) =>
+      requirement(name).getByRole('link', { name: 'Comment on GitHub' });
+    // Current threads establish lines within two requirements of the modified spec.
+    await expect(comment('Owners manage membership')).toHaveAttribute('href', diff + 'R28');
+    await expect(comment('Editors can invite viewers')).toHaveAttribute('href', diff + 'R17');
+    await expect(requirement('Owners manage membership').locator('.comment-action')).toHaveText(
+      'Comment on GitHub',
+    );
+    await expect(
+      requirement('Owners manage membership').getByRole('link', { name: 'Reply on GitHub' }),
+    ).toHaveAttribute('href', 'https://github.example/atlas/atlas/pull/128#discussion_r1');
+    // A renamed requirement without a thread opens the diff of its delta document.
+    await expect(comment('Viewers can read documents')).toHaveAttribute('href', diff);
+    await expect(requirement('Viewers can read documents').locator('.comment-action')).toHaveText(
+      /Comment on GitHub\s*Opens the diff of the spec\. Find “Viewers can read documents” there\./,
+    );
+    await expect(page.locator('#fictional-pull')).toHaveCount(0);
+    const guide = page.locator('.comment-guide details');
+    await expect(guide).not.toHaveAttribute('open');
+    await guide.getByText('How to comment').click();
+    await expect(guide).toContainText('In Files changed, select a line of the spec');
+    await expect(guide).toContainText('Post it as a single comment.');
+    await expect(guide).toContainText('GitHub account with read access to the repository');
+    await expect(guide).toContainText('after the next CI publication');
+    await expect(guide).toContainText('a linked location may have moved');
+    await page.screenshot({ path: 'test-results/comment-links.png', fullPage: true });
+
+    const link = comment('Owners manage membership');
+    await expect(link).toHaveAttribute('target', '_blank');
+    await expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+    const [tab] = await Promise.all([page.waitForEvent('popup'), link.click()]);
+    await expect(tab).toHaveURL(diff + 'R28');
+    await tab.close();
+    await expect(page).toHaveURL(review);
+
+    // Without a diff location, Files changed opens, with what to look for.
+    await page.goto(
+      'http://127.0.0.1:4317/team/specs/#/change?id=.pulls%2F132%2Fchanges%2Flet-editors-invite-viewers',
+    );
+    await expect(comment('Owners manage membership')).toHaveAttribute(
+      'href',
+      'https://github.example/atlas/atlas/pull/132/files',
+    );
+    await expect(requirement('Owners manage membership').locator('.comment-action')).toHaveText(
+      /^Comment on GitHub\s*No direct link to this spec is available\. In Files changed, find openspec\/changes\/let-editors-invite-viewers\/specs\/projects\/access\/spec\.md and “Owners manage membership”\.$/,
+    );
+    await page.setViewportSize({ width: 390, height: 844 });
+    await expect(page.locator('.comment-guide')).toBeVisible();
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+    ).toBe(true);
+    await page.screenshot({ path: 'test-results/comment-links-phone.png', fullPage: true });
+    // The dashboard sent nothing anywhere: commenting happens on GitHub.
+    expect([...origins]).toEqual(['http://127.0.0.1:4317']);
+  } finally {
+    server.close();
+    await rm(site, { recursive: true, force: true });
+  }
+});
 test('fits a phone screen and keeps navigation usable', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');

@@ -361,3 +361,66 @@ test('adds the changes and review threads of pull requests', () => {
   assert.deepEqual(none.pullRequests, []);
   assert.equal('pullRequests' in buildWorkspace([], { name: 'demo', root: 'openspec' }), false);
 });
+
+test('keeps the diffs of the documents with their pull request', () => {
+  const pull = (number: number, extra: object) => ({
+    number,
+    title: 'Pull request ' + number,
+    url: 'https://github.example/pull/' + number,
+    author: 'mara',
+    draft: false,
+    branch: 'branch-' + number,
+    commit: 'sha' + number,
+    updatedAt: '2026-10-01T10:00:00Z',
+    files: [file('changes/add-roles/proposal.md', '# Add roles')],
+    threads: [],
+    ...extra,
+  });
+  const review = (number: number, path: string, added = true) => ({
+    path,
+    url: `https://github.example/pull/${number}/files#${path}`,
+    added,
+  });
+  const workspace = buildWorkspace([file('specs/access/spec.md', '## Requirements')], {
+    name: 'demo',
+    root: 'openspec',
+    pullRequests: [
+      pull(1, {
+        files: [
+          file('changes/add-roles/proposal.md', '# Add roles'),
+          file('changes/add-roles/specs/access/spec.md', '## ADDED Requirements'),
+        ],
+        reviewFiles: [
+          review(1, 'changes/add-roles/proposal.md'),
+          review(1, 'changes/add-roles/specs/access/spec.md', false),
+          // Not documents of the change: the published spec, and one that was not read.
+          review(1, 'specs/access/spec.md', false),
+          review(1, 'changes/add-roles/tasks.md'),
+        ],
+      }),
+      // The same change in another pull request.
+      pull(2, { reviewFiles: [review(2, 'changes/add-roles/proposal.md', false)] }),
+      // Read before review files existed.
+      pull(3, {}),
+    ],
+  });
+  const [first, second, third] = workspace.pullRequests!;
+  assert.deepEqual(first.reviewFiles, [
+    {
+      ...review(1, 'changes/add-roles/proposal.md'),
+      path: '.pulls/1/changes/add-roles/proposal.md',
+    },
+    {
+      ...review(1, 'changes/add-roles/specs/access/spec.md', false),
+      path: '.pulls/1/changes/add-roles/specs/access/spec.md',
+    },
+  ]);
+  assert.deepEqual(second.reviewFiles, [
+    {
+      path: '.pulls/2/changes/add-roles/proposal.md',
+      url: 'https://github.example/pull/2/files#changes/add-roles/proposal.md',
+      added: false,
+    },
+  ]);
+  assert.equal('reviewFiles' in third, false);
+});

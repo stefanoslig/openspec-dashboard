@@ -52,6 +52,14 @@ export interface ReviewThread {
   /** Comments on GitHub beyond the ones included. */
   omitted: number;
 }
+/** A document that a pull request changes, with its place in the pull request's diff. */
+export interface ReviewFile {
+  path: string;
+  /** The document's diff in the Files changed view of the pull request. */
+  url: string;
+  /** The pull request adds the document, so all its lines are on the new side of the diff. */
+  added: boolean;
+}
 export interface PullRequest {
   number: number;
   title: string;
@@ -63,6 +71,8 @@ export interface PullRequest {
   updatedAt: string;
   changes: string[];
   threads: ReviewThread[];
+  /** The imported documents the pull request changes; absent when they were not read. */
+  reviewFiles?: ReviewFile[];
 }
 /** A pull request as read from GitHub or the sample data; paths are relative to the openspec folder. */
 export interface PullRequestInput extends Omit<PullRequest, 'changes' | 'threads'> {

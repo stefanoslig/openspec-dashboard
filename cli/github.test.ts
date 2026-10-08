@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { test } from 'node:test';
 import { readPullRequests } from './github.ts';
 
@@ -58,6 +59,7 @@ const blob = (name: string, oid: string, extra: Json = {}) => ({
   ...extra,
 });
 const tree = (name: string) => ({ name, type: 'tree', mode: 0o040000, oid: 'tree', size: 0 });
+const sha256 = (text: string) => createHash('sha256').update(text).digest('hex');
 
 /** Answers the reader's queries the way the GraphQL API shapes its data. */
 function github(fake: Fake) {
@@ -188,7 +190,7 @@ test('reads the changes a pull request adds to or modifies, at its head commit',
   assert.ok(requests.every((request) => !JSON.stringify(request.variables).includes('sha8')));
 
   assert.deepEqual(pullRequests.length, 1);
-  const [{ files, threads, ...details }] = pullRequests;
+  const [{ files, threads, reviewFiles, ...details }] = pullRequests;
   assert.deepEqual(details, {
     number: 7,
     title: 'Pull request 7',
@@ -203,6 +205,16 @@ test('reads the changes a pull request adds to or modifies, at its head commit',
     { path: 'changes/add-x/.openspec.yaml', content: 'schema: spec-driven', modified: null },
     { path: 'changes/add-x/proposal.md', content: '# Add X', modified: null },
     { path: 'changes/add-x/specs/area/spec.md', content: '## ADDED Requirements', modified: null },
+  ]);
+  // The delta spec is not part of the diff and the renamed tasks were not read.
+  assert.deepEqual(reviewFiles, [
+    {
+      path: 'changes/add-x/proposal.md',
+      url:
+        'https://github.example/acme/roadmap/pull/7/files#diff-' +
+        sha256('docs/openspec/changes/add-x/proposal.md'),
+      added: true,
+    },
   ]);
   assert.deepEqual(warnings, [
     '1 pull request from a fork was skipped.',
@@ -293,6 +305,90 @@ test('follows the pages of pull requests, files and threads, up to 200 pull requ
       { owner: 'acme', name: 'roadmap', number: 1, threads: '0' },
     ],
   );
+});
+
+test('links the documents a pull request changes to their diffs, without more requests', async () => {
+  const change = 'docs/openspec/changes/add-roles/';
+  const { fetch, requests } = github({
+    pulls: [
+      pull(5, [], {
+        files: page(
+          [
+            changed(change + 'proposal.md'),
+            changed('src/app.ts', 'MODIFIED'),
+            changed(change + 'old.md', 'DELETED'),
+          ],
+          true,
+        ),
+      }),
+    ],
+    files: {
+      5: [
+        [
+          changed(change + 'specs/projects/access/spec.md', 'RENAMED'),
+          changed(change + 'design.md', 'MODIFIED'),
+        ],
+        [
+          changed(change + 'tasks.md'),
+          changed(change + 'notes.md'),
+          changed(change + 'big.md'),
+          changed(change + 'link.md'),
+        ],
+      ],
+    },
+    trees: {
+      'sha5:docs/openspec/changes/add-roles': [
+        blob('.openspec.yaml', 'metadata'),
+        blob('big.md', 'big', { size: 2_000_001 }),
+        blob('design.md', 'design'),
+        blob('link.md', 'link', { mode: 0o120000 }),
+        blob('notes.md', 'truncated'),
+        blob('proposal.md', 'proposal'),
+        tree('specs'),
+        blob('tasks.md', 'tasks'),
+      ],
+      'sha5:docs/openspec/changes/add-roles/specs': [tree('projects')],
+      'sha5:docs/openspec/changes/add-roles/specs/projects': [tree('access')],
+      'sha5:docs/openspec/changes/add-roles/specs/projects/access': [blob('spec.md', 'spec')],
+    },
+    blobs: {
+      metadata: { text: 'schema: spec-driven', isTruncated: false, isBinary: false },
+      design: { text: '# Design', isTruncated: false, isBinary: false },
+      proposal: { text: '# Add roles', isTruncated: false, isBinary: false },
+      tasks: { text: '- [ ] 1.1', isTruncated: false, isBinary: false },
+      spec: { text: '## ADDED Requirements', isTruncated: false, isBinary: false },
+      truncated: { text: 'Notes', isTruncated: true, isBinary: false },
+    },
+  });
+  const { pullRequests } = await readPullRequests({ ...options, fetch });
+
+  // The list, two more pages of files, four levels of folders and one request for the documents.
+  assert.equal(requests.length, 8);
+  const [{ files, reviewFiles }] = pullRequests;
+  assert.deepEqual(
+    files.map((file) => file.path),
+    [
+      'changes/add-roles/.openspec.yaml',
+      'changes/add-roles/design.md',
+      'changes/add-roles/proposal.md',
+      'changes/add-roles/tasks.md',
+      'changes/add-roles/specs/projects/access/spec.md',
+    ],
+  );
+  const diff = (path: string) =>
+    'https://github.example/acme/roadmap/pull/5/files#diff-' + sha256(change + path);
+  // In the order of the documents; the unchanged metadata and the skipped documents have none.
+  assert.deepEqual(reviewFiles, [
+    { path: 'changes/add-roles/design.md', url: diff('design.md'), added: false },
+    { path: 'changes/add-roles/proposal.md', url: diff('proposal.md'), added: true },
+    { path: 'changes/add-roles/tasks.md', url: diff('tasks.md'), added: true },
+    // Named by its new path; a rename leaves lines on both sides of the diff.
+    {
+      path: 'changes/add-roles/specs/projects/access/spec.md',
+      url: 'https://github.example/acme/roadmap/pull/5/files#diff-a396d9beb8d0699974db716da3e767c7606971541bbf3ffec9bfc2c8a66a462e',
+      added: false,
+    },
+  ]);
 });
 
 test('explains why GitHub could not be read', async () => {

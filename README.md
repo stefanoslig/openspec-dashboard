@@ -40,6 +40,14 @@ Review threads are shown read-only: a thread on a requirement with that requirem
 
 ![An open review thread below the requirement it belongs to](docs/screenshots/review-threads.png)
 
+To start a discussion, use "Comment on GitHub" below a requirement of a change in review. It opens the pull request on GitHub in a new tab, where you select a line of the spec in Files changed, type your feedback, and post a single comment. A "How to comment" section on the page sums this up. Commenting needs a GitHub account with read access to the repository. The link goes as close to the requirement as the exported data allows:
+
+- A line within the requirement, when the pull request adds the spec, or when a current review thread sits within the requirement.
+- Otherwise the spec's diff, and the page names the requirement to look for.
+- When the spec is not in the pull request's diff, or the site was exported by a version that did not record diff locations, the pull request's Files changed. The page then shows the spec's path and the requirement.
+
+Removed and renamed requirements link to their delta spec, never to the published spec. Locations are those of the export, so they may have moved when the pull request has newer commits. A new thread shows up on the site after the next CI run. The demo's pull request is fictional, so its links are disabled.
+
 ### Search
 
 Full-text search across Markdown and YAML, including archived changes and pull request documents. Try it in the search box of [the demo](https://openspec-desk.vercel.app/).
@@ -107,7 +115,7 @@ It reads:
 
 - The open pull requests that target the exported branch.
 - The changes of each pull request. A change counts when the pull request adds to or modifies its folder, `changes/<name>/`. It also counts when the pull request has already archived it under `changes/archive/<name>/`. The documents are read at the head commit of the pull request.
-- The review threads on those documents.
+- The review threads on those documents, and which of the documents the pull request changes, for the comment links.
 
 The option works in a GitHub Actions workflow. It needs these environment variables:
 
@@ -242,7 +250,7 @@ Angular disk caching is disabled in this project because the installed LMDB nati
 
 ## Current boundaries
 
-- Read-only: it does not clone, commit, push, comment, edit artifacts, or run implementation tasks.
+- Read-only: it does not clone, commit, push, comment, edit artifacts, or run implementation tasks. "Comment on GitHub" and "Reply on GitHub" only open GitHub, where you sign in and post.
 - One workspace per local server. An exported site is one snapshot of one branch, with the open pull requests that target it when `--pull-requests` is given; it does not offer other branches or commits.
 - Refresh is manual. A published site, including its pull requests and review threads, updates when CI runs again.
 - An exported site has no modification dates, because file times in a CI checkout carry no meaning. It shows the published revision instead; a change in review shows when its pull request was last updated.
