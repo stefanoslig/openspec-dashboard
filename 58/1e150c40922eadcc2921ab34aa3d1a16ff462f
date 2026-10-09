@@ -1,0 +1,108 @@
+src/app/core/render-markdown.test.ts
+  s_043f3a9b716e32::t_f4189d2996405f 3,323-331
+  s_043f3a9b716e32::t_86bd018ea3fc56 1-2,4-322,332
+src/app/core/page-outline.ts
+  s_0896ba60d595d5::t_94273f3ade61a3 1-31
+src/app/features/reader/reader.html
+  s_043f3a9b716e32::t_525348af7ee012 8
+src/app/core/document-link.ts
+  s_0896ba60d595d5::t_94273f3ade61a3 1-23
+src/app/core/requirement-view.ts
+  s_043f3a9b716e32::t_9d154d245ea67a 9-11,13-37,40,44-46
+  s_0896ba60d595d5::t_94273f3ade61a3 1-8,12,38-39,41-43,47-48
+src/app/features/reader/reader.ts
+  s_043f3a9b716e32::t_888409cc2aff75 26-27,37-48,78,153-162,186,191,195,200-222
+  s_043f3a9b716e32::t_9edb252cae1dbb 29-36,79-85,116-123
+  s_0896ba60d595d5::t_66ee2dd9935be9 15-16,19,77,86,90-92,104
+  s_043f3a9b716e32::t_f4189d2996405f 14,17
+  s_043f3a9b716e32::t_164ab80ec325fb 28
+src/app/shared/icon/icon.ts
+  s_0896ba60d595d5::t_9760ea0893c55d 2,4,30
+src/styles.css
+  s_27d4a0c7c20021::t_9f74e51d622c9c 19-23,146
+  s_27d4a0c7c20021::t_01635db2ecc37d 10,26
+src/app/core/outline.test.ts
+  s_0896ba60d595d5::t_94273f3ade61a3 1-95
+src/app/features/change/change.html
+  s_043f3a9b716e32::t_9edb252cae1dbb 8
+src/app/core/excerpt.ts
+  s_0896ba60d595d5::t_94273f3ade61a3 1-25
+src/app/shared/workspace-navigation/workspace-navigation.html
+  s_27d4a0c7c20021::t_bb6b159fc16b12 23,26
+  s_482a92590a35ce::t_5b87737e986c10 24-25
+src/app/shared/workspace-navigation/workspace-navigation.ts
+  s_482a92590a35ce::t_5b87737e986c10 2,7
+  s_27d4a0c7c20021::t_95a4882322fcb1 1
+src/app/features/dashboard/dashboard.html
+  s_043f3a9b716e32::t_525348af7ee012 5,7,10-11,18,62,97,119,123,135-136,142,181
+src/app/core/document-link.test.ts
+  s_043f3a9b716e32::t_f4189d2996405f 3
+  s_0896ba60d595d5::t_94273f3ade61a3 1-2,4-46
+src/app/core/render-markdown.ts
+  s_043f3a9b716e32::t_33068705e6b11e 1-8,16-55,59,66-68,70,74,78-79,82-104,106,108,111,116-307,309-312,315-320,323-330,335-336,340,345-346,348,350,352
+  s_043f3a9b716e32::t_f4189d2996405f 64-65
+src/app/shared/icon/icon-paths.ts
+  s_0896ba60d595d5::t_9760ea0893c55d 1-21
+src/app/app.ts
+  s_27d4a0c7c20021::t_9f74e51d622c9c 1
+src/app/features/change/change.ts
+  s_043f3a9b716e32::t_e6e43997ffa564 92-95
+  s_043f3a9b716e32::t_9d154d245ea67a 5,14-20,58,61,65,90-91,96-98
+  s_27d4a0c7c20021::t_95a4882322fcb1 1
+  s_0896ba60d595d5::t_66ee2dd9935be9 7-8,10,63
+  s_043f3a9b716e32::t_9edb252cae1dbb 42-46
+tests/dashboard.spec.ts
+  s_27d4a0c7c20021::t_199d10e59266d6 583-588
+  s_27d4a0c7c20021::t_9f74e51d622c9c 8,556,559-561,575-576,580,591,597,608-609,624-625,733,744,752-753,755,760,764
+src/app/features/dashboard/dashboard.ts
+  s_0896ba60d595d5::t_66ee2dd9935be9 5
+  s_043f3a9b716e32::t_9d154d245ea67a 10-30,42-45,47-50,87
+  s_27d4a0c7c20021::t_95a4882322fcb1 1
+src/app/core/outline.ts
+  s_0896ba60d595d5::t_66ee2dd9935be9 26-27
+  s_0896ba60d595d5::t_94273f3ade61a3 1-25,28-62
+src/app/shared/change-outline/change-outline.ts
+  s_0896ba60d595d5::t_66ee2dd9935be9 3-4
+package.json
+  s_27d4a0c7c20021::t_6687dd1652e153 40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "581e150c40922eadcc2921ab34aa3d1a16ff462f",
+  "prompts": {},
+  "sessions": {
+    "s_043f3a9b716e32": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cb14cf84-77b3-46ae-b8a1-78891eb1b0e9",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "stefanoslig <stefanoslignos@gmail.com>"
+    },
+    "s_0896ba60d595d5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bdbabfc6-0b5c-4798-9051-b6aca6b743c9",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "stefanoslig <stefanoslignos@gmail.com>"
+    },
+    "s_27d4a0c7c20021": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "861bd55b-9fba-4182-aa53-4fc85e4d2be4",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "stefanoslig <stefanoslignos@gmail.com>"
+    },
+    "s_482a92590a35ce": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a6c95296-9d48-4495-b26e-16926a88f0e2",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "stefanoslig <stefanoslignos@gmail.com>"
+    }
+  }
+}
