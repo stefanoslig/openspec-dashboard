@@ -5,19 +5,7 @@
     >
     <div class="reader-title">
       <div>
-        <div class="eyebrow">
-          {{
-            change()?.archived
-              ? 'Archived change'
-              : pull()
-                ? 'Change in review'
-                : change()
-                  ? 'Active change'
-                  : capability()
-                    ? 'Specification'
-                    : 'Workspace artifact'
-          }}
-        </div>
+        <div class="eyebrow">{{ eyebrow() }}</div>
         <h1>{{ change()?.title || capability() || doc.title }}</h1>
       </div>
       @if (change(); as item) {

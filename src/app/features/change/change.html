@@ -5,9 +5,7 @@
     >
     <div class="reader-title">
       <div>
-        <div class="eyebrow">
-          {{ pull() ? 'Change in review' : item.archived ? 'Archived change' : 'Active change' }}
-        </div>
+        <div class="eyebrow">{{ eyebrow() }}</div>
         <h1>{{ item.title }}</h1>
         @if (pull(); as request) {
           <p class="pull">

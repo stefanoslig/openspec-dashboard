@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  inject,
-  signal,
-  viewChild,
-} from '@angular/core';
+import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { ViewportScroller } from '@angular/common';
 import { Router, RouterOutlet } from '@angular/router';
 import { WorkspaceStore } from './core/workspace-store';
@@ -18,7 +11,6 @@ const THEME_KEY = 'openspec-desk.theme';
   imports: [RouterOutlet, WorkspaceNavigation, Icon],
   templateUrl: './app.html',
   styleUrl: './app.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   host: { '(document:keydown)': 'shortcut($event)' },
 })
 export class App {

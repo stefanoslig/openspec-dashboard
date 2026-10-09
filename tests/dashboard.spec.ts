@@ -5,6 +5,7 @@ import { mkdtemp, mkdir, readFile, writeFile, rm } from 'node:fs/promises';
 import { createServer, type Server } from 'node:http';
 import os from 'node:os';
 import path from 'node:path';
+import type { Workspace } from '../cli/workspace.model';
 
 const cli = path.resolve('dist/cli/main.js');
 const local = 'http://127.0.0.1:4312';
@@ -552,10 +553,12 @@ test('shows drafts, long threads and comment markup safely, and says when nothin
   const site = await mkdtemp(path.join(os.tmpdir(), 'openspec-site-'));
   const commit = '0123456789abcdef0123456789abcdef01234567';
   // A published site is a workspace.json next to the dashboard: adjust the sample's.
-  const publish = async (name: string, adjust: (workspace: any) => void) => {
+  const publish = async (name: string, adjust: (workspace: Workspace) => void) => {
     const out = path.join(site, name);
     expect(spawnSync(process.execPath, [cli, 'export', '--demo', '--out', out]).status).toBe(0);
-    const workspace = JSON.parse(await readFile(path.join(out, 'workspace.json'), 'utf8'));
+    const workspace: Workspace = JSON.parse(
+      await readFile(path.join(out, 'workspace.json'), 'utf8'),
+    );
     adjust(workspace);
     await writeFile(path.join(out, 'workspace.json'), JSON.stringify(workspace));
   };
@@ -569,25 +572,29 @@ test('shows drafts, long threads and comment markup safely, and says when nothin
       folder: 'openspec',
       url: 'https://github.example/atlas/atlas',
     };
-    const [thread] = workspace.pullRequests[0].threads;
+    const pulls = workspace.pullRequests!;
+    const [thread] = pulls[0].threads;
     thread.omitted = 4;
     thread.comments[0].body =
       'See <script>window.injected=true</script> ![shot](https://example.com/shot.png), [the spec](../spec.md) and [the docs](https://example.com/docs).';
-    workspace.pullRequests[0].threads[1].resolved = false;
+    pulls[0].threads[1].resolved = false;
     // More pull requests, each with a change that is only a proposal so far.
     const general = { ...thread, line: null, requirement: null, omitted: 0 };
-    const add = (number: number, name: string, title: string, extra: object = {}) => {
+    const add = (
+      number: number,
+      name: string,
+      title: string,
+      extra: { draft?: boolean; resolved?: boolean; outdated?: boolean } = {},
+    ) => {
       const proposal = `.pulls/${number}/changes/${name}/proposal.md`;
       workspace.documents.push({
-        ...workspace.documents.find(
-          (doc: any) => doc.pullRequest === 128 && doc.title === 'Proposal',
-        ),
+        ...workspace.documents.find((doc) => doc.pullRequest === 128 && doc.title === 'Proposal')!,
         path: proposal,
         content: `# ${title}\n\nOnly a proposal so far.`,
         pullRequest: number,
       });
       workspace.changes.push({
-        ...workspace.changes.find((change: any) => change.pullRequest === 128),
+        ...workspace.changes.find((change) => change.pullRequest === 128)!,
         id: `.pulls/${number}/changes/${name}`,
         name,
         title,
@@ -598,8 +605,8 @@ test('shows drafts, long threads and comment markup safely, and says when nothin
         deltas: [],
         pullRequest: number,
       });
-      workspace.pullRequests.push({
-        ...workspace.pullRequests[0],
+      pulls.push({
+        ...pulls[0],
         number,
         title,
         url: 'https://github.example/atlas/atlas/pull/' + number,
@@ -614,8 +621,8 @@ test('shows drafts, long threads and comment markup safely, and says when nothin
     add(131, 'quiet-names', 'Quiet names');
   });
   await publish('empty', (workspace) => {
-    workspace.documents = workspace.documents.filter((doc: any) => doc.pullRequest === undefined);
-    workspace.changes = workspace.changes.filter((change: any) => change.pullRequest === undefined);
+    workspace.documents = workspace.documents.filter((doc) => doc.pullRequest === undefined);
+    workspace.changes = workspace.changes.filter((change) => change.pullRequest === undefined);
     workspace.pullRequests = [];
   });
   const server = await host(site, 4316);
@@ -723,7 +730,7 @@ test('offers a comment link beside each requirement of a real pull request', asy
   const site = await mkdtemp(path.join(os.tmpdir(), 'openspec-site-'));
   const out = path.join(site, 'team/specs');
   expect(spawnSync(process.execPath, [cli, 'export', '--demo', '--out', out]).status).toBe(0);
-  const workspace = JSON.parse(await readFile(path.join(out, 'workspace.json'), 'utf8'));
+  const workspace: Workspace = JSON.parse(await readFile(path.join(out, 'workspace.json'), 'utf8'));
   workspace.isDemo = false;
   workspace.source = {
     provider: 'github',
@@ -734,7 +741,7 @@ test('offers a comment link beside each requirement of a real pull request', asy
     folder: 'openspec',
     url: 'https://github.example/atlas/atlas',
   };
-  const [pull] = workspace.pullRequests;
+  const [pull] = workspace.pullRequests!;
   const diff = pull.url + '/files#diff-5ac1';
   const spec = 'changes/let-editors-invite-viewers/specs/projects/access/spec.md';
   pull.reviewFiles = [{ path: '.pulls/128/' + spec, url: diff, added: false }];
@@ -742,19 +749,19 @@ test('offers a comment link beside each requirement of a real pull request', asy
   const copy = (from: string) => from.replace('.pulls/128/', '.pulls/132/');
   workspace.documents.push(
     ...workspace.documents
-      .filter((doc: any) => doc.pullRequest === 128)
-      .map((doc: any) => ({ ...doc, path: copy(doc.path), pullRequest: 132 })),
+      .filter((doc) => doc.pullRequest === 128)
+      .map((doc) => ({ ...doc, path: copy(doc.path), pullRequest: 132 })),
   );
-  const change = workspace.changes.find((change: any) => change.pullRequest === 128);
+  const change = workspace.changes.find((change) => change.pullRequest === 128)!;
   workspace.changes.push({
     ...change,
     id: copy(change.id),
     documents: change.documents.map(copy),
-    deltas: change.deltas.map((delta: any) => ({ ...delta, path: copy(delta.path) })),
+    deltas: change.deltas.map((delta) => ({ ...delta, path: copy(delta.path) })),
     pullRequest: 132,
   });
   const { reviewFiles: _, ...older } = pull;
-  workspace.pullRequests.push({
+  workspace.pullRequests!.push({
     ...older,
     number: 132,
     url: 'https://github.example/atlas/atlas/pull/132',

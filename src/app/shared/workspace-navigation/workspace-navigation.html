@@ -20,9 +20,10 @@
     @for (item of navigation; track item.view) {
       <a
         routerLink="/"
-        [queryParams]="{ view: item.view }"
-        [class.active]="isActive(item.view)"
-        [attr.aria-current]="isActive(item.view) ? 'page' : null"
+        [queryParams]="{ view: item.view === 'overview' ? null : item.view }"
+        routerLinkActive="active"
+        ariaCurrentWhenActive="page"
+        [routerLinkActiveOptions]="{ exact: true }"
         (click)="store.query.set('')"
       >
         <app-icon [name]="item.icon" />{{ item.label }}

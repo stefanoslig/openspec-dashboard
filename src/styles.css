@@ -7,7 +7,7 @@
   --hover: light-dark(#ebe9e1, #20251f);
   --text: light-dark(#1a1b18, #e7e9e3);
   --text-2: light-dark(#4a4c45, #b5bab0);
-  --muted: light-dark(#767a70, #7f867a);
+  --muted: light-dark(#666a61, #8b9286);
   --border: light-dark(#e0ddd2, #252a25);
   --border-strong: light-dark(#c6c2b3, #364036);
   /* The brand: forest ink in the light, signal lime in the dark. */
@@ -16,9 +16,14 @@
   --on-green: light-dark(#fff, #0f1a0c);
   --accent: light-dark(#e6efd8, #1f2d1a);
   --lime: #c3f25f;
+  /* dark mix kept low so the inherited text still clears AA */
+  --mark: light-dark(
+    color-mix(in srgb, var(--lime) 45%, transparent),
+    color-mix(in srgb, var(--lime) 20%, transparent)
+  );
   --bar: var(--green);
   --track: light-dark(#dfdcd0, #2a302a);
-  --added: light-dark(#2a8a46, #6fd98a);
+  --added: light-dark(#1b6732, #6fd98a);
   --amber: light-dark(#8f6200, #e9c46a);
   --amber-bg: light-dark(#f9f1d6, #2e2714);
   --amber-border: light-dark(#e8d59c, #4d4120);
@@ -138,7 +143,7 @@ p {
   line-height: 1.55;
 }
 mark {
-  background: color-mix(in srgb, var(--lime) 45%, transparent);
+  background: var(--mark);
   color: inherit;
   border-radius: 2px;
   padding: 0 2px;

@@ -2,20 +2,20 @@
   <div class="page-heading">
     <div>
       <div class="eyebrow">
-        {{ workspace.name }} <span>/</span> {{ store.query().trim() ? 'Search' : view() }}
+        {{ workspace.name }} <span>/</span> {{ query() ? 'Search' : view() }}
       </div>
-      <h1>{{ store.query().trim() ? 'Find the thought you’re looking for.' : title() }}</h1>
+      <h1>{{ query() ? 'Find the thought you’re looking for.' : title() }}</h1>
       <p>
         {{
-          store.query().trim()
-            ? (results().length | i18nPlural: matches) + ' match “' + store.query().trim() + '”.'
+          query()
+            ? (results().length | i18nPlural: matches) + ' match “' + query() + '”.'
             : description()
         }}
       </p>
     </div>
     <span class="schema-tag" title="OpenSpec schema">{{ workspace.schema }}</span>
   </div>
-  @if (store.query().trim()) {
+  @if (query()) {
     <section aria-label="Search results">
       <div class="section-heading">
         <h2>
@@ -59,7 +59,7 @@
       </div>
     </section>
   } @else {
-    @if (view() === 'overview') {
+    @if (shows().has('metrics')) {
       <div class="metrics">
         <a class="metric" routerLink="/" [queryParams]="{ view: 'changes' }">
           <span class="metric-label"><app-icon name="change" />Active changes</span>
@@ -94,7 +94,7 @@
         </a>
       </div>
     }
-    @if ((view() === 'overview' || view() === 'changes') && workspace.pullRequests) {
+    @if (shows().has('review') && workspace.pullRequests) {
       <section aria-label="In review">
         <div class="section-heading">
           <h2>
@@ -116,11 +116,11 @@
         </div>
       </section>
     }
-    @if (view() === 'overview' || view() === 'changes' || view() === 'archive') {
+    @if (shows().has('changes')) {
       <section>
         <div class="section-heading">
           <h2>
-            {{ view() === 'archive' ? 'Archived changes' : 'Active changes' }}
+            {{ wording().heading }}
             <span>{{ changes().length }}</span>
           </h2>
           <span class="subtle">{{
@@ -132,20 +132,14 @@
             <app-change-card [change]="change" />
           } @empty {
             <div class="empty-state">
-              <h3>{{ view() === 'archive' ? 'No archived changes yet' : 'A fresh start' }}</h3>
-              <p>
-                {{
-                  view() === 'archive'
-                    ? 'Archived changes will appear here with their original artifacts.'
-                    : 'Changes from openspec/changes will appear here as you create them.'
-                }}
-              </p>
+              <h3>{{ wording().empty }}</h3>
+              <p>{{ wording().hint }}</p>
             </div>
           }
         </div>
       </section>
     }
-    @if (view() === 'overview' || view() === 'specs') {
+    @if (shows().has('specs')) {
       <section>
         <div class="section-heading">
           <h2>
@@ -184,7 +178,7 @@
         </div>
       </section>
     }
-    @if (view() === 'artifacts') {
+    @if (shows().has('artifacts')) {
       <section>
         <div class="section-heading">
           <h2>

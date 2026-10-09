@@ -1,46 +1,53 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { DatePipe, I18nPluralPipe } from '@angular/common';
+import { excerpt } from '../../core/excerpt';
 import { WorkspaceStore } from '../../core/workspace-store';
 import { ChangeCard } from '../../shared/change-card/change-card';
 import { Icon } from '../../shared/icon/icon';
 
-/** The text around the first match, split so the matching words can be marked. */
-function excerpt(content: string, terms: string[]): { text: string; hit: boolean }[] {
-  const plain = content
-    .replace(/^\s*[-*] \[[ x]\] /gim, '')
-    .replace(/[#*`>|]+/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-  const lower = plain.toLocaleLowerCase();
-  const at = Math.min(...terms.map((term) => lower.indexOf(term)).filter((index) => index >= 0));
-  if (!Number.isFinite(at)) return [];
-  const start = at > 70 ? plain.indexOf(' ', at - 70) + 1 : 0;
-  const end = at + 180;
-  const pattern = new RegExp(
-    '(' + terms.map((term) => term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')',
-    'gi',
-  );
-  return ((start ? '… ' : '') + plain.slice(start, end) + (end < plain.length ? '…' : ''))
-    .split(pattern)
-    .filter(Boolean)
-    .map((text) => ({ text, hit: terms.includes(text.toLocaleLowerCase()) }));
-}
+/** The sections each view shows, in the order of the page. */
+const sections: Record<string, string[]> = {
+  overview: ['metrics', 'review', 'changes', 'specs'],
+  changes: ['review', 'changes'],
+  specs: ['specs'],
+  archive: ['changes'],
+  artifacts: ['artifacts'],
+};
+/** The wording of the changes section, for the archive and for the active changes. */
+const changesWording = {
+  archive: {
+    heading: 'Archived changes',
+    empty: 'No archived changes yet',
+    hint: 'Archived changes will appear here with their original artifacts.',
+  },
+  active: {
+    heading: 'Active changes',
+    empty: 'A fresh start',
+    hint: 'Changes from openspec/changes will appear here as you create them.',
+  },
+};
 
 @Component({
   selector: 'app-dashboard',
   imports: [RouterLink, ChangeCard, DatePipe, I18nPluralPipe, Icon],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Dashboard {
   protected readonly store = inject(WorkspaceStore);
   readonly #params = toSignal(inject(ActivatedRoute).queryParamMap);
   protected readonly view = computed(() => this.#params()?.get('view') ?? 'overview');
+  protected readonly shows = computed(() => new Set(sections[this.view()] ?? []));
+  /** The search, which takes the place of the view while there is one. */
+  protected readonly query = computed(() => this.store.query().trim());
+  readonly #archive = computed(() => this.view() === 'archive');
   protected readonly changes = computed(() =>
-    this.view() === 'archive' ? this.store.archived() : this.store.active(),
+    this.#archive() ? this.store.archived() : this.store.active(),
+  );
+  protected readonly wording = computed(() =>
+    this.#archive() ? changesWording.archive : changesWording.active,
   );
   // An exported site carries no file times, so there is no recency to sort by.
   protected readonly dated = computed(() => this.changes().some((change) => change.modified));
@@ -77,7 +84,7 @@ export class Dashboard {
     }));
   });
   protected readonly results = computed(() => {
-    const terms = this.store.query().trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
+    const terms = this.query().toLocaleLowerCase().split(/\s+/).filter(Boolean);
     return (this.store.workspace()?.documents ?? [])
       .filter((doc) => {
         const haystack = (this.store.repositoryPath(doc) + ' ' + doc.content).toLocaleLowerCase();

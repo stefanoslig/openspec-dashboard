@@ -37,7 +37,7 @@
     "test": "tsc -p cli/tsconfig.test.json && node --test \"cli/*.test.ts\" \"src/**/*.test.ts\"",
     "test:ui": "playwright test",
     "screenshots": "playwright test --config playwright.screenshots.config.ts",
-    "format": "prettier --write src cli tests README.md package.json angular.json proxy.conf.json playwright.config.ts playwright.screenshots.config.ts",
+    "format": "prettier --write src cli tests public README.md package.json angular.json proxy.conf.json playwright.config.ts playwright.screenshots.config.ts",
     "prepack": "npm run build"
   },
   "packageManager": "npm@11.12.1",
