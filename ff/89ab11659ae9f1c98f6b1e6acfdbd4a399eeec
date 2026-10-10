@@ -1,0 +1,304 @@
+src/app/core/requirement/comment-link.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-36
+src/app/app.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 4
+angular.json
+  s_dd5b2898f204ce::t_bafadb74c19e69 8-9,110-113,115
+  s_dd5b2898f204ce::t_a69ccac42bd6c9 114
+cli/workspace/spec-delta.test.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-144
+cli/workspace/build.test.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 3
+.agents/plans/split-cli/split-cli-parser.PLAN.md
+  s_dd5b2898f204ce::t_03cf9559bbbf8e 1-180
+package.json
+  s_dd5b2898f204ce::t_a69ccac42bd6c9 67
+  s_dd5b2898f204ce::t_9968d9f355ce79 37
+  s_dd5b2898f204ce::t_bafadb74c19e69 41-42,59,64,66,71-72
+src/app/core/requirement/comment-link.test.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-91
+cli/github/api.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-122
+eslint.config.js
+  s_dd5b2898f204ce::t_a69ccac42bd6c9 3,6,8-21,23,32,37,41,44,46-50,55-57
+  s_dd5b2898f204ce::t_bafadb74c19e69 1-2,4-5,7,22,24-31,33-36,38-40,42,45,51-54,58-59
+  s_dd5b2898f204ce::t_f8c1bc0382d39a 43
+cli/github/review.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-63
+src/app/core/workspace/outline.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1,63-75
+cli/workspace/change.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-154
+.vscode/extensions.json
+  s_dd5b2898f204ce::t_9f5bad2a05ccd9 3
+cli/commands/export.test.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-344
+cli/formats/markdown-info.test.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-18
+cli/github/pull-requests.test.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 4,6,70
+src/app/core/document/document-context.test.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-34
+src/app/core/workspace/workspace-store.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-98
+cli/github/requests.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-2,4,31-36,39-41,44-49,51,54-58,68-69,71-75,77-81,83-101,103-104,106-121,123-124,126-146
+.claude/settings.json
+  s_dd5b2898f204ce::t_fd98a832a72ca8 1-15
+cli/workspace/change.test.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-209
+src/app/core/requirement/requirement-diff.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-201
+src/app/core/preference.ts
+  s_dd5b2898f204ce::t_15cf2f7a66c1b6 1-19
+.gitignore
+  s_dd5b2898f204ce::t_397749b4c40365 51-53
+src/app/core/document/document-link.test.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 3,47-86
+src/app/core/requirement/requirement-diff.test.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-172
+cli/formats/delta.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 33-37,47-63,65,67-70,88-100,102-103,105-109,118,158,174
+cli/command.ts
+  s_dd5b2898f204ce::t_48a9adbf5be9df 1-98
+cli/formats/configuration.test.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-51
+AGENTS.md
+  s_dd5b2898f204ce::t_a734809e379480 1-33
+cli/commands/server.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 5-6,14-18,34-63,74-75,78,81,83,85-87,89-90,92,94,96-105,107,109-110,113-134
+cli/commands/export.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 4-8,24-28,103-112,114,117-119,122,126,133-136,138,140-156
+cli/github/documents.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-161
+cli/workspace/limits.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-19
+cli/workspace/pull-request.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-60
+cli/workspace/build.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-11,13-92
+  s_dd5b2898f204ce::t_9968d9f355ce79 12
+src/app/core/document/render-markdown.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1
+src/app/shared/review-thread/review-thread.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 3-4
+cli/tsconfig.json
+  s_dd5b2898f204ce::t_9968d9f355ce79 18-19
+src/app/core/document/page-outline.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1,32-47
+CLAUDE.md
+  s_dd5b2898f204ce::t_a734809e379480 1
+cli/formats/delta.test.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-222
+cli/workspace/spec-delta.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-98
+cli/workspace/reader.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1,5-8,11-12,14-22,50-109,113,115,121
+src/app/core/document/document-context.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-45
+src/app/core/document/render-markdown.test.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 3
+src/app/core/workspace/outline.test.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 3-4,96-115
+src/app/features/change/change.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 5-9
+src/app/features/reader/scroll-spy.ts
+  s_dd5b2898f204ce::t_6a0b0e2a85a8f9 9,36-38,40,51,55,58-59,66,69,71,74,78
+  s_dd5b2898f204ce::t_19909d77444a38 1-8,10-35,39,41-50,52-54,56-57,60-65,67-68,70,72-73,75-77,79-83
+src/app/features/dashboard/dashboard.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 5-6
+cli/workspace/limits.test.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-11
+cli/workspace/reader.test.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-123
+src/app/core/document/document-link.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-3,27-54
+cli/workspace/artifact.test.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-69
+tsconfig.json
+  s_dd5b2898f204ce::t_929d30edfa238b 16,18
+  s_dd5b2898f204ce::t_6a0b0e2a85a8f9 17
+src/app/core/workspace/excerpt.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-25
+cli/workspace/artifact.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-52
+cli/commands/server.test.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 8,10,80-82
+.agents/docs/code-conventions.md
+  s_dd5b2898f204ce::t_a734809e379480 1-38
+cli/github/api.test.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-97
+cli/tsconfig.test.json
+  s_dd5b2898f204ce::t_9968d9f355ce79 3-7
+src/app/shared/change-outline/change-outline.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 3-5
+cli/github/documents.test.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-170
+cli/formats/configuration.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-37
+src/app/core/document/page-outline.test.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-53
+cli/command.test.ts
+  s_dd5b2898f204ce::t_e7c59ad7705753 74-77
+  s_dd5b2898f204ce::t_64712c61b0cc33 44-45,47-51,55-57
+  s_dd5b2898f204ce::t_b29759ccd45af8 84,89,91-92
+  s_dd5b2898f204ce::t_0a1fc7cf545526 1-43,46,52-54,58-73,78-83,85-88,90,93
+cli/formats/markdown-info.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 11-16,22
+cli/github/requests.test.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-165
+cli/workspace/error.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-8
+src/app/features/reader/reader.ts
+  s_dd5b2898f204ce::t_6a0b0e2a85a8f9 48-52,54,60,100-103,107-108,130,132-136
+  s_dd5b2898f204ce::t_f7f186fdea8918 104,131
+  s_dd5b2898f204ce::t_aeec2fc642b611 5-6,13-14,16-17
+  s_dd5b2898f204ce::t_929d30edfa238b 145
+  s_dd5b2898f204ce::t_19909d77444a38 1,7-12,15,20,25-30,35,40,44-45,53,55-58,62-63,65,73-83,92-97,99,105,109-112,115,119-123,127,129,143-144,147-149,151,156-158
+src/app/shared/workspace-navigation/workspace-navigation.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 3
+tests/dashboard.spec.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 8
+.agents/plans/split-cli/split-cli.PLAN.md
+  s_dd5b2898f204ce::t_c8fd9bc91c2706 1-32
+src/app/core/requirement/requirement-view.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-48
+cli/main.test.ts
+  s_dd5b2898f204ce::t_f8c1bc0382d39a 16-17
+src/app/shared/change-card/change-card.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 4-5
+skills-lock.json
+  s_dd5b2898f204ce::t_eb545fd4544d30 1-11
+src/app/core/preference.test.ts
+  s_dd5b2898f204ce::t_15cf2f7a66c1b6 1-33
+cli/github/pull-requests.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 2-114
+  s_dd5b2898f204ce::t_9968d9f355ce79 1
+cli/github/review.test.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-112
+cli/workspace/model.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-125
+cli/main.ts
+  s_dd5b2898f204ce::t_f6340015c4fcc1 4-10,12,16-22,24-25,27,29,32-33,49-61
+  s_dd5b2898f204ce::t_aeec2fc642b611 11,13-14
+  s_dd5b2898f204ce::t_ce08a0ed0845eb 62
+cli/workspace/pull-request.test.ts
+  s_dd5b2898f204ce::t_aeec2fc642b611 1-128
+README.md
+  s_dd5b2898f204ce::t_9968d9f355ce79 223
+src/app/features/reader/reader.html
+  s_dd5b2898f204ce::t_4606b7795304e4 37-39
+  s_dd5b2898f204ce::t_929d30edfa238b 109
+  s_dd5b2898f204ce::t_19909d77444a38 3-4,8,28,112-114,116,123,125-126,131,136
+  s_dd5b2898f204ce::t_6a0b0e2a85a8f9 115,117
+.agents/plans/split-cli/split-cli-github.PLAN.md
+  s_dd5b2898f204ce::t_aad612b4bae601 1-159
+.agents/plans/split-cli/split-cli-main.PLAN.md
+  s_dd5b2898f204ce::t_226cf1e4a1490b 1-107
+.agents/plans/split-cli/split-cli-reader.PLAN.md
+  s_dd5b2898f204ce::t_1dc7ad6cf7ae7a 1-154
+.agents/skills/angular-developer/SKILL.md
+  s_dd5b2898f204ce::t_fa14b7720d1dd4 1-144
+.agents/skills/angular-developer/references/angular-animations.md
+  s_dd5b2898f204ce::t_42b9d2c64fb4c6 1-160
+.agents/skills/angular-developer/references/angular-aria.md
+  s_dd5b2898f204ce::t_07efa0950d5559 1-613
+.agents/skills/angular-developer/references/cli.md
+  s_dd5b2898f204ce::t_f5788a19ee8e4f 1-86
+.agents/skills/angular-developer/references/component-harnesses.md
+  s_dd5b2898f204ce::t_b0702672b346f9 1-57
+.agents/skills/angular-developer/references/component-styling.md
+  s_dd5b2898f204ce::t_9340f47e9416d8 1-91
+.agents/skills/angular-developer/references/components.md
+  s_dd5b2898f204ce::t_fba945b9172aa7 1-135
+.agents/skills/angular-developer/references/creating-services.md
+  s_dd5b2898f204ce::t_da0b84ee820b29 1-93
+.agents/skills/angular-developer/references/data-resolvers.md
+  s_dd5b2898f204ce::t_4a03e2b8a9f486 1-69
+.agents/skills/angular-developer/references/define-routes.md
+  s_dd5b2898f204ce::t_c789f4a34e3bf9 1-85
+.agents/skills/angular-developer/references/defining-providers.md
+  s_dd5b2898f204ce::t_8458541aeb60a2 1-72
+.agents/skills/angular-developer/references/di-fundamentals.md
+  s_dd5b2898f204ce::t_6014357ac96033 1-116
+.agents/skills/angular-developer/references/e2e-testing.md
+  s_dd5b2898f204ce::t_f9b14b3ae8c7b8 1-39
+.agents/skills/angular-developer/references/effects.md
+  s_dd5b2898f204ce::t_e884edaedc8294 1-83
+.agents/skills/angular-developer/references/environment-configuration.md
+  s_dd5b2898f204ce::t_7279bfacfed393 1-137
+.agents/skills/angular-developer/references/hierarchical-injectors.md
+  s_dd5b2898f204ce::t_c35967df509d4f 1-43
+.agents/skills/angular-developer/references/host-elements.md
+  s_dd5b2898f204ce::t_e51d803e703ac0 1-80
+.agents/skills/angular-developer/references/http-client.md
+  s_dd5b2898f204ce::t_d96aed062fc5f6 1-108
+.agents/skills/angular-developer/references/injection-context.md
+  s_dd5b2898f204ce::t_989899d2fc1e2b 1-63
+.agents/skills/angular-developer/references/inputs.md
+  s_dd5b2898f204ce::t_15614a5340ce6d 1-101
+.agents/skills/angular-developer/references/linked-signal.md
+  s_dd5b2898f204ce::t_8b21e492c29dbd 1-59
+.agents/skills/angular-developer/references/loading-strategies.md
+  s_dd5b2898f204ce::t_884c7c01d24f4d 1-63
+.agents/skills/angular-developer/references/mcp.md
+  s_dd5b2898f204ce::t_d55fea65c6ba49 1-96
+.agents/skills/angular-developer/references/migrations.md
+  s_dd5b2898f204ce::t_3ee279b5530daa 1-30
+.agents/skills/angular-developer/references/naming-conventions.md
+  s_dd5b2898f204ce::t_99126aaf67261d 1-76
+.agents/skills/angular-developer/references/navigate-to-routes.md
+  s_dd5b2898f204ce::t_e3633ca90bc4fd 1-69
+.agents/skills/angular-developer/references/outputs.md
+  s_dd5b2898f204ce::t_0d535effce7621 1-86
+.agents/skills/angular-developer/references/pipes.md
+  s_dd5b2898f204ce::t_608873e46efc53 1-145
+.agents/skills/angular-developer/references/reactive-forms.md
+  s_dd5b2898f204ce::t_a09f1786441f3c 1-118
+.agents/skills/angular-developer/references/rendering-strategies.md
+  s_dd5b2898f204ce::t_84361f10e58470 1-44
+.agents/skills/angular-developer/references/resource.md
+  s_dd5b2898f204ce::t_c0f98724abb30f 1-74
+.agents/skills/angular-developer/references/route-animations.md
+  s_dd5b2898f204ce::t_76c0f64e17fc35 1-56
+.agents/skills/angular-developer/references/route-guards.md
+  s_dd5b2898f204ce::t_45de7674a5d56e 1-52
+.agents/skills/angular-developer/references/router-lifecycle.md
+  s_dd5b2898f204ce::t_76544394116651 1-45
+.agents/skills/angular-developer/references/router-testing.md
+  s_dd5b2898f204ce::t_d171e5a8fa18c8 1-88
+.agents/skills/angular-developer/references/show-routes-with-outlets.md
+  s_dd5b2898f204ce::t_f7c5071987d23e 1-68
+.agents/skills/angular-developer/references/signal-forms.md
+  s_dd5b2898f204ce::t_bea40b9b2814a9 1-886
+.agents/skills/angular-developer/references/signals-overview.md
+  s_dd5b2898f204ce::t_23e347b2566fe0 1-94
+.agents/skills/angular-developer/references/tailwind-css.md
+  s_dd5b2898f204ce::t_f8929a2c024acc 1-69
+.agents/skills/angular-developer/references/template-driven-forms.md
+  s_dd5b2898f204ce::t_bffbd7d6e3e566 1-114
+.agents/skills/angular-developer/references/testing-fundamentals.md
+  s_dd5b2898f204ce::t_e63c67f949ed94 1-63
+.claude/hooks/lint-edited-file.mjs
+  s_dd5b2898f204ce::t_1044c86a1e90d4 1-22
+.claude/skills/angular-developer
+  s_dd5b2898f204ce::t_aa203cc5ae4abb 1
+package-lock.json
+  s_dd5b2898f204ce::t_f17e61826bdef6 28,33,35-36,40-41,127-231,796-819,1262-1376,1405-1470,1854-1877,3425-3431,3439-3452,3467-3473,3484-3487,3490-3499,3501-3505,3508-3510,3513-3516,3519-3523,3525-3532,3535-3538,3542-3546,3549-3550,3553-3556,3559-3560,3562-3564,3566-3567,3570-3573,3577,3580-3581,3584-3587,3590-3600,3602,3605-3609,3612-4291,4301-4330,4379-4391,4433-4469,4652-4666,4720-4726,4920-5173,5181-5194,5257-5302,5328-5334,5368-5393,5404-5423,5492-5501,5520-5529,5595-5601,5629-5635,5656-5689,6015-6037,6121-6136,6217-6223,6320-6337,6406-6437,6479-6498,6624-6633,6678-6707,6722-6734,6742-6755,7221-7235,7249-7271,7389-7401,7458-7470,7478-7490,7505-7682,7721-7730,7847-7872,7950-7962
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ff89ab11659ae9f1c98f6b1e6acfdbd4a399eeec",
+  "prompts": {},
+  "sessions": {
+    "s_dd5b2898f204ce": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "dca260e3-168b-445e-9c29-cd7042034772",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "stefanoslig <stefanoslignos@gmail.com>"
+    }
+  }
+}
