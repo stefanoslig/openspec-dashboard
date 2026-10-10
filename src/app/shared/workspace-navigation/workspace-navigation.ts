@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { WorkspaceStore } from '../../core/workspace-store';
+import { WorkspaceStore } from '../../core/workspace/workspace-store';
 import { Icon, type IconName } from '../icon/icon';
 @Component({
   selector: 'app-workspace-navigation',

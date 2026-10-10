@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { DatePipe, I18nPluralPipe } from '@angular/common';
-import type { ReviewThread } from '../../../../cli/workspace.model';
-import { renderMarkdown } from '../../core/render-markdown';
+import type { ReviewThread } from '../../../../cli/workspace/model';
+import { renderMarkdown } from '../../core/document/render-markdown';
 import { Icon } from '../icon/icon';
 
 /** One review thread of a pull request. Read-only: replies happen on GitHub. */

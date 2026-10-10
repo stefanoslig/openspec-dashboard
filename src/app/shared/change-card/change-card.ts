@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
-import type { Change } from '../../../../cli/workspace.model';
-import { hasPage, kindCounts, WorkspaceStore } from '../../core/workspace-store';
+import type { Change } from '../../../../cli/workspace/model';
+import { hasPage, kindCounts, WorkspaceStore } from '../../core/workspace/workspace-store';
 import { Icon } from '../icon/icon';
 
 @Component({

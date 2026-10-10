@@ -220,7 +220,7 @@ npm run dev      # http://127.0.0.1:4200, reads the workspace from port 4310
 | `demo/openspec/`         | The sample workspace, also used by the tests.                                       |
 | `dist/app/`, `dist/cli/` | Build output. These two folders and `demo/` are what the npm package ships.         |
 
-The reader and parser turn the folder into the model in `cli/workspace.model.ts`. The local server parses again on every `workspace.json` request; the export parses once and writes the file.
+The reader and parser turn the folder into the model in `cli/workspace/model.ts`. The local server parses again on every `workspace.json` request; the export parses once and writes the file.
 
 ### Tests
 

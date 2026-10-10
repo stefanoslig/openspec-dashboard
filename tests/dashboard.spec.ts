@@ -5,7 +5,7 @@ import { mkdtemp, mkdir, readFile, writeFile, rm } from 'node:fs/promises';
 import { createServer, type Server } from 'node:http';
 import os from 'node:os';
 import path from 'node:path';
-import type { Workspace } from '../cli/workspace.model';
+import type { Workspace } from '../cli/workspace/model';
 
 const cli = path.resolve('dist/cli/main.js');
 const local = 'http://127.0.0.1:4312';

@@ -5,7 +5,8 @@
     "packageManager": "npm",
     "cache": {
       "enabled": false
-    }
+    },
+    "schematicCollections": ["angular-eslint"]
   },
   "newProjectRoot": "projects",
   "projects": {
@@ -106,6 +107,12 @@
             }
           },
           "defaultConfiguration": "development"
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html", "cli/**/*.ts", "tests/**/*.ts"]
+          }
         }
       }
     }

@@ -48,3 +48,6 @@ Thumbs.db
 /playwright-report
 .vercel
 .env*
+
+# Claude Code personal overrides
+.claude/settings.local.json

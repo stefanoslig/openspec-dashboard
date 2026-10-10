@@ -1,72 +1,68 @@
-import {
-  afterRenderEffect,
-  Component,
-  computed,
-  DestroyRef,
-  ElementRef,
-  inject,
-  signal,
-  untracked,
-} from '@angular/core';
+import { Component, computed, inject, linkedSignal, signal, viewChild } from '@angular/core';
 import { DatePipe, I18nPluralPipe } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { linkedDocument } from '../../core/document-link';
-import { capabilityOf, outlineOf, outlineOfSpecs, outlineOfWorkspace } from '../../core/outline';
-import { pageOutline } from '../../core/page-outline';
-import { isWebLink, renderMarkdown } from '../../core/render-markdown';
-import { WorkspaceStore } from '../../core/workspace-store';
+import { documentContext } from '../../core/document/document-context';
+import { linkTarget, type LinkTarget } from '../../core/document/document-link';
+import {
+  capabilityOf,
+  neighboursOf,
+  outlineOf,
+  outlineOfSpecs,
+  outlineOfWorkspace,
+} from '../../core/workspace/outline';
+import { collapseOutline, pageOutline } from '../../core/document/page-outline';
+import { readFlag, writeFlag } from '../../core/preference';
+import { renderMarkdown } from '../../core/document/render-markdown';
+import { WorkspaceStore } from '../../core/workspace/workspace-store';
 import { ChangeOutline } from '../../shared/change-outline/change-outline';
 import { Icon } from '../../shared/icon/icon';
+import { ScrollSpy } from './scroll-spy';
 
 // Where the "Hide completed" choice is kept between visits.
 const hideDoneKey = 'openspec-desk.hide-done';
-// Past this many headings, the outline shows scenarios only for the requirement being read.
-const longOutline = 18;
-// A heading above this line of the viewport, in pixels from its top, counts as read.
-const line = 110;
 
-type BackView = 'archive' | 'changes' | 'specs' | 'artifacts';
-const backLabels: Record<BackView, string> = {
-  archive: 'Archive',
-  changes: 'All changes',
-  specs: 'All specifications',
-  artifacts: 'All artifacts',
-};
-
-/** The last heading above the line, or the first when none has reached it. */
-function headingAtLine(headings: HTMLElement[]): HTMLElement | undefined {
-  let current = headings[0];
-  for (const heading of headings) {
-    if (heading.getBoundingClientRect().top > line) break;
-    current = heading;
-  }
-  return current;
+/** What the reader is told about a link that cannot be followed; nothing for one that can. */
+function warningFor(target: LinkTarget, href: string): string {
+  if (target.kind === 'missing')
+    return 'This link points outside the loaded OpenSpec artifacts: ' + href;
+  if (target.kind === 'broken') return 'This document contains a link that could not be opened.';
+  return '';
 }
-// The last headings of a page cannot reach the line, so its end is a case of its own.
-const atPageEnd = () =>
-  scrollY > 0 && scrollY + innerHeight >= document.documentElement.scrollHeight - 2;
 
 @Component({
   selector: 'app-reader',
-  imports: [RouterLink, DatePipe, I18nPluralPipe, ChangeOutline, Icon],
+  imports: [RouterLink, DatePipe, I18nPluralPipe, ChangeOutline, Icon, ScrollSpy],
   templateUrl: './reader.html',
   styleUrl: './reader.css',
 })
 export class Reader {
+  // Dependencies
   protected readonly store = inject(WorkspaceStore);
   readonly #router = inject(Router);
-  readonly #host: HTMLElement = inject(ElementRef).nativeElement;
   readonly #route = inject(ActivatedRoute);
+
+  // Route signals: the document asked for, and the heading linked to
   readonly #params = toSignal(this.#route.queryParamMap);
   readonly #fragment = toSignal(this.#route.fragment);
+  readonly #requestedPath = computed(() => this.#params()?.get('path'));
+  /**
+   * The heading to scroll to, until the page has reached it. Re-armed by a new fragment, or the
+   * same one in another document; cleared by the directive's (reached).
+   */
+  protected readonly linkedHeading = linkedSignal({
+    source: () => ({ path: this.#requestedPath(), fragment: this.#fragment() }),
+    computation: (route) => route.fragment ?? '',
+  });
+
+  // The document and its context
   protected readonly document = computed(() =>
-    this.store.workspace()?.documents.find((doc) => doc.path === this.#params()?.get('path')),
+    this.store.workspace()?.documents.find((doc) => doc.path === this.#requestedPath()),
   );
+  /** Path of the document being read; empty until it is found. */
+  readonly #path = computed(() => this.document()?.path ?? '');
   protected readonly change = computed(() =>
-    this.store
-      .workspace()
-      ?.changes.find((change) => change.documents.includes(this.document()?.path ?? '')),
+    this.store.workspace()?.changes.find((change) => change.documents.includes(this.#path())),
   );
   /** The pull request the document was read from. */
   protected readonly pull = computed(() => {
@@ -74,15 +70,17 @@ export class Reader {
     return doc && this.store.pullRequestOf(doc);
   });
   /** Capability name when the document is a published specification. */
-  protected readonly capability = computed(() => capabilityOf(this.document()?.path ?? ''));
-  /** What the document is part of, shown above its title. */
-  protected readonly eyebrow = computed(() => {
-    const change = this.change();
-    if (change?.archived) return 'Archived change';
-    if (this.pull()) return 'Change in review';
-    if (change) return 'Active change';
-    return this.capability() ? 'Specification' : 'Workspace artifact';
-  });
+  protected readonly capability = computed(() => capabilityOf(this.#path()));
+  /** The eyebrow above the title, and the way back to the listing the document came from. */
+  protected readonly context = computed(() =>
+    documentContext({
+      change: this.change(),
+      inReview: this.pull() !== undefined,
+      capability: this.capability(),
+    }),
+  );
+
+  // Sidebar and pager
   protected readonly groups = computed(() => {
     const change = this.change();
     const documents = this.store.workspace()?.documents ?? [];
@@ -91,133 +89,72 @@ export class Reader {
       ? outlineOfWorkspace(documents)
       : outlineOfSpecs(documents);
   });
-  readonly #neighbours = computed(() => {
-    const entries = this.groups().flatMap((group) => group.entries);
-    const index = entries.findIndex((entry) => entry.path === this.document()?.path);
-    return { previous: entries[index - 1], next: index < 0 ? undefined : entries[index + 1] };
+  protected readonly neighbours = computed(() => neighboursOf(this.groups(), this.#path()));
+
+  // Content and outline
+  protected readonly rendered = computed(() => {
+    const doc = this.document();
+    return renderMarkdown(doc?.format === 'markdown' ? doc.content : '');
   });
-  protected readonly previous = computed(() => this.#neighbours().previous);
-  protected readonly next = computed(() => this.#neighbours().next);
-  protected readonly rendered = computed(() =>
-    renderMarkdown(this.document()?.format === 'markdown' ? (this.document()?.content ?? '') : ''),
-  );
-  readonly #outline = computed(() => pageOutline(this.rendered().headings));
+  readonly #headings = computed(() => pageOutline(this.rendered().headings));
+  /**
+   * Follows the reader through the rendered headings; absent while the source is shown. Not a
+   * #field: the compiler reads a signal query by name.
+   */
+  private readonly scrollSpy = viewChild(ScrollSpy);
+  /** Id of the heading being read. */
   protected readonly active = signal('');
-  protected readonly outline = computed(() => {
-    const headings = this.#outline();
-    if (headings.length <= longOutline) return headings;
-    const current = headings.find((heading) => heading.id === this.active());
-    const open = current?.parent || current?.id;
-    return headings.filter((heading) => !heading.parent || heading.parent === open);
-  });
+  /** Id of the heading last asked for, by a click or a link; the end of the page keeps it active. */
+  protected readonly requestedHeading = signal('');
+  /** "On this page", collapsed to the requirement being read when the document is long. */
+  protected readonly outline = computed(() => collapseOutline(this.#headings(), this.active()));
+
+  // View state
   protected readonly showSource = signal(false);
   protected readonly linkWarning = signal('');
-  protected readonly hideDone = signal(this.#stored());
-  /** The listing the document came from. */
-  protected readonly backView = computed((): BackView => {
-    const change = this.change();
-    if (change?.archived) return 'archive';
-    if (change) return 'changes';
-    return this.capability() === undefined ? 'artifacts' : 'specs';
-  });
-  protected readonly backLabel = computed(() => backLabels[this.backView()]);
+  protected readonly hideDone = signal(readFlag(hideDoneKey));
   protected readonly requirements = { '=1': '1 requirement', other: '# requirements' };
   protected readonly scenarios = { '=1': '1 scenario', other: '# scenarios' };
-  #arrived = '';
-  #chosen = '';
 
-  constructor() {
-    const spy = () => this.#spy();
-    window.addEventListener('scroll', spy, { passive: true });
-    inject(DestroyRef).onDestroy(() => window.removeEventListener('scroll', spy));
-    afterRenderEffect(() => {
-      const path = this.document()?.path;
-      const { headings } = this.rendered();
-      this.showSource();
-      // The sanitizer behind [innerHTML] drops id attributes, so the headings get theirs here.
-      this.#headings().forEach((heading, index) => (heading.id = headings[index]?.id ?? ''));
-      // A link to a heading arrives before the workspace has loaded; scroll once it is there.
-      const fragment = untracked(this.#fragment);
-      if (path && fragment && this.#arrived !== path + '#' + fragment) this.scrollTo(fragment);
-      this.#arrived = path + '#' + fragment;
-      this.#spy();
-    });
-  }
-
-  #headings(): HTMLElement[] {
-    return [...this.#host.querySelectorAll<HTMLElement>('.prose :is(h1,h2,h3,h4,h5,h6)')];
-  }
-  /** Marks the heading the reader has scrolled to. */
-  #spy(): void {
-    const headings = this.#headings();
-    const current =
-      headings.length && atPageEnd() ? this.#chosenOrLast(headings) : headingAtLine(headings);
-    this.active.set(current?.id ?? '');
-  }
-  /** At the end of the page: the heading that was asked for while it is still below the line, else the last. */
-  #chosenOrLast(headings: HTMLElement[]): HTMLElement {
-    const chosen = headings.find((heading) => heading.id === this.#chosen);
-    return chosen && chosen.getBoundingClientRect().top > line
-      ? chosen
-      : headings[headings.length - 1];
-  }
-  protected scrollTo(id: string): void {
-    this.#chosen = id;
-    document.getElementById(id)?.scrollIntoView({ behavior: 'auto', block: 'start' });
-  }
-  // Storage can be unavailable, for example with cookies blocked; the choice then lasts the visit.
-  #stored(): boolean {
-    try {
-      return localStorage.getItem(hideDoneKey) === 'true';
-    } catch {
-      return false;
-    }
+  // Handlers
+  /** Leaves the link warning and the Source view behind when moving to another document. */
+  protected resetView(): void {
+    this.linkWarning.set('');
+    this.showSource.set(false);
   }
   protected toggleDone(): void {
     this.hideDone.update((hidden) => !hidden);
-    try {
-      localStorage.setItem(hideDoneKey, String(this.hideDone()));
-    } catch {}
+    writeFlag(hideDoneKey, this.hideDone());
   }
-  protected open(): void {
-    this.linkWarning.set('');
-    this.showSource.set(false);
+  protected scrollTo(id: string): void {
+    this.requestedHeading.set(id);
+    this.scrollSpy()?.scrollTo(id);
+  }
+  /** The linked heading has been reached: it is the one asked for now, and no later render scrolls again. */
+  protected headingReached(): void {
+    this.requestedHeading.set(this.linkedHeading());
+    this.linkedHeading.set('');
   }
   /** Opens a link of the document inside the dashboard; links to the web are left to the browser. */
   protected followLink(event: MouseEvent): void {
     const anchor = (event.target as HTMLElement).closest('a');
     if (!anchor) return;
     const href = anchor.getAttribute('href') ?? '';
-    if (isWebLink(href)) return;
+    const paths = this.store.workspace()?.documents.map((doc) => doc.path) ?? [];
+    const target = linkTarget(href, this.#path(), paths);
+    if (target.kind === 'web') return;
     event.preventDefault();
-    this.linkWarning.set('');
-    try {
-      this.#follow(href);
-    } catch {
-      this.linkWarning.set('This document contains a link that could not be opened.');
-    }
+    this.linkWarning.set(warningFor(target, href));
+    if (target.kind === 'heading') this.#showHeading(target.fragment);
+    if (target.kind === 'document') this.#showDocument(target.path, target.fragment);
   }
-  #follow(href: string): void {
-    if (href.startsWith('#')) this.#followHeading(decodeURIComponent(href.slice(1)));
-    else this.#followDocument(href);
-  }
-  #followHeading(fragment: string): void {
+  #showHeading(fragment: string): void {
     this.scrollTo(fragment);
     // Keeps the address bar pointing at the heading, so it can be copied and shared.
     void this.#router.navigate(['/artifact'], { fragment });
   }
-  #followDocument(href: string): void {
-    const paths = this.store.workspace()?.documents.map((doc) => doc.path) ?? [];
-    const target = linkedDocument(href, this.document()!.path, paths);
-    if (!target) return;
-    if (!paths.includes(target.path)) {
-      this.linkWarning.set('This link points outside the loaded OpenSpec artifacts: ' + href);
-      return;
-    }
-    this.showSource.set(false);
-    void this.#router.navigate(['/artifact'], {
-      queryParams: { path: target.path },
-      fragment: target.fragment,
-    });
+  #showDocument(path: string, fragment: string): void {
+    this.resetView();
+    void this.#router.navigate(['/artifact'], { queryParams: { path }, fragment });
   }
 }

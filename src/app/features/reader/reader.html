@@ -1,11 +1,11 @@
 @if (document(); as doc) {
   <div class="reader-heading">
-    <a routerLink="/" [queryParams]="{ view: backView() }" class="back-link"
-      ><app-icon name="arrow-left" />{{ backLabel() }}</a
+    <a routerLink="/" [queryParams]="{ view: context().backView }" class="back-link"
+      ><app-icon name="arrow-left" />{{ context().backLabel }}</a
     >
     <div class="reader-title">
       <div>
-        <div class="eyebrow">{{ eyebrow() }}</div>
+        <div class="eyebrow">{{ context().eyebrow }}</div>
         <h1>{{ change()?.title || capability() || doc.title }}</h1>
       </div>
       @if (change(); as item) {
@@ -25,7 +25,7 @@
         [groups]="groups()"
         [change]="change()"
         [selected]="doc.path"
-        (opened)="open()"
+        (opened)="resetView()"
       />
       @if (!showSource() && outline().length > 1) {
         <nav class="table-of-contents" aria-label="On this page">
@@ -34,7 +34,9 @@
             <a
               routerLink="/artifact"
               [fragment]="heading.id"
-              [class]="'level-' + heading.level + ' ' + (heading.kind ?? '')"
+              [class]="heading.kind"
+              [class.level-1]="heading.level === 1"
+              [class.level-2]="heading.level === 2"
               [class.active]="heading.id === active()"
               (click)="scrollTo(heading.id)"
               >{{ heading.text }}</a
@@ -104,27 +106,34 @@
       @if (showSource() || doc.format === 'yaml') {
         <pre class="source-view"><code>{{ doc.content }}</code></pre>
       } @else {
+        <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -- the click is delegated from the links inside, which are focusable and fire it on Enter -->
         <div
           class="prose"
+          appScrollSpy
+          [headings]="rendered().headings"
+          [target]="linkedHeading()"
+          [requested]="requestedHeading()"
+          (active)="active.set($event)"
+          (reached)="headingReached()"
           [class.hide-done]="hideDone()"
           [innerHTML]="rendered().html"
           (click)="followLink($event)"
         ></div>
       }
-      @if (previous() || next()) {
+      @if (neighbours().previous || neighbours().next) {
         <nav class="document-pager" aria-label="Previous and next document">
-          @if (previous(); as entry) {
-            <a routerLink="/artifact" [queryParams]="{ path: entry.path }" (click)="open()"
+          @if (neighbours().previous; as entry) {
+            <a routerLink="/artifact" [queryParams]="{ path: entry.path }" (click)="resetView()"
               ><small>Previous</small
               ><span><app-icon name="arrow-left" />{{ entry.label }}</span></a
             >
           }
-          @if (next(); as entry) {
+          @if (neighbours().next; as entry) {
             <a
               class="pager-next"
               routerLink="/artifact"
               [queryParams]="{ path: entry.path }"
-              (click)="open()"
+              (click)="resetView()"
               ><small>Next</small><span>{{ entry.label }}<app-icon name="arrow-right" /></span
             ></a>
           }

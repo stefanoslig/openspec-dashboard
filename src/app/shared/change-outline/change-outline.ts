@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import type { Change } from '../../../../cli/workspace.model';
-import type { OutlineGroup } from '../../core/outline';
-import { hasPage } from '../../core/workspace-store';
+import type { Change } from '../../../../cli/workspace/model';
+import type { OutlineGroup } from '../../core/workspace/outline';
+import { hasPage } from '../../core/workspace/workspace-store';
 
 @Component({
   selector: 'app-change-outline',

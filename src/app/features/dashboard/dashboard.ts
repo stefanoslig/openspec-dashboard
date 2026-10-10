@@ -2,8 +2,8 @@ import { Component, computed, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { DatePipe, I18nPluralPipe } from '@angular/common';
-import { excerpt } from '../../core/excerpt';
-import { WorkspaceStore } from '../../core/workspace-store';
+import { excerpt } from '../../core/workspace/excerpt';
+import { WorkspaceStore } from '../../core/workspace/workspace-store';
 import { ChangeCard } from '../../shared/change-card/change-card';
 import { Icon } from '../../shared/icon/icon';
 

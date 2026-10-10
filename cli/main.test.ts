@@ -13,8 +13,8 @@ test('prints usage', () => {
   const result = run('--help');
   assert.equal(result.status, 0);
   assert.match(result.stdout, /openspec-desk export \[path\]/);
-  assert.match(result.stdout, /^  openspec-desk export .*\[--pull-requests\]/m);
-  assert.match(result.stdout, /^  --pull-requests  \S/m);
+  assert.match(result.stdout, /^ {2}openspec-desk export .*\[--pull-requests\]/m);
+  assert.match(result.stdout, /^ {2}--pull-requests {2}\S/m);
 });
 
 test('exits with the reason when the workspace or the arguments are wrong', () => {

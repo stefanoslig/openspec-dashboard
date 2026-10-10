@@ -34,11 +34,12 @@
     "prestart": "npm run build",
     "start": "node dist/cli/main.js --demo",
     "dev": "ng serve --host 127.0.0.1 --port 4200 --proxy-config proxy.conf.json",
-    "test": "tsc -p cli/tsconfig.test.json && node --test \"cli/*.test.ts\" \"src/**/*.test.ts\"",
+    "test": "tsc -p cli/tsconfig.test.json && node --test \"cli/**/*.test.ts\" \"src/**/*.test.ts\"",
     "test:ui": "playwright test",
     "screenshots": "playwright test --config playwright.screenshots.config.ts",
     "format": "prettier --write src cli tests public README.md package.json angular.json proxy.conf.json playwright.config.ts playwright.screenshots.config.ts",
-    "prepack": "npm run build"
+    "prepack": "npm run build",
+    "lint": "ng lint"
   },
   "packageManager": "npm@11.12.1",
   "dependencies": {
@@ -55,15 +56,20 @@
     "@angular/forms": "^22.2.0",
     "@angular/platform-browser": "^22.2.0",
     "@angular/router": "^22.2.0",
+    "@eslint/js": "^10.0.1",
     "@fontsource-variable/jetbrains-mono": "^5.3.0",
     "@fontsource-variable/schibsted-grotesk": "^5.3.0",
     "@playwright/test": "^1.63.0",
     "@types/node": "^22.20.5",
+    "angular-eslint": "22.5.0",
     "diff": "^9.0.0",
+    "eslint": "^10.9.1",
+    "eslint-plugin-sonarjs": "^4.2.2",
     "prettier": "^3.8.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "typescript": "~6.0.2"
+    "typescript": "~6.0.2",
+    "typescript-eslint": "8.69.0"
   },
   "engines": {
     "node": ">=22"

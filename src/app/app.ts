@@ -1,7 +1,7 @@
 import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { ViewportScroller } from '@angular/common';
 import { Router, RouterOutlet } from '@angular/router';
-import { WorkspaceStore } from './core/workspace-store';
+import { WorkspaceStore } from './core/workspace/workspace-store';
 import { Icon } from './shared/icon/icon';
 import { WorkspaceNavigation } from './shared/workspace-navigation/workspace-navigation';
 type Theme = 'light' | 'dark';
